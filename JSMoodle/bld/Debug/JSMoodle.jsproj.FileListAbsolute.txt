@@ -1,0 +1,16 @@
+c:\users\nudes\documents\visual studio 2015\Projects\JSMoodle\JSMoodle\bin\Debug\ReverseMap\resources.pri
+c:\users\nudes\documents\visual studio 2015\Projects\JSMoodle\JSMoodle\bin\Debug\AppxManifest.xml
+c:\users\nudes\documents\visual studio 2015\Projects\JSMoodle\JSMoodle\bin\Debug\JSMoodle.build.appxrecipe
+c:\users\nudes\documents\visual studio 2015\Projects\JSMoodle\JSMoodle\bld\Debug\ResourceHandlingTask.state
+c:\users\nudes\documents\visual studio 2015\Projects\JSMoodle\JSMoodle\bld\Debug\priconfig.xml
+c:\users\nudes\documents\visual studio 2015\Projects\JSMoodle\JSMoodle\bld\Debug\priconfig.xml.intermediate
+c:\users\nudes\documents\visual studio 2015\Projects\JSMoodle\JSMoodle\bld\Debug\layout.resfiles
+c:\users\nudes\documents\visual studio 2015\Projects\JSMoodle\JSMoodle\bld\Debug\layout.resfiles.intermediate
+c:\users\nudes\documents\visual studio 2015\Projects\JSMoodle\JSMoodle\bld\Debug\resources.resfiles
+c:\users\nudes\documents\visual studio 2015\Projects\JSMoodle\JSMoodle\bld\Debug\resources.resfiles.intermediate
+c:\users\nudes\documents\visual studio 2015\Projects\JSMoodle\JSMoodle\bld\Debug\pri.resfiles
+c:\users\nudes\documents\visual studio 2015\Projects\JSMoodle\JSMoodle\bld\Debug\pri.resfiles.intermediate
+c:\users\nudes\documents\visual studio 2015\Projects\JSMoodle\JSMoodle\bld\Debug\qualifiers.txt
+c:\users\nudes\documents\visual studio 2015\Projects\JSMoodle\JSMoodle\bld\Debug\qualifiers.txt.intermediate
+c:\users\nudes\documents\visual studio 2015\Projects\JSMoodle\JSMoodle\bld\Debug\MultipleQualifiersPerDimensionFound.txt
+c:\users\nudes\documents\visual studio 2015\Projects\JSMoodle\JSMoodle\bld\Debug\ProjectArchitectures.txt

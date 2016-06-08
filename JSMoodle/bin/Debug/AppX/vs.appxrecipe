@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Machine>CBMRN02</Machine>
+    <WindowsUser>Nudes</WindowsUser>
+    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <TargetOsVersion>10.0</TargetOsVersion>
+    <TargetOsDescription>Windows 10.0</TargetOsDescription>
+    <SolutionConfiguration>Debug|AnyCPU</SolutionConfiguration>
+    <PackageArchitecture>neutral</PackageArchitecture>
+    <PackageIdentityName>91b3016b-63e8-4f30-afb2-8d0df63c2e27</PackageIdentityName>
+    <IntermediateOutputPath>C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\bld\Debug\</IntermediateOutputPath>
+    <RegisteredManifestChecksum>11E7A1EA62B1B486CED0958801D1AE5AAA03A8016C8A6B7FB38A5FCC4CD1C68E</RegisteredManifestChecksum>
+    <RegisteredPackageMoniker>91b3016b-63e8-4f30-afb2-8d0df63c2e27_1.0.0.0_neutral__qqx2hgsnr56ng</RegisteredPackageMoniker>
+    <RegisteredUserModeAppID>91b3016b-63e8-4f30-afb2-8d0df63c2e27_qqx2hgsnr56ng!App</RegisteredUserModeAppID>
+    <RegisteredPackageID>91b3016b-63e8-4f30-afb2-8d0df63c2e27</RegisteredPackageID>
+    <RegisteredPackagePublisher>CN=Nudes</RegisteredPackagePublisher>
+    <RegisteredVersion>1.0.0.0</RegisteredVersion>
+    <JitOptimizationSuppressed>True</JitOptimizationSuppressed>
+  </PropertyGroup>
+  <ItemGroup>
+    <AppXManifest Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\bin\Debug\AppxManifest.xml">
+      <PackagePath>AppxManifest.xml</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2016-06-08T18:09:10.491</Modified>
+    </AppXManifest>
+  </ItemGroup>
+  <ItemGroup>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\css\materialize.css">
+      <PackagePath>css\materialize.css</PackagePath>
+      <Modified>2016-06-08T15:48:48.886</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\css\materialize.min.css">
+      <PackagePath>css\materialize.min.css</PackagePath>
+      <Modified>2016-04-02T07:48:00.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\css\main.css">
+      <PackagePath>css\main.css</PackagePath>
+      <Modified>2016-06-08T18:20:38.675</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Bold.eot">
+      <PackagePath>fonts\roboto\Roboto-Bold.eot</PackagePath>
+      <Modified>2016-03-05T05:45:44.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Light.eot">
+      <PackagePath>fonts\roboto\Roboto-Light.eot</PackagePath>
+      <Modified>2016-03-05T05:45:44.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Medium.eot">
+      <PackagePath>fonts\roboto\Roboto-Medium.eot</PackagePath>
+      <Modified>2016-03-05T05:45:44.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Regular.eot">
+      <PackagePath>fonts\roboto\Roboto-Regular.eot</PackagePath>
+      <Modified>2016-03-05T05:45:44.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Thin.eot">
+      <PackagePath>fonts\roboto\Roboto-Thin.eot</PackagePath>
+      <Modified>2016-03-05T05:45:44.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\material-design-icons\Material-Design-Icons.eot">
+      <PackagePath>font\material-design-icons\Material-Design-Icons.eot</PackagePath>
+      <Modified>2015-11-02T02:28:12.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Bold.eot">
+      <PackagePath>font\roboto\Roboto-Bold.eot</PackagePath>
+      <Modified>2015-12-21T05:36:46.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Light.eot">
+      <PackagePath>font\roboto\Roboto-Light.eot</PackagePath>
+      <Modified>2015-12-21T05:36:46.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Medium.eot">
+      <PackagePath>font\roboto\Roboto-Medium.eot</PackagePath>
+      <Modified>2015-12-21T05:36:46.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Regular.eot">
+      <PackagePath>font\roboto\Roboto-Regular.eot</PackagePath>
+      <Modified>2015-12-21T05:36:46.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Thin.eot">
+      <PackagePath>font\roboto\Roboto-Thin.eot</PackagePath>
+      <Modified>2015-12-21T05:36:46.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Bold.ttf">
+      <PackagePath>fonts\roboto\Roboto-Bold.ttf</PackagePath>
+      <Modified>2016-03-05T05:45:44.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Light.ttf">
+      <PackagePath>fonts\roboto\Roboto-Light.ttf</PackagePath>
+      <Modified>2016-03-05T05:45:44.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Medium.ttf">
+      <PackagePath>fonts\roboto\Roboto-Medium.ttf</PackagePath>
+      <Modified>2016-03-05T05:45:44.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Regular.ttf">
+      <PackagePath>fonts\roboto\Roboto-Regular.ttf</PackagePath>
+      <Modified>2016-03-05T05:45:44.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Thin.ttf">
+      <PackagePath>fonts\roboto\Roboto-Thin.ttf</PackagePath>
+      <Modified>2016-03-05T05:45:44.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\material-design-icons\Material-Design-Icons.ttf">
+      <PackagePath>font\material-design-icons\Material-Design-Icons.ttf</PackagePath>
+      <Modified>2015-11-02T02:28:12.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Bold.ttf">
+      <PackagePath>font\roboto\Roboto-Bold.ttf</PackagePath>
+      <Modified>2015-04-08T23:00:06.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Light.ttf">
+      <PackagePath>font\roboto\Roboto-Light.ttf</PackagePath>
+      <Modified>2015-04-08T23:00:06.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Medium.ttf">
+      <PackagePath>font\roboto\Roboto-Medium.ttf</PackagePath>
+      <Modified>2015-04-08T23:00:06.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Regular.ttf">
+      <PackagePath>font\roboto\Roboto-Regular.ttf</PackagePath>
+      <Modified>2015-04-08T23:00:06.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Thin.ttf">
+      <PackagePath>font\roboto\Roboto-Thin.ttf</PackagePath>
+      <Modified>2015-04-08T23:00:06.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Bold.woff">
+      <PackagePath>fonts\roboto\Roboto-Bold.woff</PackagePath>
+      <Modified>2016-03-05T05:45:44.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Light.woff">
+      <PackagePath>fonts\roboto\Roboto-Light.woff</PackagePath>
+      <Modified>2016-03-05T05:45:44.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Medium.woff">
+      <PackagePath>fonts\roboto\Roboto-Medium.woff</PackagePath>
+      <Modified>2016-03-05T05:45:44.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Regular.woff">
+      <PackagePath>fonts\roboto\Roboto-Regular.woff</PackagePath>
+      <Modified>2016-03-05T05:45:44.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Thin.woff">
+      <PackagePath>fonts\roboto\Roboto-Thin.woff</PackagePath>
+      <Modified>2016-03-05T05:45:44.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\material-design-icons\Material-Design-Icons.woff">
+      <PackagePath>font\material-design-icons\Material-Design-Icons.woff</PackagePath>
+      <Modified>2015-11-02T02:28:12.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Bold.woff">
+      <PackagePath>font\roboto\Roboto-Bold.woff</PackagePath>
+      <Modified>2015-11-02T02:28:12.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Light.woff">
+      <PackagePath>font\roboto\Roboto-Light.woff</PackagePath>
+      <Modified>2015-11-02T02:28:12.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Medium.woff">
+      <PackagePath>font\roboto\Roboto-Medium.woff</PackagePath>
+      <Modified>2015-11-02T02:28:12.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Regular.woff">
+      <PackagePath>font\roboto\Roboto-Regular.woff</PackagePath>
+      <Modified>2015-11-02T02:28:12.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Thin.woff">
+      <PackagePath>font\roboto\Roboto-Thin.woff</PackagePath>
+      <Modified>2015-11-02T02:28:12.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Bold.woff2">
+      <PackagePath>fonts\roboto\Roboto-Bold.woff2</PackagePath>
+      <Modified>2016-03-05T05:45:44.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Light.woff2">
+      <PackagePath>fonts\roboto\Roboto-Light.woff2</PackagePath>
+      <Modified>2016-03-05T05:45:44.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Medium.woff2">
+      <PackagePath>fonts\roboto\Roboto-Medium.woff2</PackagePath>
+      <Modified>2016-03-05T05:45:44.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Regular.woff2">
+      <PackagePath>fonts\roboto\Roboto-Regular.woff2</PackagePath>
+      <Modified>2016-03-05T05:45:44.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Thin.woff2">
+      <PackagePath>fonts\roboto\Roboto-Thin.woff2</PackagePath>
+      <Modified>2016-03-05T05:45:44.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\material-design-icons\Material-Design-Icons.woff2">
+      <PackagePath>font\material-design-icons\Material-Design-Icons.woff2</PackagePath>
+      <Modified>2015-11-02T02:28:12.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Bold.woff2">
+      <PackagePath>font\roboto\Roboto-Bold.woff2</PackagePath>
+      <Modified>2015-11-02T02:28:12.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Light.woff2">
+      <PackagePath>font\roboto\Roboto-Light.woff2</PackagePath>
+      <Modified>2015-11-02T02:28:12.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Medium.woff2">
+      <PackagePath>font\roboto\Roboto-Medium.woff2</PackagePath>
+      <Modified>2015-11-02T02:28:12.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Regular.woff2">
+      <PackagePath>font\roboto\Roboto-Regular.woff2</PackagePath>
+      <Modified>2015-11-02T02:28:12.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Thin.woff2">
+      <PackagePath>font\roboto\Roboto-Thin.woff2</PackagePath>
+      <Modified>2015-11-02T02:28:12.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\material-design-icons\LICENSE.txt">
+      <PackagePath>font\material-design-icons\LICENSE.txt</PackagePath>
+      <Modified>2015-04-08T23:00:06.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\material-design-icons\Material-Design-Icons.svg">
+      <PackagePath>font\material-design-icons\Material-Design-Icons.svg</PackagePath>
+      <Modified>2015-11-02T02:28:12.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\LockScreenLogo.scale-200.png">
+      <PackagePath>images\LockScreenLogo.scale-200.png</PackagePath>
+      <Modified>2015-07-20T22:06:24.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\SplashScreen.scale-200.png">
+      <PackagePath>images\SplashScreen.scale-200.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2015-07-20T22:06:24.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\Square150x150Logo.scale-200.png">
+      <PackagePath>images\Square150x150Logo.scale-200.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2015-07-20T22:06:24.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\Square44x44Logo.scale-200.png">
+      <PackagePath>images\Square44x44Logo.scale-200.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2015-07-20T22:06:24.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\Square44x44Logo.targetsize-24_altform-unplated.png">
+      <PackagePath>images\Square44x44Logo.targetsize-24_altform-unplated.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2015-07-20T22:06:24.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\StoreLogo.png">
+      <PackagePath>images\StoreLogo.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2015-07-20T22:06:24.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\Wide310x150Logo.scale-200.png">
+      <PackagePath>images\Wide310x150Logo.scale-200.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+      <Modified>2015-07-20T22:06:24.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\index.html">
+      <PackagePath>index.html</PackagePath>
+      <Modified>2016-06-08T18:19:22.974</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\jquery-2.2.4.js">
+      <PackagePath>js\jquery-2.2.4.js</PackagePath>
+      <Modified>2016-06-08T16:12:11.401</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\main.js">
+      <PackagePath>js\main.js</PackagePath>
+      <Modified>2016-06-08T18:16:32.886</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\materialize.js">
+      <PackagePath>js\materialize.js</PackagePath>
+      <Modified>2016-04-02T07:48:00.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\materialize.min.js">
+      <PackagePath>js\materialize.min.js</PackagePath>
+      <Modified>2016-04-02T07:48:00.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\packages.config">
+      <PackagePath>packages.config</PackagePath>
+      <Modified>2016-06-08T16:27:59.768</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\bin\Debug\ReverseMap\resources.pri">
+      <PackagePath>resources.pri</PackagePath>
+      <Modified>2016-06-08T18:09:10.304</Modified>
+    </AppxPackagedFile>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+</Project>
