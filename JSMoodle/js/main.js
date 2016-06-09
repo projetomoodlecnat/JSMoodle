@@ -1,5 +1,17 @@
 ﻿$(document).ready(function () {
 
+    var getFile = Windows.Storage.ApplicationData.current.localFolder.getFileAsync("queryString.xml").operation;
+
+    if (getFile.errorCode == 0) {
+        // Arquivo de configuração já existe
+        var getStreamFile = getFile.getResults().openSequentialReadAsync().operation.getResults();
+    } else {
+        // Arquivo de configuração não existe
+        // Criação do arquivo da fonte
+        createSettingsFilesFromScratch();
+    }
+
+
     $('#btn-hi').click(function () {
         $.ajax({
             type: "GET",
@@ -29,6 +41,14 @@
 
     function parseToTable(sender) {
         document.getElementById("table").innerHTML = "";
+
+        if (sender[0].indexOf("Exception") > -1) {
+            document.getElementById("table").appendChild(document.createElement("tr"));
+            var lastChildOfTable = document.getElementById("table").lastChild;
+            lastChildOfTable.innerHTML += "<td>" + sender[0] + "</td>";
+            return;
+        }
+
         $(sender).each(function () {
             document.getElementById("table").appendChild(document.createElement("tr"));
             var lastChildOfTable = document.getElementById("table").lastChild;
@@ -36,7 +56,12 @@
             row.each(function (row, td) {
                 lastChildOfTable.innerHTML += "<td>" + td + "</td>";
             });
-            return false;
         });
     }
+
+    function createSettingsFilesFromScratch() {
+        Windows.Storage.ApplicationData.current.localFolder.createFileAsync("queryString.xml");
+    }
+
+    //end
 });

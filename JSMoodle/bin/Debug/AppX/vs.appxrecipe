@@ -22,7 +22,7 @@
     <AppXManifest Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\bin\Debug\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2016-06-08T18:09:10.491</Modified>
+      <Modified>2016-06-09T18:15:08.415</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
@@ -258,7 +258,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\index.html">
       <PackagePath>index.html</PackagePath>
-      <Modified>2016-06-08T18:19:22.974</Modified>
+      <Modified>2016-06-09T17:11:23.369</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\jquery-2.2.4.js">
       <PackagePath>js\jquery-2.2.4.js</PackagePath>
@@ -266,7 +266,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\main.js">
       <PackagePath>js\main.js</PackagePath>
-      <Modified>2016-06-08T18:16:32.886</Modified>
+      <Modified>2016-06-09T19:00:24.603</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\materialize.js">
       <PackagePath>js\materialize.js</PackagePath>
@@ -282,7 +282,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\bin\Debug\ReverseMap\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-      <Modified>2016-06-08T18:09:10.304</Modified>
+      <Modified>2016-06-09T18:15:08.103</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>
