@@ -6,36 +6,16 @@
             dataType: 'json',
             url: "http://localhost:37006/api/DBProperties?index=0",
             async: false,
-            contentType: "application/json; charset=utf-8",
+            contentType: "text",
             success: function (firstStep) {
                 console.log("Fase 01 completa");
-                var dbType = firstStep[0];
-                var dbConnector = firstStep[1] + ";Uid=" + firstStep[2];
-                if (firstStep[3] != "") {
-                    dbConnector += ";Pwd=" + firstStep[3];
-                }
-                console.log(dbConnector);
-
-                $.post(("http://localhost:37006/api/selector" + dbType), { connectionString: dbConnector, query: firstStep[4] }, function (data) {
+                var results = JSON.parse(firstStep);
+                var connectionString = results[0]["connectionString"];
+                var query = results[1]["query"];
+                console.log(results[0]["connectionString"])
+                $.post(("http://localhost:37006/api/selectorMYSQL"), { 'connectionString': connectionString, 'query': query }, function (data) {
                     parseToTable(data);
                 }, "json");
-
-                $.ajax(("http://localhost:37006/api/selector" + dbType), {connectionString : dbConnector, query: firstStep[4]}, {
-                    type: "POST",
-                    dataType: 'json',
-                    async: false,
-                    contentType: "application/json; charset=utf-8",
-                    success: function (secondStep) {
-                        console.log("Fase 02 completa");
-                        parseToTable(secondStep);
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        console.log(textStatus, errorThrown);
-                    },
-                    complete: function (jqXHR, textStatus) {
-                        console.log(textStatus);
-                    }
-                });
             }
         });
     });
