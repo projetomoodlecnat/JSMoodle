@@ -10,12 +10,13 @@
     <script src="js/main.js" type="text/javascript"></script>
 </head>
 <body>
-    <p class="center">
-        <input id="tblname" type="text" placeholder="Nome da tabela" />
-        <input id="btn-hi" type="button" value="Recuperar a tabela" class="btn-flat" />
-        <div class="overfloable">
-            <table id="table"></table>
-        </div>
+    <input id="conIndex" type="text" placeholder="Índice da conexão" />
+    <p class="center light-green-text" id="status"></p>
+    <p id="operacoesTabela" class="center">
+        <input class="btn-flat" id="btn-hi" type="button" value="Recuperar a tabela"/>
     </p>
+    <div id="tableContents" class="overfloable">
+        <table id="table" class="striped highlight bordered"></table>
+    </div>
 </body>
 </html>

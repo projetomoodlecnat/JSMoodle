@@ -2,14 +2,26 @@
   /* Uncomment this to enable scrolling and zooming
   touch-action: manipulation;
   */
-  margin: 12px;
+  padding: 12px 12px 12px 12px;
 }
 
 .overfloable {
      overflow-y:scroll; 
-     overflow-x:scroll;
+     overflow-x:auto;
+     min-width: 300px;
+     padding: 20px 20px 20px 20px;
+     height: 75vh;
 }
 
-#table > tr > td {
+#tableContents {
     border: 2px solid black;
+    padding-right: 20px;
+}
+
+.red-text {
+    color: red;
+}
+
+#recuperarTabela * {
+    display: inline-block;
 }
