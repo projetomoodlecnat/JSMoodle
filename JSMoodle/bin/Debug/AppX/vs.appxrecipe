@@ -22,7 +22,7 @@
     <AppXManifest Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\bin\Debug\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2016-06-09T18:15:08.415</Modified>
+      <Modified>2016-06-20T18:54:33.832</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
@@ -264,9 +264,13 @@
       <PackagePath>js\jquery-2.2.4.js</PackagePath>
       <Modified>2016-06-08T16:12:11.401</Modified>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\jquery.tabletojson.js">
+      <PackagePath>js\jquery.tabletojson.js</PackagePath>
+      <Modified>2015-10-14T14:55:32.000</Modified>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\main.js">
       <PackagePath>js\main.js</PackagePath>
-      <Modified>2016-06-17T18:18:40.030</Modified>
+      <Modified>2016-06-20T18:58:07.099</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\materialize.js">
       <PackagePath>js\materialize.js</PackagePath>
@@ -276,13 +280,9 @@
       <PackagePath>js\materialize.min.js</PackagePath>
       <Modified>2016-04-02T07:48:00.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\packages.config">
-      <PackagePath>packages.config</PackagePath>
-      <Modified>2016-06-08T16:27:59.768</Modified>
-    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\bin\Debug\ReverseMap\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-      <Modified>2016-06-09T18:15:08.103</Modified>
+      <Modified>2016-06-20T18:54:33.661</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>
