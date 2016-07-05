@@ -1,9 +1,27 @@
 ﻿$(document).ready(function () {
 
-    var awaiter = "null";
-    var lastLoadedTable = "";
+    $('#login').focus(function () {
+        document.getElementById("tooltipLabel").setAttribute("class", "red-text");
+    }).blur(function () {
+        document.getElementById("tooltipLabel").setAttribute("class", "invisible");
+    });
 
-    $('#btn-recuperar').click(function () {
+    $("#btnSubmitLogin").click(function () {
+        $.ajax("http://localhost:37006/api/DBProperties?index=" + document.getElementById("conIndex").value, {
+            contentType: "application/json",
+            method: "GET",
+            async: false,
+            success: function (firstStep) {
+
+            }
+        })
+    });
+
+
+
+    // Recursos da DEMO
+
+    /*$('#btn-recuperar').click(function () {
         var conIndex = document.getElementById("conIndex").value.split(":")[0];
         var queryIndex = document.getElementById("conIndex").value.split(":")[1];
         var url = "http://localhost:37006/api/DBProperties?index=" + conIndex;
@@ -202,5 +220,5 @@
     function tableInnerHTML(tableDomObject) {
         return tableDomObject.innerHTML;
     }
-    //end
+    //end*/
 });

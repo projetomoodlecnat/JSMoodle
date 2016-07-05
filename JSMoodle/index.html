@@ -12,11 +12,11 @@
 <body>
     <input id="conIndex" type="text" placeholder="Índice da conexão" />
     <p class="center light-green-text" id="status"></p>
-    <p id="operacoesTabela" class="center">
-        <input class="btn-flat" id="btn-recuperar" type="button" value="Recuperar a tabela"/>
-    </p>
-    <div id="tableContents" class="overfloable">
-        <table id="table" class="striped highlight bordered"></table>
-    </div>
+
+    <label class="center">Você pode realizar o login abaixo: </label>
+    <p>Login: <input id="login" name="login" type="text" required placeholder="Usuário" />
+    <label id="tooltipLabel" class="invisible">Alguns Moodles permitem o login por e-mail</label></p>
+    <p>Senha: <input name="password" type="password" required placeholder="Senha do usuário" /></p>
+    <input id="btnSubmitLogin" type="button" value="Tentar login" class="btn-block" />
 </body>
 </html>

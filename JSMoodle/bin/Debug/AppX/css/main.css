@@ -22,6 +22,10 @@
     color: red;
 }
 
+.invisible {
+    visibility: hidden;
+}
+
 #recuperarTabela * {
     display: inline-block;
 }
