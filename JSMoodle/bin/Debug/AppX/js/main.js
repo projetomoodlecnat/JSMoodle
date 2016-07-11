@@ -2,9 +2,50 @@
 
     $('#login').focus(function () {
         document.getElementById("tooltipLabel").setAttribute("class", "red-text");
+        document.getElementById("loginSpan").setAttribute("class", "bold blue-text");
     }).blur(function () {
         document.getElementById("tooltipLabel").setAttribute("class", "invisible");
+        document.getElementById("loginSpan").setAttribute("class", "");
     });
+
+    // Método que realiza a autenticação pelo site do Moodle
+    
+    function setStatus(type, message) {
+        if (type == "progressing") {
+            document.getElementById("status").setAttribute("class", "center light-green-text");
+            document.getElementById("status").innerHTML = message;
+        } else if (type == "error") {
+            document.getElementById("status").setAttribute("class", "center red-text");
+            document.getElementById("status").innerHTML = message;
+        } else {
+            document.getElementById("status").setAttribute("class", "center blue-text");
+            document.getElementById("status").innerHTML = message;
+        }
+    }
+
+    $("#btnSubmitLogin").click(function () {
+        $.ajax("http://localhost:37006/api/dbsites?databaseindex=" + document.getElementById("moodleSelector").value, {
+            contentType: "application/json",
+            method: "GET",
+            async: true,
+            success: function (firstStep) {
+                setStatus("progressing", "O site do Moodle está disponível e ativo. Tentando a autenticação... ");
+                jQuery.post(firstStep[0] + "login/index.php", { 'username': document.getElementById("username").value, 'password': document.getElementById("password").value },
+                    function (data) {
+                        if (data.indexOf("Log in to the site") == -1) {
+                            setStatus("success", "O usuário foi autenticado com sucesso! ");
+                        } else {
+                            setStatus("error", "O usuário ou senha estão incorretos e a autenticação falhou. ");
+                        }
+                    });
+            }, error: function () {
+                setStatus("error", "A requisição de autenticação com a página de Login do Moodle falhou");
+            }
+        })
+    });
+
+
+    // Método que realiza a autenticação através de seleção na tabela de usuários e um código hash codificador
 
 
 
@@ -191,19 +232,6 @@
                 setStatus("error", "Ocorreu um erro sem tratamento pelo programador da aplicação. Contate os desenvolvedores.");
             }
         });
-    }
-
-    function setStatus(type, message) {
-        if (type == "progressing") {
-            document.getElementById("status").setAttribute("class", "center light-green-text");
-            document.getElementById("status").innerHTML = message;
-        } else if (type == "error") {
-            document.getElementById("status").setAttribute("class", "center red-text");
-            document.getElementById("status").innerHTML = message;
-        } else {
-            document.getElementById("status").setAttribute("class", "center blue-text");
-            document.getElementById("status").innerHTML = message;
-        }
     }
 
     function tableInnerHTML(tableDomObject) {

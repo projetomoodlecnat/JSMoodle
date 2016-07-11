@@ -10,13 +10,21 @@
     <script src="js/main.js" type="text/javascript"></script>
 </head>
 <body>
-    <input id="conIndex" type="text" placeholder="Índice da conexão" />
+    <p>
+        Escolha o servidor Moodle como alvo da autenticação:
+        <select id="moodleSelector" name="databaseIndex">
+            <option value="1">Servidor Moodle 01 - MYSQL [SEM_NOME]</option>
+            <option value="2">Servidor Moodle 02 - PostGRESQL [AVASUS]</option>
+        </select>
+    </p>
     <p class="center light-green-text" id="status"></p>
 
     <label class="center">Você pode realizar o login abaixo: </label>
-    <p>Login: <input id="login" name="login" type="text" required placeholder="Usuário" />
-    <label id="tooltipLabel" class="invisible">Alguns Moodles permitem o login por e-mail</label></p>
-    <p>Senha: <input name="password" type="password" required placeholder="Senha do usuário" /></p>
+    <p>
+        <span id="loginSpan">Login:</span> <input id="username" name="username" type="text" required placeholder="Usuário" />
+        <label id="tooltipLabel" class="invisible">Alguns Moodles permitem o login por e-mail</label>
+    </p>
+    <p>Senha: <input id="password" name="password" type="password" required placeholder="Senha do usuário" /></p>
     <input id="btnSubmitLogin" type="button" value="Tentar login" class="btn-block" />
 </body>
 </html>

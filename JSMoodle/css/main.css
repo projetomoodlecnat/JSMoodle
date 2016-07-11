@@ -5,6 +5,10 @@
   padding: 12px 12px 12px 12px;
 }
 
+.bold {
+    font-weight: bold;
+}
+
 .overfloable {
      overflow-y:scroll; 
      overflow-x:auto;
@@ -20,6 +24,10 @@
 
 .red-text {
     color: red;
+}
+
+.blue-text {
+    color: blue;
 }
 
 .invisible {
