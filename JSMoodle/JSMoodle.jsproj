@@ -61,6 +61,7 @@
     </AppxManifest>
     <Content Include="css\materialize.css" />
     <Content Include="css\materialize.min.css" />
+    <Content Include="dashboard\index.html" />
     <Content Include="fonts\roboto\Roboto-Bold.eot" />
     <Content Include="fonts\roboto\Roboto-Bold.ttf" />
     <Content Include="fonts\roboto\Roboto-Bold.woff" />
