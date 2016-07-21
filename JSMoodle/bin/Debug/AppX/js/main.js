@@ -10,6 +10,52 @@
         document.getElementById("loginSpan").setAttribute("class", "");
     });
 
+    // Método que tenta a autenticação por seleção na tabela MDL_USER através da API
+    $('#btnSubmitLoginBanco').click(function () {
+        $.ajax("http://localhost:37006/api/dbproperties?index=" + document.getElementById("moodleSelector").value, {
+            contentType: "application/json",
+            method: "GET",
+            async: true,
+            success: function (firstStep) {
+                setStatus("progressing", "Informações de acesso ao banco foram coletadas. Aguarde enquanto procuro seus dados entre os usuários... ");
+                try {
+                    firstStep = JSON.parse(firstStep);
+                    document.cookie = "databaseIndex=" + firstStep[1]["idconexao"];
+                } catch (Exception) {
+                    setStatus("error", "Parsing dos dados da API falhou no primeiro estágio.");
+                    return;
+                }
+                $.post({
+                    url: "http://localhost:37006/api/selector" + firstStep[0]["databaseType"],
+                    async: true,
+                    // 1 é o índice da query que utilizaremos para pesquisar na tabela de usuários
+                    data: { "connectionIndex": firstStep[1]["idconexao"]-1, "query": firstStep[1]["comando"] + " where username='" + document.getElementById('username').value + "'" }
+                }).done(function (data, textStatus, jqXHR) {
+                    if (data.length == 2) {
+                        document.cookie = "userId=" + data[1][0];
+                        document.cookie = "username=" + data[1][1];
+                        document.getElementById("username").setAttribute("disabled", "true");
+                        document.getElementById("password").setAttribute("disabled", "true");
+                        setStatus("succeeded", "A autenticação pelo banco do Moodle foi concluída com sucesso!<br>Redirecionando para a página de Dashboard... ");
+                        setTimeout(function () {
+                            window.location = window.location.toString().substring(0, location.toString().lastIndexOf("/")) + "/dashboard/index.html";
+                        }, 2000);
+                        return;
+                    } else {
+                        document.getElementById("username").value = "";
+                        document.getElementById("password").value = "";
+                        setStatus("error", "Usuário ou senha estão incorretos, cheque novamente. ");
+                    }
+                }).error(function () {
+                    setStatus("error", "A requisição à API do Moodle falhou no segundo estágio. ");
+                });
+            }
+        }).error(function () {
+            setStatus("error", "A requisição de acesso à API do Moodle falhou no primeiro estágio. ");
+        });
+    });
+
+
     // Método que realiza a autenticação pelo site do Moodle
 
     $("#btnSubmitLogin").click(function () {

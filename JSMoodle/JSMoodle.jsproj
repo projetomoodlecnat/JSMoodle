@@ -61,6 +61,7 @@
     </AppxManifest>
     <Content Include="css\materialize.css" />
     <Content Include="css\materialize.min.css" />
+    <Content Include="dashboard\dashboard.js" />
     <Content Include="dashboard\index.html" />
     <Content Include="fonts\roboto\Roboto-Bold.eot" />
     <Content Include="fonts\roboto\Roboto-Bold.ttf" />
@@ -118,7 +119,6 @@
     <Content Include="index.html" />
     <Content Include="js\jquery-2.2.4.js" />
     <Content Include="css\main.css" />
-    <Content Include="js\jquery.tabletojson.js" />
     <Content Include="js\main.js" />
     <Content Include="js\materialize.js" />
     <Content Include="js\materialize.min.js" />

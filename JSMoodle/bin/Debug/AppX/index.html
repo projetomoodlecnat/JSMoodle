@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>JSMoodle</title>
+    <title>Projeto Moodle Offline v1.0 - LOGIN</title>
     <link href="css/main.css" rel="stylesheet"/>
     <link href="css/materialize.css" rel="stylesheet" />
     <script src="js/jquery-2.2.4.js" type="text/javascript"></script>
@@ -13,8 +13,8 @@
     <p>
         Escolha o servidor Moodle como alvo da autenticação:
         <select id="moodleSelector" name="databaseIndex">
-            <option value="1">Servidor Moodle 01 - MYSQL [SEM_NOME]</option>
-            <option value="2">Servidor Moodle 02 - PostGRESQL [AVASUS]</option>
+            <option value="0">Servidor Moodle 01 - MYSQL [SEM_NOME]</option>
+            <option value="1">Servidor Moodle 02 - PostGRESQL [AVASUS]</option>
         </select>
     </p>
     <p class="center light-green-text" id="status"></p>
@@ -25,6 +25,7 @@
         <label id="tooltipLabel" class="invisible">Alguns Moodles permitem o login por e-mail</label>
     </p>
     <p>Senha: <input id="password" name="password" type="password" required placeholder="Senha do usuário" /></p>
-    <input id="btnSubmitLogin" type="button" value="Tentar login" class="btn-block btn-large" />
+    <input id="btnSubmitLoginSite" type="button" disabled value="Tentar login por site" class="" />
+    <input id="btnSubmitLoginBanco" type="button" value="Tentar login por banco" class="btn-block btn-large" />
 </body>
 </html>

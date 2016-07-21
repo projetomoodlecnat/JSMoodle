@@ -22,7 +22,7 @@
     <AppXManifest Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\bin\Debug\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2016-07-13T17:41:45.303</Modified>
+      <Modified>2016-07-21T16:40:06.379</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
@@ -38,13 +38,33 @@
       <PackagePath>css\main.css</PackagePath>
       <Modified>2016-07-13T15:25:44.484</Modified>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\dashboard\dashboard.js">
+      <PackagePath>dashboard\dashboard.js</PackagePath>
+      <Modified>2016-07-21T17:58:42.886</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\jquery-2.2.4.js">
+      <PackagePath>js\jquery-2.2.4.js</PackagePath>
+      <Modified>2016-06-08T16:12:11.401</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\main.js">
+      <PackagePath>js\main.js</PackagePath>
+      <Modified>2016-07-21T17:51:21.767</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\materialize.js">
+      <PackagePath>js\materialize.js</PackagePath>
+      <Modified>2016-04-02T07:48:00.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\materialize.min.js">
+      <PackagePath>js\materialize.min.js</PackagePath>
+      <Modified>2016-04-02T07:48:00.000</Modified>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\dashboard\index.html">
       <PackagePath>dashboard\index.html</PackagePath>
-      <Modified>2015-09-20T20:21:58.000</Modified>
+      <Modified>2016-07-21T17:02:48.957</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\index.html">
       <PackagePath>index.html</PackagePath>
-      <Modified>2016-07-13T17:36:32.007</Modified>
+      <Modified>2016-07-21T16:37:55.853</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Bold.eot">
       <PackagePath>fonts\roboto\Roboto-Bold.eot</PackagePath>
@@ -264,29 +284,9 @@
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
       <Modified>2015-07-20T22:06:24.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\jquery-2.2.4.js">
-      <PackagePath>js\jquery-2.2.4.js</PackagePath>
-      <Modified>2016-06-08T16:12:11.401</Modified>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\jquery.tabletojson.js">
-      <PackagePath>js\jquery.tabletojson.js</PackagePath>
-      <Modified>2015-10-14T14:55:32.000</Modified>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\main.js">
-      <PackagePath>js\main.js</PackagePath>
-      <Modified>2016-07-13T17:47:38.276</Modified>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\materialize.js">
-      <PackagePath>js\materialize.js</PackagePath>
-      <Modified>2016-04-02T07:48:00.000</Modified>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\materialize.min.js">
-      <PackagePath>js\materialize.min.js</PackagePath>
-      <Modified>2016-04-02T07:48:00.000</Modified>
-    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\bin\Debug\ReverseMap\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-      <Modified>2016-07-13T17:41:45.100</Modified>
+      <Modified>2016-07-21T16:40:06.190</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>
