@@ -9,7 +9,11 @@
     <SolutionConfiguration>Debug|AnyCPU</SolutionConfiguration>
     <PackageArchitecture>neutral</PackageArchitecture>
     <PackageIdentityName>91b3016b-63e8-4f30-afb2-8d0df63c2e27</PackageIdentityName>
+    <PackageIdentityPublisher>CN=Nudes</PackageIdentityPublisher>
     <IntermediateOutputPath>C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\bld\Debug\</IntermediateOutputPath>
+    <RemoteDeploymentType></RemoteDeploymentType>
+    <PackageRegistrationPath></PackageRegistrationPath>
+    <RemoveNonLayoutFiles>true</RemoveNonLayoutFiles>
   </PropertyGroup>
   <ItemGroup>
     <AppXManifest Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\bin\Debug\AppxManifest.xml">

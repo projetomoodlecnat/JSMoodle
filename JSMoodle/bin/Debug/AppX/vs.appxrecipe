@@ -9,8 +9,14 @@
     <SolutionConfiguration>Debug|AnyCPU</SolutionConfiguration>
     <PackageArchitecture>neutral</PackageArchitecture>
     <PackageIdentityName>91b3016b-63e8-4f30-afb2-8d0df63c2e27</PackageIdentityName>
+    <PackageIdentityPublisher>CN=Nudes</PackageIdentityPublisher>
     <IntermediateOutputPath>C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\bld\Debug\</IntermediateOutputPath>
-    <RegisteredManifestChecksum>11E7A1EA62B1B486CED0958801D1AE5AAA03A8016C8A6B7FB38A5FCC4CD1C68E</RegisteredManifestChecksum>
+    <RemoteDeploymentType>
+    </RemoteDeploymentType>
+    <PackageRegistrationPath>
+    </PackageRegistrationPath>
+    <RemoveNonLayoutFiles>true</RemoveNonLayoutFiles>
+    <RegisteredManifestChecksum>74DE02C2E600F4552C2D391D150880C50CE284A2F0EA05421DD415A83257DA4D</RegisteredManifestChecksum>
     <RegisteredPackageMoniker>91b3016b-63e8-4f30-afb2-8d0df63c2e27_1.0.0.0_neutral__qqx2hgsnr56ng</RegisteredPackageMoniker>
     <RegisteredUserModeAppID>91b3016b-63e8-4f30-afb2-8d0df63c2e27_qqx2hgsnr56ng!App</RegisteredUserModeAppID>
     <RegisteredPackageID>91b3016b-63e8-4f30-afb2-8d0df63c2e27</RegisteredPackageID>
@@ -22,7 +28,7 @@
     <AppXManifest Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\bin\Debug\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2016-07-21T16:40:06.379</Modified>
+      <Modified>2016-07-22T19:13:14.084</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
@@ -36,11 +42,11 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\css\main.css">
       <PackagePath>css\main.css</PackagePath>
-      <Modified>2016-07-13T15:25:44.484</Modified>
+      <Modified>2016-07-22T19:25:22.222</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\dashboard\dashboard.js">
       <PackagePath>dashboard\dashboard.js</PackagePath>
-      <Modified>2016-07-21T17:58:42.886</Modified>
+      <Modified>2016-07-22T19:24:49.561</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\jquery-2.2.4.js">
       <PackagePath>js\jquery-2.2.4.js</PackagePath>
@@ -60,7 +66,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\dashboard\index.html">
       <PackagePath>dashboard\index.html</PackagePath>
-      <Modified>2016-07-21T17:02:48.957</Modified>
+      <Modified>2016-07-22T19:19:14.713</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\index.html">
       <PackagePath>index.html</PackagePath>
@@ -286,7 +292,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\bin\Debug\ReverseMap\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-      <Modified>2016-07-21T16:40:06.190</Modified>
+      <Modified>2016-07-22T19:13:13.928</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

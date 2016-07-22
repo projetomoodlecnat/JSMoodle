@@ -37,3 +37,23 @@
 #recuperarTabela * {
     display: inline-block;
 }
+
+.btnExpand {
+    text-align: center;
+    vertical-align: middle;
+    width: 20px;
+    padding: 2px 2px 2px 2px;
+    display: inline-block;
+    background-color: red;
+    color: white;
+    font-weight: bold;
+    border-radius: 2px;
+}
+
+.bordered {
+    border: 1px dashed black;
+}
+
+.courseli {
+    padding: 4px 4px 4px 4px;
+}
