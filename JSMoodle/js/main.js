@@ -20,6 +20,7 @@
                 setStatus("progressing", "Informações de acesso ao banco foram coletadas. Aguarde enquanto procuro seus dados entre os usuários... ");
                 try {
                     firstStep = JSON.parse(firstStep);
+                    document.cookie = "databaseType=" + firstStep[0]["databaseType"];
                     document.cookie = "databaseIndex=" + firstStep[1]["idconexao"];
                 } catch (Exception) {
                     setStatus("error", "Parsing dos dados da API falhou no primeiro estágio.");

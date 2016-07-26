@@ -1,5 +1,6 @@
-﻿var cookiesDict = cookiesToDict();
-//SELECT fullname, shortname, `mdl_enrol`.`id` FROM `mdl_user_enrolments` INNER JOIN `mdl_enrol` ON `mdl_user_enrolments`.`enrolid` = `mdl_enrol`.`id` INNER JOIN `mdl_course` ON `mdl_enrol`.`courseid` = `mdl_course`.`id` where userid=2
+﻿// parsing dos cookies
+
+var cookiesDict = cookiesToDict();
 
 $(document).ready(function () {
     document.getElementsByTagName("h3")[0].innerHTML += "<b>" + document.cookie.substring(document.cookie.lastIndexOf("=") + 1) + "</b>";
@@ -27,7 +28,7 @@ $(document).ready(function () {
                     strBuilder = "<li>Você não está cadastrado em curso algum.</li>";
                 } else {
                     for (; data[i] ;) {
-                        strBuilder += "<li class='bordered courseli'>• " + data[i][0] + " (<b tooltipvalue='   Sigla'>" + data[i][1] + "</b>) <i tooltipvalue='   Código do curso'>ID:" + data[i][2] + "</i>         <input type='button' class='btnExpand' value='+' /></li><br>";
+                        strBuilder += "<li class='bordered courseli'>• " + data[i][0] + " (<b tooltipvalue='   Sigla'>" + data[i][1] + "</b>) <i tooltipvalue='   Código do curso'>ID:" + data[i][2] + "</i><input type='button' id='" + data[i][2] + "' value='➕' class='btnExpand' /></li><br>";
                         i++;
                     }
                 }
@@ -47,13 +48,27 @@ $(document).ready(function () {
                         deleteTooltip($(this));
                     });
                 });
+
+                $('.btnExpand').click(function (event){
+                    $.post({
+                        url: "http://localhost:37006/api/selector" + cookiesDict["databaseType"],
+                        dataType: "application/json",
+                        data: { "connectionIndex": (cookiesDict["databaseIndex"] - 1), "query": firstStep[5]["comando"] + " where course=" + event.target.id }
+                    }).done(function (data, textStatus, jqXHR) {
+                        console.log(data);
+                    }).fail({
+
+                    });
+                });
             });
         }
     })
         .fail(function () {
-
+            console.log("falhou");
     });
 });
+
+// separa a string de cookies e transforma em array
 
 function cookiesToDict() {
     var hashTable = {}
@@ -65,10 +80,18 @@ function cookiesToDict() {
     return hashTable;
 }
 
+// toggle ON/OFF das tooltips da interface
+
 function showTooltip(sender) {
     sender.parent().append("<span class='inline-bubble'>" + sender[0].getAttribute("tooltipvalue") + "</span>");
 }
 
 function deleteTooltip(sender) {
     sender[0].parentNode.removeChild(sender[0].parentNode.lastChild);
+}
+
+// retornar a data atual em timestamp (formato unix) para comparação na tabela MDL_ASSIGN
+
+function getUnixTime() {
+    return Math.round(new Date().getTime() / 1000);
 }
