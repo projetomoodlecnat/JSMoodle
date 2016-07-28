@@ -61,6 +61,7 @@
     </AppxManifest>
     <Content Include="css\materialize.css" />
     <Content Include="css\materialize.min.css" />
+    <Content Include="dashboard\dashboard.css" />
     <Content Include="dashboard\dashboard.js" />
     <Content Include="dashboard\index.html" />
     <Content Include="fonts\roboto\Roboto-Bold.eot" />
@@ -109,6 +110,9 @@
     <Content Include="font\roboto\Roboto-Thin.ttf" />
     <Content Include="font\roboto\Roboto-Thin.woff" />
     <Content Include="font\roboto\Roboto-Thin.woff2" />
+    <Content Include="images\dashboard\icons\nb_icon_closed.png" />
+    <Content Include="images\dashboard\icons\nb_icon_duedate.png" />
+    <Content Include="images\dashboard\icons\nb_icon_overdue.png" />
     <Content Include="images\LockScreenLogo.scale-200.png" />
     <Content Include="images\SplashScreen.scale-200.png" />
     <Content Include="images\Square150x150Logo.scale-200.png" />

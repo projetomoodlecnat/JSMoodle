@@ -13,13 +13,17 @@
      overflow-y:scroll; 
      overflow-x:auto;
      min-width: 300px;
-     padding: 20px 20px 20px 20px;
-     height: 75vh;
 }
 
-#tableContents {
-    border: 2px solid black;
-    padding-right: 20px;
+.defaultContent {
+     padding: 20px 20px 20px 20px;
+     height: 75vh;
+     min-height: 300px;
+}
+
+.dashboardContent {
+    height: 90vh;
+    min-height: 300px;
 }
 
 .red-text {
@@ -34,29 +38,6 @@
     visibility: hidden;
 }
 
-#recuperarTabela * {
-    display: inline-block;
-}
-
-.btnExpand {
-    text-align: center;
-    vertical-align: middle;
-    width: 30px;
-    display: inline-block;
-    background-color: red;
-    color: white;
-    font-weight: bold;
-    border-radius: 5px;
-}
-
 .bordered {
     border: 1px dashed black;
-}
-
-.courseli {
-    padding: 4px 4px 4px 4px;
-}
-
-.courseli i {
-    margin-right: 10px;
 }

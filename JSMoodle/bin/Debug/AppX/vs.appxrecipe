@@ -28,7 +28,7 @@
     <AppXManifest Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\bin\Debug\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2016-07-22T19:13:14.084</Modified>
+      <Modified>2016-07-28T16:04:21.761</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
@@ -40,13 +40,17 @@
       <PackagePath>css\materialize.min.css</PackagePath>
       <Modified>2016-04-02T07:48:00.000</Modified>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\dashboard\dashboard.css">
+      <PackagePath>dashboard\dashboard.css</PackagePath>
+      <Modified>2016-07-28T16:43:07.652</Modified>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\css\main.css">
       <PackagePath>css\main.css</PackagePath>
-      <Modified>2016-07-26T18:23:37.547</Modified>
+      <Modified>2016-07-28T16:29:09.918</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\dashboard\dashboard.js">
       <PackagePath>dashboard\dashboard.js</PackagePath>
-      <Modified>2016-07-26T18:51:02.533</Modified>
+      <Modified>2016-07-28T17:30:16.715</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\jquery-2.2.4.js">
       <PackagePath>js\jquery-2.2.4.js</PackagePath>
@@ -66,7 +70,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\dashboard\index.html">
       <PackagePath>dashboard\index.html</PackagePath>
-      <Modified>2016-07-22T19:19:14.713</Modified>
+      <Modified>2016-07-28T15:57:07.398</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\index.html">
       <PackagePath>index.html</PackagePath>
@@ -256,6 +260,18 @@
       <PackagePath>font\material-design-icons\Material-Design-Icons.svg</PackagePath>
       <Modified>2015-11-02T02:28:12.000</Modified>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\nb_icon_closed.png">
+      <PackagePath>images\dashboard\icons\nb_icon_closed.png</PackagePath>
+      <Modified>2016-07-28T16:32:03.705</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\nb_icon_duedate.png">
+      <PackagePath>images\dashboard\icons\nb_icon_duedate.png</PackagePath>
+      <Modified>2016-07-28T15:49:52.595</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\nb_icon_overdue.png">
+      <PackagePath>images\dashboard\icons\nb_icon_overdue.png</PackagePath>
+      <Modified>2016-07-28T16:31:28.369</Modified>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\LockScreenLogo.scale-200.png">
       <PackagePath>images\LockScreenLogo.scale-200.png</PackagePath>
       <Modified>2015-07-20T22:06:24.000</Modified>
@@ -292,7 +308,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\bin\Debug\ReverseMap\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-      <Modified>2016-07-22T19:13:13.928</Modified>
+      <Modified>2016-07-28T16:04:21.136</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

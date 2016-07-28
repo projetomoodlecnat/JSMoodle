@@ -1,6 +1,7 @@
 css\main.css
 css\materialize.css
 css\materialize.min.css
+dashboard\dashboard.css
 dashboard\dashboard.js
 dashboard\index.html
 font\material-design-icons\LICENSE.txt
@@ -49,6 +50,9 @@ fonts\roboto\Roboto-Thin.eot
 fonts\roboto\Roboto-Thin.ttf
 fonts\roboto\Roboto-Thin.woff
 fonts\roboto\Roboto-Thin.woff2
+images\dashboard\icons\nb_icon_closed.png
+images\dashboard\icons\nb_icon_duedate.png
+images\dashboard\icons\nb_icon_overdue.png
 images\LockScreenLogo.scale-200.png
 images\SplashScreen.scale-200.png
 images\Square150x150Logo.scale-200.png
