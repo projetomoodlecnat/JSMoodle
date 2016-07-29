@@ -2,6 +2,10 @@
     padding: 4px 4px 4px 4px;
 }
 
+#courses {
+   max-height: 85vh;
+}
+
 .courseli i {
     margin-right: 10px;
 }

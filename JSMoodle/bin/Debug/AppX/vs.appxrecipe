@@ -28,7 +28,7 @@
     <AppXManifest Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\bin\Debug\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2016-07-28T16:04:21.761</Modified>
+      <Modified>2016-07-29T18:56:23.247</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
@@ -42,15 +42,15 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\dashboard\dashboard.css">
       <PackagePath>dashboard\dashboard.css</PackagePath>
-      <Modified>2016-07-28T16:43:07.652</Modified>
+      <Modified>2016-07-29T17:04:44.147</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\css\main.css">
       <PackagePath>css\main.css</PackagePath>
-      <Modified>2016-07-28T16:29:09.918</Modified>
+      <Modified>2016-07-29T16:35:53.169</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\dashboard\dashboard.js">
       <PackagePath>dashboard\dashboard.js</PackagePath>
-      <Modified>2016-07-28T17:30:16.715</Modified>
+      <Modified>2016-07-29T19:06:18.220</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\jquery-2.2.4.js">
       <PackagePath>js\jquery-2.2.4.js</PackagePath>
@@ -260,17 +260,41 @@
       <PackagePath>font\material-design-icons\Material-Design-Icons.svg</PackagePath>
       <Modified>2015-11-02T02:28:12.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\nb_icon_closed.png">
-      <PackagePath>images\dashboard\icons\nb_icon_closed.png</PackagePath>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\assignment_closed.png">
+      <PackagePath>images\dashboard\icons\assignment_closed.png</PackagePath>
       <Modified>2016-07-28T16:32:03.705</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\nb_icon_duedate.png">
-      <PackagePath>images\dashboard\icons\nb_icon_duedate.png</PackagePath>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\assignment_duedate.png">
+      <PackagePath>images\dashboard\icons\assignment_duedate.png</PackagePath>
       <Modified>2016-07-28T15:49:52.595</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\nb_icon_overdue.png">
-      <PackagePath>images\dashboard\icons\nb_icon_overdue.png</PackagePath>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\assignment_overdue.png">
+      <PackagePath>images\dashboard\icons\assignment_overdue.png</PackagePath>
       <Modified>2016-07-28T16:31:28.369</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\enquete_closed.png">
+      <PackagePath>images\dashboard\icons\enquete_closed.png</PackagePath>
+      <Modified>2016-07-29T17:40:07.698</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\enquete_duedate.png">
+      <PackagePath>images\dashboard\icons\enquete_duedate.png</PackagePath>
+      <Modified>2016-07-29T17:41:13.669</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\enquete_overdue.png">
+      <PackagePath>images\dashboard\icons\enquete_overdue.png</PackagePath>
+      <Modified>2016-07-29T17:39:24.730</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\quiz_closed.png">
+      <PackagePath>images\dashboard\icons\quiz_closed.png</PackagePath>
+      <Modified>2016-07-29T17:47:29.401</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\quiz_duedate.png">
+      <PackagePath>images\dashboard\icons\quiz_duedate.png</PackagePath>
+      <Modified>2016-07-29T17:46:46.091</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\quiz_overdue.png">
+      <PackagePath>images\dashboard\icons\quiz_overdue.png</PackagePath>
+      <Modified>2016-07-29T17:45:45.458</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\LockScreenLogo.scale-200.png">
       <PackagePath>images\LockScreenLogo.scale-200.png</PackagePath>
@@ -308,7 +332,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\bin\Debug\ReverseMap\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-      <Modified>2016-07-28T16:04:21.136</Modified>
+      <Modified>2016-07-29T18:56:22.440</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

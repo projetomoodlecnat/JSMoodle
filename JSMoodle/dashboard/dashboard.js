@@ -35,14 +35,18 @@ $(document).ready(function () {
                 document.getElementById("courses").innerHTML = strBuilder;
                 setTooltips();
                 $('.btnExpand').click(function (event) {
+                    var innerHTMLBuilder = "<ul id='ulActivities" + event.target.id + "'>";
+
+                    // começo da requisição de atividades
+
                     $.post({
                         url: "http://localhost:37006/api/selector" + cookiesDict["databaseType"],
                         data: { "connectionIndex": cookiesDict["databaseIndex"] - 1, "query": firstStep[5]["comando"] + " where course=" + event.target.id }
                     }).done(function (data, textStatus, jqXHR) {
                         if (data.length <= 1) {
-                            event.target.parentNode.innerHTML += "<ul id='ulActivities" + event.target.id + "'><li><div>Nenhuma tarefa cadastrada para esse curso.</div></li></ul>";
+                            innerHTMLBuilder += "<li><div>Nenhuma tarefa cadastrada para esse curso.</div></li>";
                         } else {
-                            var innerHTMLBuilder = "";
+                            var innerHTMLActivity = "";
                             // categoriza as atividades por tipo
                             var atividades = []
                             atividades.initialHTML = "<ul class='activitiesContainer' id='ulActivities" + event.target.id + "'>";
@@ -55,39 +59,99 @@ $(document).ready(function () {
                             for (; data[i];) {
                                 if (getUnixTime() < data[i][data[0].indexOf("DUEDATE")] || data[i][data[0].indexOf("DUEDATE")] === "0") {
                                     // caso onde a tarefa está aberta
-                                    atividades.atividadesnoprazo.push("<li class='liOpen'><img class='liActivityIcon' src='../images/dashboard/icons/nb_icon_duedate.png' /><b tooltipvalue='    EM ABERTO'>Atividade " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
+                                    atividades.atividadesnoprazo.push("<li class='liOpen'><img class='liActivityIcon' src='../images/dashboard/icons/assignment_duedate.png' /><b tooltipvalue='EM ABERTO'>Atividade " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
                                     console.log(data[i][data[0].indexOf("DUEDATE")]);
                                 } else if (getUnixTime() > data[i][data[0].indexOf("DUEDATE")] && (getUnixTime() < data[i][data[0].indexOf("CUTOFFDATE")] || data[i][data[0].indexOf("CUTOFFDATE")] === "0")) {
                                     // caso onde a tarefa extrapolou o prazo, mas ainda está aberta
-                                    atividades.atividadesforadoprazo.push("<li class='liOverdue'><img class='liActivityIcon' src='../images/dashboard/icons/nb_icon_overdue.png' /><b tooltipvalue='    FORA DO PRAZO'>Atividade " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
+                                    atividades.atividadesforadoprazo.push("<li class='liOverdue'><img class='liActivityIcon' src='../images/dashboard/icons/assignment_overdue.png' /><b tooltipvalue='FORA DO PRAZO'>Atividade " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
                                 } else {
                                     // caso onde a tarefa não está mais aberta
-                                    atividades.atividadesfechadas.push("<li class='liClosed'><img class='liActivityIcon' src='../images/dashboard/icons/nb_icon_closed.png' /><b tooltipvalue='    FECHADA'>Atividade " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
+                                    atividades.atividadesfechadas.push("<li class='liClosed'><img class='liActivityIcon' src='../images/dashboard/icons/assignment_closed.png' /><b tooltipvalue='FECHADA'>Atividade " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
                                 }
                                 i++;
                             }
 
                             // criando a visão em HTML a partir da informação processada
-                            innerHTMLBuilder += atividades.initialHTML;
+                            innerHTMLActivity += atividades.initialHTML;
                             while (atividades.atividadesnoprazo.length > 0) {
-                                innerHTMLBuilder += atividades.atividadesnoprazo.pop();
+                                innerHTMLActivity += atividades.atividadesnoprazo.pop();
                             }
                             while (atividades.atividadesfechadas.length > 0) {
-                                innerHTMLBuilder += atividades.atividadesfechadas.pop();
+                                innerHTMLActivity += atividades.atividadesfechadas.pop();
                             }
                             while (atividades.atividadesforadoprazo.length > 0) {
-                                innerHTMLBuilder += atividades.atividadesforadoprazo.pop();
+                                innerHTMLActivity += atividades.atividadesforadoprazo.pop();
                             }
-                            innerHTMLBuilder += atividades.finalHTML;
-
-                            // finaliza e adiciona o HTML ao list item pai
-                            event.target.parentNode.innerHTML += innerHTMLBuilder;
-                            unsetTooltips();
-                            setTooltips();
+                            innerHTMLActivity += atividades.finalHTML;
+                            innerHTMLBuilder += innerHTMLActivity;
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        console.log("hi");
+                        console.log("<li>Requisição das atividades falhou.</li>");
                     });
+
+                    // final da requisição de atividades
+                    // ===
+                    // começo da requisição de quizzes
+
+                    $.post({
+                        url: "http://localhost:37006/api/selector" + cookiesDict["databaseType"],
+                        data: { "connectionIndex": cookiesDict["databaseIndex"] - 1, "query": firstStep[6]["comando"] + " where course=" + event.target.id }
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (data.length <= 1) {
+                            event.target.parentNode.innerHTML += "<li><div>Nenhum quizz cadastrado para esse curso.</div></li>";
+                        } else {
+                            var innerHTMLQuizzes = "";
+                            // categoriza as quizzes por tipo
+                            var quizzes = []
+                            quizzes.initialHTML = "<ul class='quizzesContainer' id='ulQuizzes" + event.target.id + "'>";
+                            quizzes.quizzesnoprazo = []
+                            quizzes.quizzesfechadas = []
+                            quizzes.quizzesforadoprazo = []
+                            quizzes.finalHTML = "</ul>";
+                            var i = 1;
+                            // mapeia as colunas aos valores crus dos dados trazidos da tabela
+                            for (; data[i];) {
+                                if (getUnixTime() < data[i][data[0].indexOf("TIMECLOSE")]) {
+                                    // caso onde a tarefa está aberta
+                                    quizzes.quizzesnoprazo.push("<li class='liOpen'><img class='liQuizzIcon' src='../images/dashboard/icons/quiz_duedate.png' /><b tooltipvalue='EM ABERTO'>Quizz " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
+                                    console.log(data[i][data[0].indexOf("DUEDATE")]);
+                                } else if (getUnixTime() > data[i][data[0].indexOf("TIMECLOSE")] && data[i][data[0].indexOf("OVERDUEHANDLING")] !== "autoabandon") {
+                                    // caso onde a tarefa extrapolou o prazo, mas ainda está aberta
+                                    quizzes.quizzesforadoprazo.push("<li class='liOverdue'><img class='liQuizzIcon' src='../images/dashboard/icons/quiz_overdue.png' /><b tooltipvalue='FORA DO PRAZO'>Quizz " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
+                                } else {
+                                    // caso onde a tarefa não está mais aberta
+                                    quizzes.quizzesfechadas.push("<li class='liClosed'><img class='liQuizzIcon' src='../images/dashboard/icons/quiz_closed.png' /><b tooltipvalue='FECHADA'>Quizz " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
+                                }
+                                i++;
+                            }
+
+                            // criando a visão em HTML a partir da informação processada
+                            innerHTMLQuizzes += quizzes.initialHTML;
+                            while (quizzes.quizzesnoprazo.length > 0) {
+                                innerHTMLQuizzes += quizzes.quizzesnoprazo.pop();
+                            }
+                            while (quizzes.quizzesfechadas.length > 0) {
+                                innerHTMLQuizzes += quizzes.quizzesfechadas.pop();
+                            }
+                            while (quizzes.quizzesforadoprazo.length > 0) {
+                                innerHTMLQuizzes += quizzes.quizzesforadoprazo.pop();
+                            }
+                            innerHTMLQuizzes += quizzes.finalHTML;
+                            innerHTMLBuilder += innerHTMLQuizzes;
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        console.log("<li>Requisição dos quizzes falhou.</li>");
+                    });
+
+                    // final da requisição de quizzes
+                    // ===
+                    // começo da requisição de enquetes
+                    // final da requisição de enquetes
+
+                    // finaliza e adiciona o HTML ao list item pai
+                    event.target.parentNode.innerHTML += innerHTMLBuilder + "</ul>";
+                    unsetTooltips();
+                    setTooltips();
                 });
             });
         }
