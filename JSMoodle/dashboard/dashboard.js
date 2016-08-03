@@ -34,6 +34,7 @@ $(document).ready(function () {
                 }
                 document.getElementById("courses").innerHTML = strBuilder;
                 setTooltips();
+
                 $('.btnExpand').click(function (event) {
                     var innerHTMLBuilder = "<ul id='ulActivities" + event.target.id + "'>";
 
@@ -41,7 +42,8 @@ $(document).ready(function () {
 
                     $.post({
                         url: "http://localhost:37006/api/selector" + cookiesDict["databaseType"],
-                        data: { "connectionIndex": cookiesDict["databaseIndex"] - 1, "query": firstStep[5]["comando"] + " where course=" + event.target.id }
+                        data: { "connectionIndex": cookiesDict["databaseIndex"] - 1, "query": firstStep[5]["comando"] + " where course=" + event.target.id },
+                        async: false
                     }).done(function (data, textStatus, jqXHR) {
                         if (data.length <= 1) {
                             innerHTMLBuilder += "<li><div>Nenhuma tarefa cadastrada para esse curso.</div></li>";
@@ -89,21 +91,18 @@ $(document).ready(function () {
                         console.log("<li>Requisição das atividades falhou.</li>");
                     });
 
-                    // final da requisição de atividades
-                    // ===
-                    // começo da requisição de quizzes
-
                     $.post({
                         url: "http://localhost:37006/api/selector" + cookiesDict["databaseType"],
-                        data: { "connectionIndex": cookiesDict["databaseIndex"] - 1, "query": firstStep[6]["comando"] + " where course=" + event.target.id }
+                        data: { "connectionIndex": cookiesDict["databaseIndex"] - 1, "query": firstStep[6]["comando"] + " where course=" + event.target.id },
+                        async: false
                     }).done(function (data, textStatus, jqXHR) {
                         if (data.length <= 1) {
-                            event.target.parentNode.innerHTML += "<li><div>Nenhum quizz cadastrado para esse curso.</div></li>";
+                            document.getElementById(target.id).parentNode.innerHTML += "<li><div>Nenhum quizz cadastrado para esse curso.</div></li>";
                         } else {
                             var innerHTMLQuizzes = "";
                             // categoriza as quizzes por tipo
                             var quizzes = []
-                            quizzes.initialHTML = "<ul class='quizzesContainer' id='ulQuizzes" + event.target.id + "'>";
+                            quizzes.initialHTML = "<ul class='activitiesContainer' id='ulQuizzes" + event.target.id + "'>";
                             quizzes.quizzesnoprazo = []
                             quizzes.quizzesfechadas = []
                             quizzes.quizzesforadoprazo = []
@@ -113,14 +112,14 @@ $(document).ready(function () {
                             for (; data[i];) {
                                 if (getUnixTime() < data[i][data[0].indexOf("TIMECLOSE")]) {
                                     // caso onde a tarefa está aberta
-                                    quizzes.quizzesnoprazo.push("<li class='liOpen'><img class='liQuizzIcon' src='../images/dashboard/icons/quiz_duedate.png' /><b tooltipvalue='EM ABERTO'>Quizz " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
+                                    quizzes.quizzesnoprazo.push("<li class='liOpen'><img class='liActivityIcon' src='../images/dashboard/icons/quiz_duedate.png' /><b tooltipvalue='EM ABERTO'>Quizz " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
                                     console.log(data[i][data[0].indexOf("DUEDATE")]);
                                 } else if (getUnixTime() > data[i][data[0].indexOf("TIMECLOSE")] && data[i][data[0].indexOf("OVERDUEHANDLING")] !== "autoabandon") {
                                     // caso onde a tarefa extrapolou o prazo, mas ainda está aberta
-                                    quizzes.quizzesforadoprazo.push("<li class='liOverdue'><img class='liQuizzIcon' src='../images/dashboard/icons/quiz_overdue.png' /><b tooltipvalue='FORA DO PRAZO'>Quizz " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
+                                    quizzes.quizzesforadoprazo.push("<li class='liOverdue'><img class='liActivityIcon' src='../images/dashboard/icons/quiz_overdue.png' /><b tooltipvalue='FORA DO PRAZO'>Quizz " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
                                 } else {
                                     // caso onde a tarefa não está mais aberta
-                                    quizzes.quizzesfechadas.push("<li class='liClosed'><img class='liQuizzIcon' src='../images/dashboard/icons/quiz_closed.png' /><b tooltipvalue='FECHADA'>Quizz " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
+                                    quizzes.quizzesfechadas.push("<li class='liClosed'><img class='liActivityIcon' src='../images/dashboard/icons/quiz_closed.png' /><b tooltipvalue='FECHADA'>Quizz " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
                                 }
                                 i++;
                             }
@@ -143,13 +142,53 @@ $(document).ready(function () {
                         console.log("<li>Requisição dos quizzes falhou.</li>");
                     });
 
-                    // final da requisição de quizzes
-                    // ===
-                    // começo da requisição de enquetes
-                    // final da requisição de enquetes
+                    $.post({
+                        url: "http://localhost:37006/api/selector" + cookiesDict["databaseType"],
+                        data: { "connectionIndex": cookiesDict["databaseIndex"] - 1, "query": firstStep[7]["comando"] + " where course=" + event.target.id },
+                        async: false
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (data.length <= 1) {
+                            document.getElementById(target.id).parentNode.innerHTML += "<li><div>Nenhuma enquete cadastrada para esse curso.</div></li>";
+                        } else {
+                            var innerHTMLenquetes = "";
+                            // categoriza as enquetes por tipo
+                            var enquetes = []
+                            enquetes.initialHTML = "<ul class='activitiesContainer' id='ulenquetes" + event.target.id + "'>";
+                            enquetes.enquetesnoprazo = []
+                            enquetes.enquetesfechadas = []
+                            enquetes.finalHTML = "</ul>";
+                            var i = 1;
+                            // mapeia as colunas aos valores crus dos dados trazidos da tabela
+                            for (; data[i];) {
+                                if (getUnixTime() < data[i][data[0].indexOf("TIMECLOSE")] || data[i][data[0].indexOf("TIMECLOSE")] === "0") {
+                                    // caso onde a tarefa está aberta
+                                    enquetes.enquetesnoprazo.push("<li class='liOpen'><img class='liActivityIcon' src='../images/dashboard/icons/enquete_duedate.png' /><b tooltipvalue='EM ABERTO'>Enquete " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
+                                    console.log(data[i][data[0].indexOf("DUEDATE")]);
+                                } else {
+                                    // caso onde a tarefa não está mais aberta
+                                    enquetes.enquetesfechadas.push("<li class='liClosed'><img class='liActivityIcon' src='../images/dashboard/icons/enquete_closed.png' /><b tooltipvalue='FECHADA'>Enquete " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
+                                }
+                                i++;
+                            }
+
+                            // criando a visão em HTML a partir da informação processada
+                            innerHTMLenquetes += enquetes.initialHTML;
+                            while (enquetes.enquetesnoprazo.length > 0) {
+                                innerHTMLenquetes += enquetes.enquetesnoprazo.pop();
+                            }
+                            while (enquetes.enquetesfechadas.length > 0) {
+                                innerHTMLenquetes += enquetes.enquetesfechadas.pop();
+                            }
+                            innerHTMLenquetes += enquetes.finalHTML;
+                            innerHTMLBuilder += innerHTMLenquetes;
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        console.log("<li>Requisição dos enquetes falhou.</li>");
+                    });
 
                     // finaliza e adiciona o HTML ao list item pai
-                    event.target.parentNode.innerHTML += innerHTMLBuilder + "</ul>";
+                    var innerHTMLQuizzes = "";
+                    document.getElementById(event.target.id).parentNode.innerHTML += innerHTMLBuilder + "</ul>";
                     unsetTooltips();
                     setTooltips();
                 });
@@ -176,7 +215,7 @@ function cookiesToDict() {
 // toggle ON/OFF das tooltips da interface
 
 function showTooltip(sender) {
-    sender.parent().append("<span class='inline-bubble'>" + sender[0].getAttribute("tooltipvalue") + "</span>");
+    sender.parent().append("<span class='inline-bubble'>     " + sender[0].getAttribute("tooltipvalue") + "</span>");
 }
 
 function deleteTooltip(sender) {
