@@ -1,6 +1,7 @@
 ﻿// parsing dos cookies
 
 var cookiesDict = cookiesToDict();
+var buttonset = []
 
 $(document).ready(function () {
     document.getElementsByTagName("h3")[0].innerHTML += "<b>" + document.cookie.substring(document.cookie.lastIndexOf("=") + 1) + "</b>";
@@ -36,6 +37,12 @@ $(document).ready(function () {
                 setTooltips();
 
                 $('.btnExpand').click(function (event) {
+                    if (document.getElementById("ulActivities" + event.target.id) != null) {
+                        $("#ulActivities" + event.target.id).parent().children("ul").each(function () {
+                            $(this).remove();
+                        });
+                        return;
+                    }
                     var innerHTMLBuilder = "<ul id='ulActivities" + event.target.id + "'>";
 
                     // começo da requisição de atividades
@@ -46,12 +53,12 @@ $(document).ready(function () {
                         async: false
                     }).done(function (data, textStatus, jqXHR) {
                         if (data.length <= 1) {
-                            innerHTMLBuilder += "<li><div>Nenhuma tarefa cadastrada para esse curso.</div></li>";
+                            innerHTMLBuilder += "<ul><li><div>Nenhuma tarefa cadastrada para esse curso.</div></li></ul>";
                         } else {
                             var innerHTMLActivity = "";
                             // categoriza as atividades por tipo
                             var atividades = []
-                            atividades.initialHTML = "<ul class='activitiesContainer' id='ulActivities" + event.target.id + "'>";
+                            atividades.initialHTML = "<ul class='activitiesContainer' id='ulTasks" + event.target.id + "'>";
                             atividades.atividadesnoprazo = []
                             atividades.atividadesfechadas = []
                             atividades.atividadesforadoprazo = []
@@ -97,7 +104,7 @@ $(document).ready(function () {
                         async: false
                     }).done(function (data, textStatus, jqXHR) {
                         if (data.length <= 1) {
-                            event.target.parentNode.innerHTML += "<li><div>Nenhum quizz cadastrado para esse curso.</div></li>";
+                            document.getElementById(event.target.id).parentNode.innerHTML += "<ul><li><div>Nenhum quizz cadastrado para esse curso.</div></li></ul>";
                         } else {
                             var innerHTMLQuizzes = "";
                             // categoriza as quizzes por tipo
@@ -148,12 +155,12 @@ $(document).ready(function () {
                         async: false
                     }).done(function (data, textStatus, jqXHR) {
                         if (data.length <= 1) {
-                            event.target.parentNode.innerHTML += "<li><div>Nenhuma enquete cadastrada para esse curso.</div></li>";
+                            document.getElementById(event.target.id).parentNode.innerHTML += "<ul><li><div>Nenhuma enquete cadastrada para esse curso.</div></li></ul>";
                         } else {
                             var innerHTMLenquetes = "";
                             // categoriza as enquetes por tipo
                             var enquetes = []
-                            enquetes.initialHTML = "<ul class='activitiesContainer' id='ulenquetes" + event.target.id + "'>";
+                            enquetes.initialHTML = "<ul class='activitiesContainer' id='ulEnquetes" + event.target.id + "'>";
                             enquetes.enquetesnoprazo = []
                             enquetes.enquetesfechadas = []
                             enquetes.finalHTML = "</ul>";
@@ -191,6 +198,16 @@ $(document).ready(function () {
                     document.getElementById(event.target.id).parentNode.innerHTML += innerHTMLBuilder + "</ul>";
                     unsetTooltips();
                     setTooltips();
+                    if (buttonset.length != 0) {
+                        var i = 0;
+                        $('.btnExpand').each(function () {
+                            $(this).replaceWith($(buttonset[i]));
+                            i++;
+                        });
+                    }
+                });
+                $('.btnExpand').each(function () {
+                    buttonset.push($(this));
                 });
             });
         }
