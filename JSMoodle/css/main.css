@@ -9,6 +9,10 @@
     font-weight: bold;
 }
 
+.inline-block {
+    display: inline-block;
+}
+
 .overfloable {
      overflow-y:scroll; 
      overflow-x:auto;

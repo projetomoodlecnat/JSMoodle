@@ -14,7 +14,6 @@ $(document).ready(function () {
                 firstStep = JSON.parse(firstStep);
                 databaseIndex = firstStep[1]["idconexao"];
             } catch (Exception) {
-                //setStatus("error", "Parsing dos dados da API falhou no primeiro estágio.");
                 console.log("ERROR: Parsing dos dados da API falhou no primeiro estágio.");
                 return;
             }
@@ -29,7 +28,7 @@ $(document).ready(function () {
                     strBuilder = "<li>Você não está cadastrado em curso algum.</li>";
                 } else {
                     for (; data[i] ;) {
-                        strBuilder += "<li class='bordered courseli'>• " + data[i][0] + " (<b tooltipvalue='   Sigla'>" + data[i][1] + "</b>) <i tooltipvalue='   Código do curso'>ID:" + data[i][2] + "</i><input type='button' id='" + data[i][2] + "' value='➕' class='btnExpand' /></li><br>";
+                        strBuilder += "<li class='bordered courseli'><a href='courses/index.html?id=" + data[i][2] + "'>• " + data[i][0] + " (<b tooltipvalue='   Sigla'>" + data[i][1] + "</b>) <i tooltipvalue='   Código do curso'>ID:" + data[i][2] + "</i></a><input type='button' id='" + data[i][2] + "' value='➕' class='btnExpand' /></li><br>";
                         i++;
                     }
                 }
@@ -117,7 +116,7 @@ $(document).ready(function () {
                             var i = 1;
                             // mapeia as colunas aos valores crus dos dados trazidos da tabela
                             for (; data[i];) {
-                                if (getUnixTime() < data[i][data[0].indexOf("TIMECLOSE")]) {
+                                if (getUnixTime() < data[i][data[0].indexOf("TIMECLOSE")] || data[i][data[0].indexOf("TIMECLOSE")] === "0") {
                                     // caso onde a tarefa está aberta
                                     quizzes.quizzesnoprazo.push("<li class='liOpen'><img class='liActivityIcon' src='../images/dashboard/icons/quiz_duedate.png' /><b tooltipvalue='EM ABERTO'>Quizz " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
                                     console.log(data[i][data[0].indexOf("DUEDATE")]);
@@ -275,10 +274,4 @@ function unsetTooltips() {
 
 function getUnixTime() {
     return Math.round(new Date().getTime() / 1000);
-}
-
-// tentativa de correção de bug onde o botão de expandir aparenta perder o listener
-
-function resetEvent(sender) {
-
 }

@@ -61,6 +61,9 @@
     </AppxManifest>
     <Content Include="css\materialize.css" />
     <Content Include="css\materialize.min.css" />
+    <Content Include="dashboard\courses\courses.css" />
+    <Content Include="dashboard\courses\courses.js" />
+    <Content Include="dashboard\courses\index.html" />
     <Content Include="dashboard\dashboard.css" />
     <Content Include="dashboard\dashboard.js" />
     <Content Include="dashboard\index.html" />

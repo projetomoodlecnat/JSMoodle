@@ -1,0 +1,17 @@
+﻿.turnback {
+    text-decoration: none;
+    color: black;
+}
+
+.turnback:hover {
+    text-decoration: underline;
+    color: blue;
+}
+
+.summarytext {
+    text-align: justify;
+}
+
+.objetivos {
+    text-align: justify;
+}

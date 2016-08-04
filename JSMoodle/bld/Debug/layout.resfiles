@@ -1,6 +1,9 @@
 css\main.css
 css\materialize.css
 css\materialize.min.css
+dashboard\courses\courses.css
+dashboard\courses\courses.js
+dashboard\courses\index.html
 dashboard\dashboard.css
 dashboard\dashboard.js
 dashboard\index.html
