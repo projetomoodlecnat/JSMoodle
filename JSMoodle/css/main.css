@@ -13,9 +13,13 @@
     display: inline-block;
 }
 
+.justified {
+    text-align: justify;
+}
+
 .overfloable {
-     overflow-y:scroll; 
-     overflow-x:auto;
+     overflow-y: auto;
+     overflow-x: auto;
      min-width: 300px;
 }
 

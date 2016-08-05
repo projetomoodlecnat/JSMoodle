@@ -8,10 +8,25 @@
     color: blue;
 }
 
-.summarytext {
-    text-align: justify;
+.header {
+    font-weight:600;
 }
 
-.objetivos {
-    text-align: justify;
+.sectionsholder {
+    width: 99%;
+    clear: both;
+    border: 2px solid #E6F3F7;
+}
+
+.sectionsholder:hover {
+    font-weight: bold;
+}
+
+#coursecontent {
+    height: 90vh;
+    width: 100%;
+}
+
+#sections {
+    width: 95%;
 }

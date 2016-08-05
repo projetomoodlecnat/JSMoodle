@@ -3,17 +3,20 @@
 <head>
     <title>Projeto Moodle Offline v1.0 - Página do curso </title>
     <script src="../../js/jquery-2.2.4.js" type="text/javascript"></script>
-    <script src="../../js/materialize.js" type="text/javascript"></script>
+    <script src="../../js/materialize.min.js" type="text/javascript"></script>
     <link href="../../css/main.css" rel="stylesheet" />
     <link href="../../css/materialize.css" rel="stylesheet" />
+    <link href="courses.css" rel="stylesheet" />
     <script src="courses.js" type="text/javascript"></script>
 </head>
 <body>
     <a class="turnback" href="../index.html"><div class="btn">↩ Voltar</div></a>
-    <div id="coursecontent">
+    <div id="coursecontent" class="overfloable">
         <p class="header flow-text thin center"></p>
-        <span>Sumário:</span> <div class="inline-block summarytext"></div>
-        <span style="clear:left">Objetivos:</span> <div class="inline-block objective"></div>
+        <span>Sumário:</span><br /><div class="justified summarytext"></div><br />
+        <span>Objetivos:</span><br /><div class="justified objectivetext"></div><br />
+        <div class="sectionsholder waves-effect waves-light center btn-flat">CLIQUE AQUI PARA EXPANDIR AS SEÇÕES DO CURSO 📚</div>
+        <div id="sections" class="hiddendiv"></div>
     </div>
 </body>
 </html>

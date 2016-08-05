@@ -30,6 +30,7 @@ $(document).ready(function () {
                 console.log("ERROR: Parsing dos dados da API falhou no primeiro estágio.");
                 return;
             }
+
             $.post({
                 url: "http://localhost:37006/api/selector" + cookiesDict["databaseType"],
                 data: { "connectionIndex": (cookiesDict["databaseIndex"] - 1), "query": firstStep[8]["comando"] + " where id=" + courseid },
@@ -37,14 +38,38 @@ $(document).ready(function () {
             }).done(function (data, textStatus, jqXHR) {
                 $('.header.flow-text.thin.center').html(data[1][data[0].indexOf("FULLNAME")]);
                 $('.summarytext').html(data[1][data[0].indexOf("SUMMARY")]);
-                $('.objective').html(data[1][data[0].indexOf("OBJETIVOS")]);
+                $('.objectivetext').html(data[1][data[0].indexOf("OBJETIVOS")]);
                 }).fail(function () {
                     $('.header.flow-text.thin.center').attr("style", "font-size: large");
                     $('.header.flow-text.thin.center').html("Requisição das informações do curso no banco falharam.");
                 });
+
+            innerSectionBuilder = "";
+            $.post({
+                url: "http://localhost:37006/api/selector" + cookiesDict["databaseType"],
+                data: { "connectionIndex": (cookiesDict["databaseIndex"] - 1), "query": firstStep[9]["comando"] + " where course=" + courseid + " order by section"},
+                async: false
+            }).done(function (data, textStatus, jqXHR) {
+                for (i = 1; i < data.length; i++) {
+                    innerSectionBuilder += "<b>" + data[i][data[0].indexOf("NAME")] + "</b><br />";
+                    innerSectionBuilder += data[i][data[0].indexOf("SUMMARY")];
+                }
+            }).fail(function () {
+                $('.header.flow-text.thin.center').attr("style", "font-size: large");
+                $('.header.flow-text.thin.center').html("Requisição das informações do curso no banco falharam.");
+            });
+            $('#sections').html(innerSectionBuilder);
         }
     }).fail(function () {
         // requisição à api falhou
+    });
+
+    $('.sectionsholder').click(function () {
+        if ($('#sections').attr('class') == "sections") {
+            $('#sections').attr('class', 'hiddendiv');
+        } else {
+            $('#sections').attr('class', 'sections');
+        }
     });
 });
 
