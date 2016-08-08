@@ -4,8 +4,14 @@ var cookiesDict = cookiesToDict();
 var buttonset = []
 
 $(document).ready(function () {
+    // definindo o botão de saída
+    $('.paragraphLogout.center').click(function () {
+        document.cookie.split(";").forEach(function (c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
+        console.log(document.cookie);
+        window.location.href = "../index.html";
+    });
     document.getElementsByTagName("h3")[0].innerHTML += "<b>" + document.cookie.substring(document.cookie.lastIndexOf("=") + 1) + "</b>";
-    $.ajax("http://localhost:37006/api/dbproperties?index=" + (cookiesDict["databaseIndex"] - 1), {
+    $.ajax(cookiesDict["api_Path"] + "dbproperties?index=" + (cookiesDict["databaseIndex"] - 1), {
         method: "GET",
         async: true,
         contentType: "application/json",
@@ -18,7 +24,7 @@ $(document).ready(function () {
                 return;
             }
             $.post({
-                url: "http://localhost:37006/api/selector" + firstStep[0]["databaseType"],
+                url: cookiesDict["api_Path"] + "selector" + firstStep[0]["databaseType"],
                 async: true,
                 data: { "connectionIndex": (cookiesDict["databaseIndex"] - 1), "query": firstStep[4]["comando"] + " where userid=" + cookiesDict["userId"] }
             }).done(function (data, textStatus, jqXHR) {
@@ -28,14 +34,14 @@ $(document).ready(function () {
                     strBuilder = "<li>Você não está cadastrado em curso algum.</li>";
                 } else {
                     for (; data[i] ;) {
-                        strBuilder += "<li class='bordered courseli'><a href='courses/index.html?id=" + data[i][2] + "'>• " + data[i][0] + " (<b tooltipvalue='   Sigla'>" + data[i][1] + "</b>) <i tooltipvalue='   Código do curso'>ID:" + data[i][2] + "</i></a><input type='button' id='" + data[i][2] + "' value='➕' class='btnExpand' /></li><br>";
+                        strBuilder += "<li class='bordered courseli'><a href='courses/index.html?id=" + data[i][2] + "'>• " + data[i][0] + " (<b tooltipvalue='   Sigla'>" + data[i][1] + "</b>) <i tooltipvalue='   Código do curso'>ID:" + data[i][2] + "</i></a><input type='button' id='" + data[i][2] + "' value='➕' class='btn-floating' /></li><br>";
                         i++;
                     }
                 }
                 document.getElementById("courses").innerHTML = strBuilder;
                 setTooltips();
 
-                $('.btnExpand').click(function (event) {
+                $('.btn-floating').click(function (event) {
                     if (document.getElementById("ulActivities" + event.target.id) != null) {
                         $("#ulActivities" + event.target.id).parent().children("ul").each(function () {
                             $(this).remove();
@@ -47,7 +53,7 @@ $(document).ready(function () {
                     // começo da requisição de atividades
 
                     $.post({
-                        url: "http://localhost:37006/api/selector" + cookiesDict["databaseType"],
+                        url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                         data: { "connectionIndex": cookiesDict["databaseIndex"] - 1, "query": firstStep[5]["comando"] + " where course=" + event.target.id },
                         async: false
                     }).done(function (data, textStatus, jqXHR) {
@@ -98,7 +104,7 @@ $(document).ready(function () {
                     });
 
                     $.post({
-                        url: "http://localhost:37006/api/selector" + cookiesDict["databaseType"],
+                        url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                         data: { "connectionIndex": cookiesDict["databaseIndex"] - 1, "query": firstStep[6]["comando"] + " where course=" + event.target.id },
                         async: false
                     }).done(function (data, textStatus, jqXHR) {
@@ -149,7 +155,7 @@ $(document).ready(function () {
                     });
 
                     $.post({
-                        url: "http://localhost:37006/api/selector" + cookiesDict["databaseType"],
+                        url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                         data: { "connectionIndex": cookiesDict["databaseIndex"] - 1, "query": firstStep[7]["comando"] + " where course=" + event.target.id },
                         async: false
                     }).done(function (data, textStatus, jqXHR) {
@@ -199,13 +205,13 @@ $(document).ready(function () {
                     setTooltips();
                     if (buttonset.length != 0) {
                         var i = 0;
-                        $('.btnExpand').each(function () {
+                        $('.btn-floating').each(function () {
                             $(this).replaceWith($(buttonset[i]));
                             i++;
                         });
                     }
                 });
-                $('.btnExpand').each(function () {
+                $('.btn-floating').each(function () {
                     buttonset.push($(this));
                 });
             });

@@ -19,7 +19,7 @@ $(document).ready(function () {
     coursecontent.push = $("#coursecontent");
 
     // início do preenchimento das informações do curso
-    $.ajax("http://localhost:37006/api/dbproperties?index=" + (cookiesDict["databaseIndex"] - 1), {
+    $.ajax(cookiesDict["api_Path"] + "dbproperties?index=" + (cookiesDict["databaseIndex"] - 1), {
         method: "GET",
         async: false,
         contentType: "application/json",
@@ -32,7 +32,7 @@ $(document).ready(function () {
             }
 
             $.post({
-                url: "http://localhost:37006/api/selector" + cookiesDict["databaseType"],
+                url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                 data: { "connectionIndex": (cookiesDict["databaseIndex"] - 1), "query": firstStep[8]["comando"] + " where id=" + courseid },
                 async: false
             }).done(function (data, textStatus, jqXHR) {
@@ -46,7 +46,7 @@ $(document).ready(function () {
 
             innerSectionBuilder = "";
             $.post({
-                url: "http://localhost:37006/api/selector" + cookiesDict["databaseType"],
+                url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                 data: { "connectionIndex": (cookiesDict["databaseIndex"] - 1), "query": firstStep[9]["comando"] + " where course=" + courseid + " order by section"},
                 async: false
             }).done(function (data, textStatus, jqXHR) {

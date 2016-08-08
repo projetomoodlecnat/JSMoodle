@@ -46,8 +46,8 @@
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\jquery-2.2.4.js">
       <PackagePath>js\jquery-2.2.4.js</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\main.js">
-      <PackagePath>js\main.js</PackagePath>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\index.js">
+      <PackagePath>js\index.js</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\materialize.js">
       <PackagePath>js\materialize.js</PackagePath>

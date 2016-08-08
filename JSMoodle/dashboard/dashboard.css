@@ -10,6 +10,13 @@
     margin-right: 10px;
 }
 
+.paragraphLogout {
+    background-color: #e53935;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+}
+
 .btnExpand {
     text-align: center;
     vertical-align: middle;
