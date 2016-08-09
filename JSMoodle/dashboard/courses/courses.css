@@ -28,5 +28,9 @@
 }
 
 #sections {
-    width: 95%;
+    width: 100%;
+}
+
+.leftOffset {
+    padding-right: 15px;
 }

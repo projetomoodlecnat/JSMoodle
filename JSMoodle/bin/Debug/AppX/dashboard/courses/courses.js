@@ -3,7 +3,6 @@ var cookiesDict = cookiesToDict();
 
 // variáveis de ambiente global
 var courseid;
-var courseContent = []
 
 try {
     var courseid = window.location.toString().substring(window.location.toString().lastIndexOf("=") + 1);
@@ -13,10 +12,6 @@ try {
 
 $(document).ready(function () {
     document.title += courseid;
-
-    // salva o HTMLElement e o elemento na forma de seletor pelo jquery no array global
-    coursecontent.push = document.getElementById("coursecontent");
-    coursecontent.push = $("#coursecontent");
 
     // início do preenchimento das informações do curso
     $.ajax(cookiesDict["api_Path"] + "dbproperties?index=" + (cookiesDict["databaseIndex"] - 1), {
@@ -65,10 +60,12 @@ $(document).ready(function () {
     });
 
     $('.sectionsholder').click(function () {
-        if ($('#sections').attr('class') == "sections") {
+        if ($('#sections').attr('class') == "sections leftOffset") {
             $('#sections').attr('class', 'hiddendiv');
+            $("#coursecontent").children().toggleClass("leftOffset");
         } else {
             $('#sections').attr('class', 'sections');
+            $("#coursecontent").children().toggleClass("leftOffset");
         }
     });
 });

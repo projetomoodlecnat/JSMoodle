@@ -9,6 +9,10 @@
     font-weight: bold;
 }
 
+#api_PathHolder {
+    cursor:pointer;
+}
+
 .inline-block {
     display: inline-block;
 }
@@ -47,5 +51,5 @@
 }
 
 .bordered {
-    border: 1px dashed black;
+    border: 1px dashed gray;
 }
