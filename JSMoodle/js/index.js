@@ -39,22 +39,13 @@
                     return;
                 }
                 $.post({
-                    url: api_Path + "selector" + firstStep[0]["databaseType"],
+                    url: api_Path + "authenticate",
                     async: true,
-                    // 1 é o índice da query que utilizaremos para pesquisar na tabela de usuários
-                    data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[1]["comando"] + " where username='" + document.getElementById('username').value + "'" }
+                    data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "databaseType": firstStep[0]["databaseType"], "username": document.getElementById("username").value,
+                    "password": document.getElementById("password").value }
                 }).done(function (data, textStatus, jqXHR) {
-                    if (data.length == 2) {
-                        document.cookie = "api_Path=" + api_Path;
-                        document.cookie = "userId=" + data[1][0];
-                        document.cookie = "username=" + data[1][1];
-                        document.getElementById("username").setAttribute("disabled", "true");
-                        document.getElementById("password").setAttribute("disabled", "true");
-                        setStatus("succeeded", "A autenticação pelo banco do Moodle foi concluída com sucesso!<br>Redirecionando para a página de Dashboard... ");
-                        setTimeout(function () {
-                            window.location = window.location.toString().substring(0, location.toString().lastIndexOf("/")) + "/dashboard/index.html";
-                        }, 2000);
-                        return;
+                    if (data) {
+
                     } else {
                         document.getElementById("username").value = "";
                         document.getElementById("password").value = "";
