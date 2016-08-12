@@ -44,12 +44,35 @@
                     data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "databaseType": firstStep[0]["databaseType"], "username": document.getElementById("username").value,
                     "password": document.getElementById("password").value }
                 }).done(function (data, textStatus, jqXHR) {
-                    if (data) {
-
-                    } else {
-                        document.getElementById("username").value = "";
-                        document.getElementById("password").value = "";
-                        setStatus("error", "Usuário ou senha estão incorretos, cheque novamente. ");
+                    switch (data.split(";")[0]) {
+                        case "user_authenticated":
+                            document.cookie = "api_Path=" + api_Path;
+                            document.cookie = "userId=" + data.split(";")[1];
+                            document.cookie = "username=" + data.split(";")[2];
+                            document.getElementById("username").setAttribute("disabled", "true");
+                            document.getElementById("password").setAttribute("disabled", "true");
+                            setStatus("succeeded", "A autenticação pelo banco do Moodle foi concluída com sucesso!<br>Redirecionando para a página de Dashboard... ");
+                            setTimeout(function () {
+                                window.location = window.location.toString().substring(0, location.toString().lastIndexOf("/")) + "/dashboard/index.html";
+                            }, 2000);
+                            break;
+                        case "user_login_incorrect":
+                            document.getElementById("username").value = "";
+                            document.getElementById("password").value = "";
+                            setStatus("error", "Usuário ou senha estão incorretos.");
+                            break;
+                        case "user_non_existent":
+                            setStatus("error", "O usuário que você inseriu não existe. ");
+                            document.getElementById("username").value = "";
+                            document.getElementById("username").focus();
+                            break;
+                        case "user_password_null":
+                            setStatus("error", "A senha não pode ficar em branco!");
+                            document.getElementById("password").focus();
+                            break;
+                        default:
+                            setStatus("error", "Algum erro interno ocorreu na API. Tente novamente mais tarde!");
+                            break;
                     }
                 }).error(function () {
                     setStatus("error", "A requisição à API do Moodle falhou no segundo estágio. ");
