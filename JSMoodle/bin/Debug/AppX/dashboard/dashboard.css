@@ -54,10 +54,3 @@ a:hover {
     text-decoration: underline;
     color: blue;
 }
-
-@media screen and (max-width:600px) {
-    h3 {
-        font-size: initial;
-        text-align: center;
-    }
-}

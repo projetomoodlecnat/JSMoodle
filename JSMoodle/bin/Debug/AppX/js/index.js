@@ -59,6 +59,7 @@
                         case "user_login_incorrect":
                             document.getElementById("username").value = "";
                             document.getElementById("password").value = "";
+                            document.getElementById("username").focus();
                             setStatus("error", "Usuário ou senha estão incorretos.");
                             break;
                         case "user_non_existent":

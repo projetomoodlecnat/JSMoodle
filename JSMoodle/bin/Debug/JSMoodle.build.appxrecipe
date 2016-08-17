@@ -22,6 +22,12 @@
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\activities\activities.css">
+      <PackagePath>activities\activities.css</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\activities\view\view.css">
+      <PackagePath>activities\view\view.css</PackagePath>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\css\materialize.css">
       <PackagePath>css\materialize.css</PackagePath>
     </AppxPackagedFile>
@@ -36,6 +42,12 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\css\main.css">
       <PackagePath>css\main.css</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\activities\activities.js">
+      <PackagePath>activities\activities.js</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\activities\view\view.js">
+      <PackagePath>activities\view\view.js</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\dashboard\courses\courses.js">
       <PackagePath>dashboard\courses\courses.js</PackagePath>
@@ -54,6 +66,12 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\materialize.min.js">
       <PackagePath>js\materialize.min.js</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\activities\index.html">
+      <PackagePath>activities\index.html</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\activities\view\index.html">
+      <PackagePath>activities\view\index.html</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\dashboard\courses\index.html">
       <PackagePath>dashboard\courses\index.html</PackagePath>

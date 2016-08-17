@@ -10,7 +10,8 @@ $(document).ready(function () {
         console.log(document.cookie);
         window.location.href = "../index.html";
     });
-    document.getElementsByTagName("h3")[0].innerHTML += "<b>" + document.cookie.substring(document.cookie.lastIndexOf("=") + 1) + "</b>";
+    // document.cookie.substring(document.cookie.lastIndexOf("=") + 1)
+    document.getElementsByTagName("h3")[0].innerHTML += "<b>" + cookiesDict["username"] + "</b>";
     $.ajax(cookiesDict["api_Path"] + "dbproperties?index=" + (cookiesDict["databaseIndex"] - 1), {
         method: "GET",
         async: true,
@@ -124,14 +125,13 @@ $(document).ready(function () {
                             for (; data[i];) {
                                 if (getUnixTime() < data[i][data[0].indexOf("TIMECLOSE")] || data[i][data[0].indexOf("TIMECLOSE")] === "0") {
                                     // caso onde a tarefa está aberta
-                                    quizzes.quizzesnoprazo.push("<li class='liOpen'><img class='liActivityIcon' src='../images/dashboard/icons/quiz_duedate.png' /><b tooltipvalue='EM ABERTO'>Quizz " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
-                                    console.log(data[i][data[0].indexOf("DUEDATE")]);
+                                    quizzes.quizzesnoprazo.push("<a href='../activities/view/index.html?quizz=" + data[i][data[0].indexOf("ID")] + "'><li class='liOpen'><img class='liActivityIcon' src='../images/dashboard/icons/quiz_duedate.png' /><b tooltipvalue='EM ABERTO'>Quizz " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li></a>");
                                 } else if (getUnixTime() > data[i][data[0].indexOf("TIMECLOSE")] && data[i][data[0].indexOf("OVERDUEHANDLING")] !== "autoabandon") {
                                     // caso onde a tarefa extrapolou o prazo, mas ainda está aberta
-                                    quizzes.quizzesforadoprazo.push("<li class='liOverdue'><img class='liActivityIcon' src='../images/dashboard/icons/quiz_overdue.png' /><b tooltipvalue='FORA DO PRAZO'>Quizz " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
+                                    quizzes.quizzesforadoprazo.push("<a href='../activities/view/index.html?quizz=" + data[i][data[0].indexOf("ID")] + "'><li class='liOverdue'><img class='liActivityIcon' src='../images/dashboard/icons/quiz_overdue.png' /><b tooltipvalue='FORA DO PRAZO'>Quizz " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li></a>");
                                 } else {
                                     // caso onde a tarefa não está mais aberta
-                                    quizzes.quizzesfechadas.push("<li class='liClosed'><img class='liActivityIcon' src='../images/dashboard/icons/quiz_closed.png' /><b tooltipvalue='FECHADA'>Quizz " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
+                                    quizzes.quizzesfechadas.push("<a href='../activities/view/index.html?quizz=" + data[i][data[0].indexOf("ID")] + "'><li class='liClosed'><img class='liActivityIcon' src='../images/dashboard/icons/quiz_closed.png' /><b tooltipvalue='FECHADA'>Quizz " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li></a>");
                                 }
                                 i++;
                             }

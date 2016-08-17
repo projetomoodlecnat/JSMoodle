@@ -28,10 +28,18 @@
     <AppXManifest Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\bin\Debug\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2016-08-08T15:36:32.456</Modified>
+      <Modified>2016-08-17T18:15:31.297</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\activities\activities.css">
+      <PackagePath>activities\activities.css</PackagePath>
+      <Modified>2015-09-20T20:20:26.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\activities\view\view.css">
+      <PackagePath>activities\view\view.css</PackagePath>
+      <Modified>2015-09-20T20:20:26.000</Modified>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\css\materialize.css">
       <PackagePath>css\materialize.css</PackagePath>
       <Modified>2016-07-11T17:06:45.382</Modified>
@@ -46,11 +54,19 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\dashboard\dashboard.css">
       <PackagePath>dashboard\dashboard.css</PackagePath>
-      <Modified>2016-08-09T17:05:58.014</Modified>
+      <Modified>2016-08-17T17:49:45.824</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\css\main.css">
       <PackagePath>css\main.css</PackagePath>
-      <Modified>2016-08-09T17:06:11.920</Modified>
+      <Modified>2016-08-17T17:49:42.402</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\activities\activities.js">
+      <PackagePath>activities\activities.js</PackagePath>
+      <Modified>2016-08-17T18:12:03.908</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\activities\view\view.js">
+      <PackagePath>activities\view\view.js</PackagePath>
+      <Modified>2016-08-17T20:42:20.676</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\dashboard\courses\courses.js">
       <PackagePath>dashboard\courses\courses.js</PackagePath>
@@ -58,7 +74,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\dashboard\dashboard.js">
       <PackagePath>dashboard\dashboard.js</PackagePath>
-      <Modified>2016-08-08T17:23:56.902</Modified>
+      <Modified>2016-08-17T18:57:50.141</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\jquery-2.2.4.js">
       <PackagePath>js\jquery-2.2.4.js</PackagePath>
@@ -66,7 +82,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\index.js">
       <PackagePath>js\index.js</PackagePath>
-      <Modified>2016-08-12T17:08:43.798</Modified>
+      <Modified>2016-08-12T17:27:41.802</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\materialize.js">
       <PackagePath>js\materialize.js</PackagePath>
@@ -75,6 +91,14 @@
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\materialize.min.js">
       <PackagePath>js\materialize.min.js</PackagePath>
       <Modified>2016-04-02T07:48:00.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\activities\index.html">
+      <PackagePath>activities\index.html</PackagePath>
+      <Modified>2016-08-17T18:17:25.233</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\activities\view\index.html">
+      <PackagePath>activities\view\index.html</PackagePath>
+      <Modified>2016-08-17T19:04:32.630</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\dashboard\courses\index.html">
       <PackagePath>dashboard\courses\index.html</PackagePath>
@@ -344,7 +368,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\bin\Debug\ReverseMap\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-      <Modified>2016-08-08T15:36:31.816</Modified>
+      <Modified>2016-08-17T18:15:31.188</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

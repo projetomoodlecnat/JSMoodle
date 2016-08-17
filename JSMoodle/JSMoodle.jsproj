@@ -59,6 +59,12 @@
     <AppxManifest Include="package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <Content Include="activities\activities.css" />
+    <Content Include="activities\activities.js" />
+    <Content Include="activities\index.html" />
+    <Content Include="activities\view\view.css" />
+    <Content Include="activities\view\index.html" />
+    <Content Include="activities\view\view.js" />
     <Content Include="css\materialize.css" />
     <Content Include="css\materialize.min.css" />
     <Content Include="dashboard\courses\courses.css" />
