@@ -14,7 +14,7 @@ $(document).ready(function () {
     document.title += courseid;
 
     // início do preenchimento das informações do curso
-    $.ajax(cookiesDict["api_Path"] + "dbproperties?index=" + (cookiesDict["databaseIndex"] - 1), {
+    $.ajax(cookiesDict["api_Path"] + "dbproperties?index=" + cookiesDict["databaseIndex"], {
         method: "GET",
         async: false,
         contentType: "application/json",
@@ -28,7 +28,7 @@ $(document).ready(function () {
 
             $.post({
                 url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                data: { "connectionIndex": (cookiesDict["databaseIndex"] - 1), "query": firstStep[8]["comando"] + " where id=" + courseid },
+                data: { "connectionIndex": cookiesDict["databaseIndex"], "query": firstStep[8]["comando"] + " where id=" + courseid },
                 async: false
             }).done(function (data, textStatus, jqXHR) {
                 $('.header.flow-text.thin.center').html(data[1][data[0].indexOf("FULLNAME")]);
@@ -42,7 +42,7 @@ $(document).ready(function () {
             innerSectionBuilder = "";
             $.post({
                 url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                data: { "connectionIndex": (cookiesDict["databaseIndex"] - 1), "query": firstStep[9]["comando"] + " where course=" + courseid + " order by section"},
+                data: { "connectionIndex": cookiesDict["databaseIndex"], "query": firstStep[9]["comando"] + " where course=" + courseid + " order by section"},
                 async: false
             }).done(function (data, textStatus, jqXHR) {
                 for (i = 1; i < data.length; i++) {

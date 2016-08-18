@@ -12,7 +12,7 @@ $(document).ready(function () {
     });
     // document.cookie.substring(document.cookie.lastIndexOf("=") + 1)
     document.getElementsByTagName("h3")[0].innerHTML += "<b>" + cookiesDict["username"] + "</b>";
-    $.ajax(cookiesDict["api_Path"] + "dbproperties?index=" + (cookiesDict["databaseIndex"] - 1), {
+    $.ajax(cookiesDict["api_Path"] + "dbproperties?index=" + cookiesDict["databaseIndex"], {
         method: "GET",
         async: true,
         contentType: "application/json",
@@ -27,7 +27,7 @@ $(document).ready(function () {
             $.post({
                 url: cookiesDict["api_Path"] + "selector" + firstStep[0]["databaseType"],
                 async: true,
-                data: { "connectionIndex": (cookiesDict["databaseIndex"] - 1), "query": firstStep[4]["comando"] + " where userid=" + cookiesDict["userId"] }
+                data: { "connectionIndex": cookiesDict["databaseIndex"], "query": firstStep[4]["comando"] + " where userid=" + cookiesDict["userId"] }
             }).done(function (data, textStatus, jqXHR) {
                 strBuilder = "";
                 var i = 1;
@@ -55,7 +55,7 @@ $(document).ready(function () {
 
                     $.post({
                         url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                        data: { "connectionIndex": cookiesDict["databaseIndex"] - 1, "query": firstStep[5]["comando"] + " where course=" + event.target.id },
+                        data: { "connectionIndex": cookiesDict["databaseIndex"], "query": firstStep[5]["comando"] + " where course=" + event.target.id },
                         async: false
                     }).done(function (data, textStatus, jqXHR) {
                         if (data.length <= 1) {
@@ -106,7 +106,7 @@ $(document).ready(function () {
 
                     $.post({
                         url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                        data: { "connectionIndex": cookiesDict["databaseIndex"] - 1, "query": firstStep[6]["comando"] + " where course=" + event.target.id },
+                        data: { "connectionIndex": cookiesDict["databaseIndex"], "query": firstStep[6]["comando"] + " where course=" + event.target.id },
                         async: false
                     }).done(function (data, textStatus, jqXHR) {
                         if (data.length <= 1) {
@@ -156,7 +156,7 @@ $(document).ready(function () {
 
                     $.post({
                         url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                        data: { "connectionIndex": cookiesDict["databaseIndex"] - 1, "query": firstStep[7]["comando"] + " where course=" + event.target.id },
+                        data: { "connectionIndex": cookiesDict["databaseIndex"], "query": firstStep[7]["comando"] + " where course=" + event.target.id },
                         async: false
                     }).done(function (data, textStatus, jqXHR) {
                         if (data.length <= 1) {

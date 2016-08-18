@@ -1,2 +1,11 @@
-﻿body {
+﻿#content {
+    height: 80vh;
+}
+
+.paragraphReload {
+    background-color: blue;
+    color: white;
+    height: 20px;
+    width: 100%;
+    cursor: pointer;
 }

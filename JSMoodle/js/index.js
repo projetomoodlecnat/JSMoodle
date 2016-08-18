@@ -33,7 +33,7 @@
                 try {
                     firstStep = JSON.parse(firstStep);
                     document.cookie = "databaseType=" + firstStep[0]["databaseType"];
-                    document.cookie = "databaseIndex=" + firstStep[1]["idconexao"];
+                    document.cookie = "databaseIndex=" + (firstStep[1]["idconexao"] -1);
                 } catch (Exception) {
                     setStatus("error", "Parsing dos dados da API falhou no primeiro estágio.");
                     return;
@@ -113,6 +113,7 @@
     }
 
     function saveUserSettings(connectionIndex, api_Path) {
+        document.cookie = "api_Path" + api_Path;
         operation = Windows.Storage.ApplicationData.current.localFolder.getFileAsync("config.ini");
         file = null;
         try {
@@ -125,10 +126,10 @@
                     setStatus("error", "Não foi possível salvar as novas configurações num arquivo.");
                 });
             }, function () {
-                file = Windows.Storage.ApplicationData.current.localFolder.createFileAsync("config.ini");
+                var file = Windows.Storage.ApplicationData.current.localFolder.createFileAsync("config.ini");
                 file.done(function () {
                     file = file.operation.getResults();
-                    var writer = Windows.Storage.FileIO.writeTextAsync(file.operation.getResults(), "connectionIndex=" + connectionIndex + "\napi_Path=" + api_Path + "\n");
+                    var writer = Windows.Storage.FileIO.writeTextAsync(file, "connectionIndex=" + connectionIndex + "\napi_Path=" + api_Path + "\n");
                     writer.done(function () {
                         setStatus("succeeded", "Suas configurações foram salvas num arquivo e serão carregadas sempre que o aplicativo for iniciado.");
                     }, function () {
@@ -151,6 +152,7 @@
                 parseString = fileReader.operation.getResults();
                 document.getElementById('moodleSelector').selectedIndex = parseFromConfigIni(parseString, 'connectionIndex');
                 document.getElementById('api_Path').value = parseFromConfigIni(parseString, 'api_Path');
+                document.cookie = "api_Path" + parseFromConfigIni(parseString, 'api_Path');
                 setStatus("succeeded", "Suas configurações foram carregadas com sucesso. ");
             }, function () {
                 setStatus("error", "Erro ao ler o arquivo. Verifique se você tem permissão de leitura ou se o arquivo permite leitura!");
@@ -165,37 +167,3 @@
         return parseString.substring(0, parseString.indexOf("\n"));
     }
 });
-
-/*$("#btnSubmitLogin").click(function () {
-    $.ajax(api_Path + "dbsites?databaseindex=" + document.getElementById("moodleSelector").value, {
-        contentType: "application/json",
-        method: "GET",
-        async: true,
-        success: function (firstStep) {
-            setStatus("progressing", "O site do Moodle está disponível e ativo. Tentando a autenticação... ");
-            jQuery.post({
-                url: firstStep[0] + "login/index.php",
-                data: { 'username': document.getElementById("username").value, 'password': document.getElementById("password").value }
-            }).done(function (data, textStatus, jqXHR) {
-                // A tag meta está presente somente na página de índice de login
-                if (data.indexOf('meta name="robots"') == -1) {
-                    document.getElementById("username").setAttribute("disabled", "true");
-                    document.getElementById("password").setAttribute("disabled", "true");
-                    setStatus("succeeded", "A autenticação pelo site do Moodle foi concluída com sucesso!<br>Redirecionando para a página de Dashboard... ");
-                    setTimeout(function () {
-                        window.location = window.location.toString().substring(0, location.toString().lastIndexOf("/")) + "/dashboard/index.html";
-                    }, 2000);
-                    return;
-                }
-                setStatus("error", "O processo de autenticação foi concluído com sucesso, mas o usuário ou senha estão incorretos. ");
-            }).error(function () {
-                setStatus("error", "A requisição de autenticação com a página de Login do Moodle falhou. ");
-                return;
-            });
-        }, error: function () {
-            setStatus("error", "A requisição de autenticação com a página de Login do Moodle falhou. ");
-        }
-    }).error(function () {
-        setStatus("error", "A requisição de acesso à API do Moodle falhou. ");
-    });
-});*/
