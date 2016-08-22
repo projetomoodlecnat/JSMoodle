@@ -15,6 +15,10 @@ $(document).ready(function () {
     $('.paragraphReload').click(function () {
         window.location = window.location.toString();
     });
+    $('.paragraphSave').click(function () {
+        operating = setInterval(checkCurrentOperation, 1000);
+        currentOperation = "salvar_progresso";
+    });
     activityType = window.location.toString().substring((window.location.toString().indexOf('?') + 1), window.location.toString().indexOf('='));
     operating = setInterval(checkCurrentOperation, 1000);
     currentOperation = "working_inicializar_pasta";
@@ -88,15 +92,29 @@ function carregarArquivoNaInterface(file) {
         var readFromFile = Windows.Storage.FileIO.readTextAsync(file);
         readFromFile.done(function () {
             setStatus("success", "Arquivo carregado com sucesso. ");
-            $('#content').html("Conteúdo do arquivo:" + readFromFile.operation.getResults());
+            $('#content').html(readFromFile.operation.getResults());
+            $('input[type="radio"]').each(function () {
+                rdbutton = $(this);
+                rdbutton.click(function () {
+                    $('input[name="' + event.target.name + '"]').each(function () {
+                        $(this).prop("checked", false);
+                    });
+                    $(event.target).prop("checked", true);
+                    event.target.checked = true;
+                    event.target.setAttribute("checked", true);
+                });
+            });
             endOperation();
+            return;
         }, function () {
             setStatus("error", "Não foi possível ler do arquivo da atividade. Verifique se você tem permissões de leitura no arquivo.");
             endOperation();
+            return;
         });
     } catch (exception) {
         setStatus("error", "Não foi possível ler do arquivo da atividade. Verifique se você tem permissões de leitura no arquivo.");
         endOperation();
+        return;
     }
 }
 
@@ -124,8 +142,7 @@ function carregarQuestoesBanco() {
             }).done(function (data, textStatus, jqXHR) {
                 var questionNames = []
                 try {
-                    questionNames.push(data[1][data[0].indexOf("QUESTIONID")]);
-                    stringHTMLBuilder = "<div class='questioncontainer'>" + data[1][data[0].indexOf("QUESTIONTEXT")] + "<ul>";
+                    console.log(data[1]);
                 } catch (exception) {
                     stringHTMLBuilder = "O quizz não tem questões registradas.";
                     endOperation();
@@ -133,13 +150,28 @@ function carregarQuestoesBanco() {
                 }
                 for (i = 1; i < data.length; i++) {
                     if (questionNames.indexOf(data[i][data[0].indexOf("QUESTIONID")]) == -1) {
-                        stringHTMLBuilder += "</ul></div><div class='questioncontainer'>" + data[i][data[0].indexOf("QUESTIONTEXT")] + "<ul>";
                         questionNames.push(data[i][data[0].indexOf("QUESTIONID")]);
+                        if (data[i][data[0].indexOf("QTYPE")] == 'description') {
+                            stringHTMLBuilder += "<div class='paragraphDescription'><ul>" + data[i][data[0].indexOf("QUESTIONTEXT")];
+                            continue;
+                        }
+                        stringHTMLBuilder += "</ul></div><div class='questioncontainer'><b>Questão: </b>" + data[i][data[0].indexOf("QUESTIONTEXT")] + "<ul>";
                     }
-                    stringHTMLBuilder += "<li><input class='with-gap' name='" + data[data[i][0].indexOf("QUESTIONID")]+ "' type='radio' style='margin-right: 5px; float:left; position:static; opacity: 1'>" +data[i][data[0].indexOf("ANSWER")]+ "</li>";
+                    stringHTMLBuilder += "<li><input class='with-gap' name='" + data[i][data[0].indexOf("QUESTIONID")] + "' type='radio' style='margin-right: 5px; float:left; position:static; opacity: 1'>" + data[i][data[0].indexOf("ANSWER")] + "</li>";
                 }
                 $("#content").html(stringHTMLBuilder);
-                console.log(data);
+                setStatus("succeeded", "As questões foram carregadas com sucesso e renderizadas na interface. ");
+                $('input[type="radio"]').each(function () {
+                    rdbutton = $(this);
+                    rdbutton.click(function () {
+                        $('input[name="' + event.target.name + '"]').each(function () {
+                            $(this).prop("checked", false);
+                        });
+                        $(event.target).prop("checked", true);
+                        event.target.checked = true;
+                        event.target.setAttribute("checked", true);
+                    });
+                });
                 endOperation();
             }).error(function () {
                 setStatus("error", "A requisição à API do Moodle falhou na obtenção das questões. ");
@@ -153,6 +185,23 @@ function carregarQuestoesBanco() {
             setStatus("error", "A requisição de acesso à API do Moodle falhou no primeiro estágio. Verifique a conexão com a internet!");
         }
         endOperation();
+    });
+}
+
+function salvarProgresso(activityFile) {
+    setStatus("progressing", "Salvando o seu processo num arquivo, aguarde!");
+    $('.paragraphSave').html("<img src='../../images/universal/loading.gif' alt='animacao_carregando'>");
+    var savingOperation = Windows.Storage.FileIO.writeTextAsync(activityFile, $('#content').html());
+    savingOperation.done(function () {
+        setStatus("success", "Seu progresso foi salvo em um arquivo e será carregado na próxima vez que você entrar na tarefa.");
+        $('.paragraphSave').html('SALVAR O SEU PROGRESSO');
+        endOperation();
+        return;
+    }, function () {
+        setStatus("error", "Não foi possível salvar o seu progresso.");
+        $('.paragraphSave').html('SALVAR O SEU PROGRESSO');
+        endOperation();
+        return;
     });
 }
 
@@ -181,6 +230,10 @@ function checkCurrentOperation() {
         case 'carregar_questoes_banco':
             currentOperation = 'carregar_questoes_banco';
             carregarQuestoesBanco();
+            break;
+        case 'salvar_progresso':
+            currentOperation = 'working_salvar_progresso';
+            salvarProgresso(activityFile);
             break;
         default:
             break;

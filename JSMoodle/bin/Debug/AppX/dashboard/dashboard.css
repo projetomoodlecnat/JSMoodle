@@ -55,6 +55,11 @@ a:hover {
     color: blue;
 }
 
+.dashboardContent {
+    height: 85vh;
+    min-height: 300px;
+}
+
 @media screen and (max-width:600px) {
     h3 {
         font-size: initial;

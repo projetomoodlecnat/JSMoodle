@@ -3,6 +3,14 @@
     // Carregando as configurações iniciais de usuário
     readUserSettings();
 
+    // definindo a animação do botão de Modo Offline
+
+    $('.imgOfflineNavigation').hover(function () {
+        $(this).addClass('pulse');
+    }, function () {
+        $(this).removeClass("pulse");
+    });
+
     // Definindo os listeners padrão de elementos da interface
 
     $('#username').focus(function () {

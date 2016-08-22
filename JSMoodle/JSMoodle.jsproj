@@ -73,6 +73,8 @@
     <Content Include="dashboard\dashboard.css" />
     <Content Include="dashboard\dashboard.js" />
     <Content Include="dashboard\index.html" />
+    <Content Include="dashboard\offline.html" />
+    <Content Include="dashboard\offline\offline.js" />
     <Content Include="fonts\roboto\Roboto-Bold.eot" />
     <Content Include="fonts\roboto\Roboto-Bold.ttf" />
     <Content Include="fonts\roboto\Roboto-Bold.woff" />
@@ -134,6 +136,8 @@
     <Content Include="images\Square44x44Logo.scale-200.png" />
     <Content Include="images\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="images\StoreLogo.png" />
+    <Content Include="images\universal\loading.gif" />
+    <Content Include="images\universal\navegacaooffline.jpg" />
     <Content Include="images\Wide310x150Logo.scale-200.png" />
     <Content Include="index.html" />
     <Content Include="js\jquery-2.2.4.js" />

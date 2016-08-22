@@ -1,5 +1,10 @@
 ﻿#content {
     height: 80vh;
+    padding-right: 14px;
+}
+
+#content * {
+    text-align: justify;
 }
 
 .paragraphReload {
@@ -8,4 +13,18 @@
     height: 20px;
     width: 100%;
     cursor: pointer;
+}
+
+.paragraphSave {
+    background-color: green;
+    color: white;
+    height: 20px;
+    width: 100%;
+    cursor: pointer;
+    margin-top: -10px;
+}
+
+.paragraphReload img {
+    height: 20px;
+    width: 20px;
 }

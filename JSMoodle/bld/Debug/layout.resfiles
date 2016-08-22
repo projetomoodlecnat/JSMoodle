@@ -13,6 +13,8 @@ dashboard\courses\index.html
 dashboard\dashboard.css
 dashboard\dashboard.js
 dashboard\index.html
+dashboard\offline.html
+dashboard\offline\offline.js
 font\material-design-icons\LICENSE.txt
 font\material-design-icons\Material-Design-Icons.eot
 font\material-design-icons\Material-Design-Icons.svg
@@ -74,6 +76,8 @@ images\Square150x150Logo.scale-200.png
 images\Square44x44Logo.scale-200.png
 images\Square44x44Logo.targetsize-24_altform-unplated.png
 images\StoreLogo.png
+images\universal\loading.gif
+images\universal\navegacaooffline.jpg
 images\Wide310x150Logo.scale-200.png
 index.html
 js\index.js

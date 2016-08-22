@@ -9,7 +9,7 @@
     <script src="js/materialize.js" type="text/javascript"></script>
     <script src="js/index.js" type="text/javascript"></script>
 </head>
-<body>
+<body class="overfloable">
     <p>
         Escolha o servidor Moodle como alvo da autenticação:
         <select id="moodleSelector" name="databaseIndex">
@@ -22,10 +22,11 @@
     <label class="center">Você pode realizar o login abaixo: </label>
     <p>
         <span id="loginSpan">Login:</span> <input id="username" name="username" type="text" required placeholder="Usuário" />
-        <label id="tooltipLabel" class="invisible">Alguns Moodles permitem o login por e-mail</label>
+        <label id="tooltipLabel" class="tooltipLabel invisible">Alguns Moodles permitem o login por e-mail</label>
     </p>
     <p>Senha: <input id="password" name="password" type="password" required placeholder="Senha do usuário" /></p>
     <input id="btnSubmitLoginBanco" type="button" value="Tentar login por banco" class="btn-block btn-large" />
     <p id="api_PathHolder"><span>Endereço da API:</span><input id="api_Path" type="text" disabled value="http://localhost:37006/api/" /></p>
+    <p class="center"><a href="dashboard/offline.html"><img class="imgOfflineNavigation" src="images/universal/navegacaooffline.jpg" alt="navegacaooffline" /></a></p>
 </body>
 </html>

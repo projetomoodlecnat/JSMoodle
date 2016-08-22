@@ -47,8 +47,12 @@ $(document).ready(function () {
                         $("#ulActivities" + event.target.id).parent().children("ul").each(function () {
                             $(this).remove();
                         });
+                        $(this).val("➕");
+                        $(this).attr("style", "");
                         return;
                     }
+                    $(this).val("➖");
+                    $(this).attr("style", "background-color: #80cbc4")
                     var innerHTMLBuilder = "<ul id='ulActivities" + event.target.id + "'>";
 
                     // começo da requisição de atividades
@@ -201,6 +205,10 @@ $(document).ready(function () {
                     // finaliza e adiciona o HTML ao list item pai
                     var innerHTMLQuizzes = "";
                     document.getElementById(event.target.id).parentNode.innerHTML += innerHTMLBuilder + "</ul>";
+
+                    // o código de algum dos cursos foi carregado e o dispositivo tentará persistir na pasta localFolder
+                    persistCoursePage();
+
                     unsetTooltips();
                     setTooltips();
                     if (buttonset.length != 0) {
@@ -218,7 +226,7 @@ $(document).ready(function () {
         }
     })
         .fail(function () {
-            console.log("falhou");
+            $('#courses').html("<p class='red-text'>A consulta à API falhou.</p>");
     });
 });
 
@@ -280,4 +288,28 @@ function unsetTooltips() {
 
 function getUnixTime() {
     return Math.round(new Date().getTime() / 1000);
+}
+
+function persistCoursePage() {
+    var initiatePersistence = Windows.Storage.ApplicationData.current.localFolder.createFileAsync("dashboard.html");
+    initiatePersistence.done(function () {
+        var writeOnCreatedFile = Windows.Storage.FileIO.writeTextAsync(initiatePersistence.operation.getResults(), $('#courses').html() + "#WRITE_OK");
+        writeOnCreatedFile.done(function () {
+            console.log("write_ok");
+        }, function () {
+            console.log("file_created_write_failed");
+        });
+    }, function () {
+        var getCoursesFromFile = Windows.Storage.ApplicationData.current.localFolder.getFileAsync("dashboard.html");
+        getCoursesFromFile.done(function () {
+            var writeOnRetrievedFile = Windows.Storage.FileIO.writeTextAsync(getCoursesFromFile.operation.getResults(), $('#courses').html() + "#WRITE_OK");
+            writeOnRetrievedFile.done(function () {
+                console.log("write_ok");
+            }, function () {
+                console.log("failed_write_or_retrieval");
+            });
+        }, function () {
+            console.log("file_exists_retrieval_failed");
+        });
+    });
 }
