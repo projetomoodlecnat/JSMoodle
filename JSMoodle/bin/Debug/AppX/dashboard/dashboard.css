@@ -4,7 +4,7 @@
 }
 
 #courses {
-   max-height: 85vh;
+   max-height: 83vh;
 }
 
 .courseli i {
@@ -16,6 +16,7 @@
     color: white;
     font-weight: 500;
     cursor: pointer;
+    margin-top: -5px;
 }
 
 .btnExpand {

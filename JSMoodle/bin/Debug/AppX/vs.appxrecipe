@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Machine>CBMRN02</Machine>
-    <WindowsUser>Nudes</WindowsUser>
+    <WindowsUser>joaos</WindowsUser>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetOsVersion>10.0</TargetOsVersion>
     <TargetOsDescription>Windows 10.0</TargetOsDescription>
@@ -10,7 +10,7 @@
     <PackageArchitecture>neutral</PackageArchitecture>
     <PackageIdentityName>91b3016b-63e8-4f30-afb2-8d0df63c2e27</PackageIdentityName>
     <PackageIdentityPublisher>CN=Nudes</PackageIdentityPublisher>
-    <IntermediateOutputPath>C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\bld\Debug\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bld\Debug\</IntermediateOutputPath>
     <RemoteDeploymentType>
     </RemoteDeploymentType>
     <PackageRegistrationPath>
@@ -25,366 +25,366 @@
     <JitOptimizationSuppressed>True</JitOptimizationSuppressed>
   </PropertyGroup>
   <ItemGroup>
-    <AppXManifest Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\bin\Debug\AppxManifest.xml">
+    <AppXManifest Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bin\Debug\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2016-08-22T16:32:35.213</Modified>
+      <Modified>2016-08-23T20:27:22.293</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\activities\activities.css">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\activities\activities.css">
       <PackagePath>activities\activities.css</PackagePath>
       <Modified>2015-09-20T20:20:26.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\activities\view\view.css">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\activities\view\view.css">
       <PackagePath>activities\view\view.css</PackagePath>
-      <Modified>2016-08-22T15:16:47.127</Modified>
+      <Modified>2016-08-23T19:55:22.535</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\css\materialize.css">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\css\materialize.css">
       <PackagePath>css\materialize.css</PackagePath>
       <Modified>2016-07-11T17:06:45.382</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\css\materialize.min.css">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\css\materialize.min.css">
       <PackagePath>css\materialize.min.css</PackagePath>
       <Modified>2016-04-02T07:48:00.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\dashboard\courses\courses.css">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\dashboard\courses\courses.css">
       <PackagePath>dashboard\courses\courses.css</PackagePath>
       <Modified>2016-08-18T17:52:53.172</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\dashboard\dashboard.css">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\dashboard\dashboard.css">
       <PackagePath>dashboard\dashboard.css</PackagePath>
-      <Modified>2016-08-22T15:26:29.742</Modified>
+      <Modified>2016-08-23T20:16:32.158</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\css\main.css">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\css\main.css">
       <PackagePath>css\main.css</PackagePath>
-      <Modified>2016-08-22T16:06:12.980</Modified>
+      <Modified>2016-08-23T20:10:00.968</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\activities\activities.js">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\activities\activities.js">
       <PackagePath>activities\activities.js</PackagePath>
       <Modified>2016-08-17T18:12:03.908</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\activities\view\view.js">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\activities\view\view.js">
       <PackagePath>activities\view\view.js</PackagePath>
-      <Modified>2016-08-22T14:52:49.326</Modified>
+      <Modified>2016-08-23T20:06:55.925</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\dashboard\courses\courses.js">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\dashboard\courses\courses.js">
       <PackagePath>dashboard\courses\courses.js</PackagePath>
       <Modified>2016-08-18T16:10:10.862</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\dashboard\dashboard.js">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\dashboard\dashboard.js">
       <PackagePath>dashboard\dashboard.js</PackagePath>
-      <Modified>2016-08-22T17:27:29.165</Modified>
+      <Modified>2016-08-23T20:56:12.469</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\dashboard\offline\offline.js">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\dashboard\offline\offline.js">
       <PackagePath>dashboard\offline\offline.js</PackagePath>
-      <Modified>2016-08-22T17:40:10.776</Modified>
+      <Modified>2016-08-23T21:07:25.428</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\jquery-2.2.4.js">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\js\jquery-2.2.4.js">
       <PackagePath>js\jquery-2.2.4.js</PackagePath>
       <Modified>2016-06-08T16:12:11.401</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\index.js">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\js\index.js">
       <PackagePath>js\index.js</PackagePath>
-      <Modified>2016-08-22T15:53:07.618</Modified>
+      <Modified>2016-08-23T20:03:33.671</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\materialize.js">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\js\materialize.js">
       <PackagePath>js\materialize.js</PackagePath>
       <Modified>2016-04-02T07:48:00.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\js\materialize.min.js">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\js\materialize.min.js">
       <PackagePath>js\materialize.min.js</PackagePath>
       <Modified>2016-04-02T07:48:00.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\activities\index.html">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\activities\index.html">
       <PackagePath>activities\index.html</PackagePath>
       <Modified>2016-08-17T18:17:25.233</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\activities\view\index.html">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\activities\view\index.html">
       <PackagePath>activities\view\index.html</PackagePath>
-      <Modified>2016-08-22T14:48:41.075</Modified>
+      <Modified>2016-08-23T19:52:05.567</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\dashboard\courses\index.html">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\dashboard\courses\index.html">
       <PackagePath>dashboard\courses\index.html</PackagePath>
       <Modified>2016-08-09T17:25:22.776</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\dashboard\index.html">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\dashboard\index.html">
       <PackagePath>dashboard\index.html</PackagePath>
       <Modified>2016-08-08T17:12:37.536</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\dashboard\offline.html">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\dashboard\offline.html">
       <PackagePath>dashboard\offline.html</PackagePath>
-      <Modified>2016-08-22T16:33:46.557</Modified>
+      <Modified>2016-08-23T20:13:08.225</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\index.html">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\index.html">
       <PackagePath>index.html</PackagePath>
-      <Modified>2016-08-22T16:15:25.772</Modified>
+      <Modified>2016-08-23T20:09:33.191</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Bold.eot">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\fonts\roboto\Roboto-Bold.eot">
       <PackagePath>fonts\roboto\Roboto-Bold.eot</PackagePath>
       <Modified>2016-03-05T05:45:44.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Light.eot">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\fonts\roboto\Roboto-Light.eot">
       <PackagePath>fonts\roboto\Roboto-Light.eot</PackagePath>
       <Modified>2016-03-05T05:45:44.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Medium.eot">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\fonts\roboto\Roboto-Medium.eot">
       <PackagePath>fonts\roboto\Roboto-Medium.eot</PackagePath>
       <Modified>2016-03-05T05:45:44.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Regular.eot">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\fonts\roboto\Roboto-Regular.eot">
       <PackagePath>fonts\roboto\Roboto-Regular.eot</PackagePath>
       <Modified>2016-03-05T05:45:44.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Thin.eot">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\fonts\roboto\Roboto-Thin.eot">
       <PackagePath>fonts\roboto\Roboto-Thin.eot</PackagePath>
       <Modified>2016-03-05T05:45:44.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\material-design-icons\Material-Design-Icons.eot">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\material-design-icons\Material-Design-Icons.eot">
       <PackagePath>font\material-design-icons\Material-Design-Icons.eot</PackagePath>
       <Modified>2015-11-02T02:28:12.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Bold.eot">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\roboto\Roboto-Bold.eot">
       <PackagePath>font\roboto\Roboto-Bold.eot</PackagePath>
       <Modified>2015-12-21T05:36:46.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Light.eot">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\roboto\Roboto-Light.eot">
       <PackagePath>font\roboto\Roboto-Light.eot</PackagePath>
       <Modified>2015-12-21T05:36:46.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Medium.eot">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\roboto\Roboto-Medium.eot">
       <PackagePath>font\roboto\Roboto-Medium.eot</PackagePath>
       <Modified>2015-12-21T05:36:46.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Regular.eot">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\roboto\Roboto-Regular.eot">
       <PackagePath>font\roboto\Roboto-Regular.eot</PackagePath>
       <Modified>2015-12-21T05:36:46.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Thin.eot">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\roboto\Roboto-Thin.eot">
       <PackagePath>font\roboto\Roboto-Thin.eot</PackagePath>
       <Modified>2015-12-21T05:36:46.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Bold.ttf">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\fonts\roboto\Roboto-Bold.ttf">
       <PackagePath>fonts\roboto\Roboto-Bold.ttf</PackagePath>
       <Modified>2016-03-05T05:45:44.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Light.ttf">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\fonts\roboto\Roboto-Light.ttf">
       <PackagePath>fonts\roboto\Roboto-Light.ttf</PackagePath>
       <Modified>2016-03-05T05:45:44.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Medium.ttf">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\fonts\roboto\Roboto-Medium.ttf">
       <PackagePath>fonts\roboto\Roboto-Medium.ttf</PackagePath>
       <Modified>2016-03-05T05:45:44.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Regular.ttf">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\fonts\roboto\Roboto-Regular.ttf">
       <PackagePath>fonts\roboto\Roboto-Regular.ttf</PackagePath>
       <Modified>2016-03-05T05:45:44.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Thin.ttf">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\fonts\roboto\Roboto-Thin.ttf">
       <PackagePath>fonts\roboto\Roboto-Thin.ttf</PackagePath>
       <Modified>2016-03-05T05:45:44.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\material-design-icons\Material-Design-Icons.ttf">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\material-design-icons\Material-Design-Icons.ttf">
       <PackagePath>font\material-design-icons\Material-Design-Icons.ttf</PackagePath>
       <Modified>2015-11-02T02:28:12.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Bold.ttf">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\roboto\Roboto-Bold.ttf">
       <PackagePath>font\roboto\Roboto-Bold.ttf</PackagePath>
       <Modified>2015-04-08T23:00:06.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Light.ttf">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\roboto\Roboto-Light.ttf">
       <PackagePath>font\roboto\Roboto-Light.ttf</PackagePath>
       <Modified>2015-04-08T23:00:06.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Medium.ttf">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\roboto\Roboto-Medium.ttf">
       <PackagePath>font\roboto\Roboto-Medium.ttf</PackagePath>
       <Modified>2015-04-08T23:00:06.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Regular.ttf">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\roboto\Roboto-Regular.ttf">
       <PackagePath>font\roboto\Roboto-Regular.ttf</PackagePath>
       <Modified>2015-04-08T23:00:06.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Thin.ttf">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\roboto\Roboto-Thin.ttf">
       <PackagePath>font\roboto\Roboto-Thin.ttf</PackagePath>
       <Modified>2015-04-08T23:00:06.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Bold.woff">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\fonts\roboto\Roboto-Bold.woff">
       <PackagePath>fonts\roboto\Roboto-Bold.woff</PackagePath>
       <Modified>2016-03-05T05:45:44.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Light.woff">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\fonts\roboto\Roboto-Light.woff">
       <PackagePath>fonts\roboto\Roboto-Light.woff</PackagePath>
       <Modified>2016-03-05T05:45:44.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Medium.woff">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\fonts\roboto\Roboto-Medium.woff">
       <PackagePath>fonts\roboto\Roboto-Medium.woff</PackagePath>
       <Modified>2016-03-05T05:45:44.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Regular.woff">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\fonts\roboto\Roboto-Regular.woff">
       <PackagePath>fonts\roboto\Roboto-Regular.woff</PackagePath>
       <Modified>2016-03-05T05:45:44.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Thin.woff">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\fonts\roboto\Roboto-Thin.woff">
       <PackagePath>fonts\roboto\Roboto-Thin.woff</PackagePath>
       <Modified>2016-03-05T05:45:44.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\material-design-icons\Material-Design-Icons.woff">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\material-design-icons\Material-Design-Icons.woff">
       <PackagePath>font\material-design-icons\Material-Design-Icons.woff</PackagePath>
       <Modified>2015-11-02T02:28:12.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Bold.woff">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\roboto\Roboto-Bold.woff">
       <PackagePath>font\roboto\Roboto-Bold.woff</PackagePath>
       <Modified>2015-11-02T02:28:12.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Light.woff">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\roboto\Roboto-Light.woff">
       <PackagePath>font\roboto\Roboto-Light.woff</PackagePath>
       <Modified>2015-11-02T02:28:12.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Medium.woff">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\roboto\Roboto-Medium.woff">
       <PackagePath>font\roboto\Roboto-Medium.woff</PackagePath>
       <Modified>2015-11-02T02:28:12.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Regular.woff">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\roboto\Roboto-Regular.woff">
       <PackagePath>font\roboto\Roboto-Regular.woff</PackagePath>
       <Modified>2015-11-02T02:28:12.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Thin.woff">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\roboto\Roboto-Thin.woff">
       <PackagePath>font\roboto\Roboto-Thin.woff</PackagePath>
       <Modified>2015-11-02T02:28:12.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Bold.woff2">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\fonts\roboto\Roboto-Bold.woff2">
       <PackagePath>fonts\roboto\Roboto-Bold.woff2</PackagePath>
       <Modified>2016-03-05T05:45:44.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Light.woff2">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\fonts\roboto\Roboto-Light.woff2">
       <PackagePath>fonts\roboto\Roboto-Light.woff2</PackagePath>
       <Modified>2016-03-05T05:45:44.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Medium.woff2">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\fonts\roboto\Roboto-Medium.woff2">
       <PackagePath>fonts\roboto\Roboto-Medium.woff2</PackagePath>
       <Modified>2016-03-05T05:45:44.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Regular.woff2">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\fonts\roboto\Roboto-Regular.woff2">
       <PackagePath>fonts\roboto\Roboto-Regular.woff2</PackagePath>
       <Modified>2016-03-05T05:45:44.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\fonts\roboto\Roboto-Thin.woff2">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\fonts\roboto\Roboto-Thin.woff2">
       <PackagePath>fonts\roboto\Roboto-Thin.woff2</PackagePath>
       <Modified>2016-03-05T05:45:44.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\material-design-icons\Material-Design-Icons.woff2">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\material-design-icons\Material-Design-Icons.woff2">
       <PackagePath>font\material-design-icons\Material-Design-Icons.woff2</PackagePath>
       <Modified>2015-11-02T02:28:12.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Bold.woff2">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\roboto\Roboto-Bold.woff2">
       <PackagePath>font\roboto\Roboto-Bold.woff2</PackagePath>
       <Modified>2015-11-02T02:28:12.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Light.woff2">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\roboto\Roboto-Light.woff2">
       <PackagePath>font\roboto\Roboto-Light.woff2</PackagePath>
       <Modified>2015-11-02T02:28:12.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Medium.woff2">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\roboto\Roboto-Medium.woff2">
       <PackagePath>font\roboto\Roboto-Medium.woff2</PackagePath>
       <Modified>2015-11-02T02:28:12.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Regular.woff2">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\roboto\Roboto-Regular.woff2">
       <PackagePath>font\roboto\Roboto-Regular.woff2</PackagePath>
       <Modified>2015-11-02T02:28:12.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\roboto\Roboto-Thin.woff2">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\roboto\Roboto-Thin.woff2">
       <PackagePath>font\roboto\Roboto-Thin.woff2</PackagePath>
       <Modified>2015-11-02T02:28:12.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\material-design-icons\LICENSE.txt">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\material-design-icons\LICENSE.txt">
       <PackagePath>font\material-design-icons\LICENSE.txt</PackagePath>
       <Modified>2015-04-08T23:00:06.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\font\material-design-icons\Material-Design-Icons.svg">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\font\material-design-icons\Material-Design-Icons.svg">
       <PackagePath>font\material-design-icons\Material-Design-Icons.svg</PackagePath>
       <Modified>2015-11-02T02:28:12.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\assignment_closed.png">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\images\dashboard\icons\assignment_closed.png">
       <PackagePath>images\dashboard\icons\assignment_closed.png</PackagePath>
       <Modified>2016-07-28T16:32:03.705</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\assignment_duedate.png">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\images\dashboard\icons\assignment_duedate.png">
       <PackagePath>images\dashboard\icons\assignment_duedate.png</PackagePath>
       <Modified>2016-07-28T15:49:52.595</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\assignment_overdue.png">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\images\dashboard\icons\assignment_overdue.png">
       <PackagePath>images\dashboard\icons\assignment_overdue.png</PackagePath>
       <Modified>2016-07-28T16:31:28.369</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\enquete_closed.png">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\images\dashboard\icons\enquete_closed.png">
       <PackagePath>images\dashboard\icons\enquete_closed.png</PackagePath>
       <Modified>2016-07-29T17:40:07.698</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\enquete_duedate.png">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\images\dashboard\icons\enquete_duedate.png">
       <PackagePath>images\dashboard\icons\enquete_duedate.png</PackagePath>
       <Modified>2016-07-29T17:41:13.669</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\enquete_overdue.png">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\images\dashboard\icons\enquete_overdue.png">
       <PackagePath>images\dashboard\icons\enquete_overdue.png</PackagePath>
       <Modified>2016-07-29T17:39:24.730</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\quiz_closed.png">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\images\dashboard\icons\quiz_closed.png">
       <PackagePath>images\dashboard\icons\quiz_closed.png</PackagePath>
       <Modified>2016-07-29T17:47:29.401</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\quiz_duedate.png">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\images\dashboard\icons\quiz_duedate.png">
       <PackagePath>images\dashboard\icons\quiz_duedate.png</PackagePath>
       <Modified>2016-07-29T17:46:46.091</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\dashboard\icons\quiz_overdue.png">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\images\dashboard\icons\quiz_overdue.png">
       <PackagePath>images\dashboard\icons\quiz_overdue.png</PackagePath>
       <Modified>2016-07-29T17:45:45.458</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\LockScreenLogo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\images\LockScreenLogo.scale-200.png">
       <PackagePath>images\LockScreenLogo.scale-200.png</PackagePath>
       <Modified>2015-07-20T22:06:24.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\SplashScreen.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\images\SplashScreen.scale-200.png">
       <PackagePath>images\SplashScreen.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
       <Modified>2015-07-20T22:06:24.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\Square150x150Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\images\Square150x150Logo.scale-200.png">
       <PackagePath>images\Square150x150Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
       <Modified>2015-07-20T22:06:24.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\Square44x44Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\images\Square44x44Logo.scale-200.png">
       <PackagePath>images\Square44x44Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
       <Modified>2015-07-20T22:06:24.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\Square44x44Logo.targetsize-24_altform-unplated.png">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\images\Square44x44Logo.targetsize-24_altform-unplated.png">
       <PackagePath>images\Square44x44Logo.targetsize-24_altform-unplated.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
       <Modified>2015-07-20T22:06:24.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\StoreLogo.png">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\images\StoreLogo.png">
       <PackagePath>images\StoreLogo.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
       <Modified>2015-07-20T22:06:24.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\Wide310x150Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\images\Wide310x150Logo.scale-200.png">
       <PackagePath>images\Wide310x150Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
       <Modified>2015-07-20T22:06:24.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\universal\loading.gif">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\images\universal\loading.gif">
       <PackagePath>images\universal\loading.gif</PackagePath>
       <Modified>2016-08-22T12:08:36.418</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\images\universal\navegacaooffline.jpg">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\images\universal\navegacaooffline.jpg">
       <PackagePath>images\universal\navegacaooffline.jpg</PackagePath>
       <Modified>2016-08-22T15:23:39.139</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Nudes\Documents\Visual Studio 2015\Projects\JSMoodle\JSMoodle\bin\Debug\ReverseMap\resources.pri">
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bin\Debug\ReverseMap\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-      <Modified>2016-08-22T16:32:35.009</Modified>
+      <Modified>2016-08-23T20:27:20.992</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

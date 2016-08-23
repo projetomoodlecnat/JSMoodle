@@ -14,3 +14,19 @@ c:\users\nudes\documents\visual studio 2015\Projects\JSMoodle\JSMoodle\bld\Debug
 c:\users\nudes\documents\visual studio 2015\Projects\JSMoodle\JSMoodle\bld\Debug\qualifiers.txt.intermediate
 c:\users\nudes\documents\visual studio 2015\Projects\JSMoodle\JSMoodle\bld\Debug\MultipleQualifiersPerDimensionFound.txt
 c:\users\nudes\documents\visual studio 2015\Projects\JSMoodle\JSMoodle\bld\Debug\ProjectArchitectures.txt
+C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bin\Debug\ReverseMap\resources.pri
+C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bin\Debug\AppxManifest.xml
+C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bin\Debug\JSMoodle.build.appxrecipe
+C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bld\Debug\ResourceHandlingTask.state
+C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bld\Debug\priconfig.xml
+C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bld\Debug\priconfig.xml.intermediate
+C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bld\Debug\layout.resfiles
+C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bld\Debug\layout.resfiles.intermediate
+C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bld\Debug\resources.resfiles
+C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bld\Debug\resources.resfiles.intermediate
+C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bld\Debug\pri.resfiles
+C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bld\Debug\pri.resfiles.intermediate
+C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bld\Debug\qualifiers.txt
+C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bld\Debug\qualifiers.txt.intermediate
+C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bld\Debug\MultipleQualifiersPerDimensionFound.txt
+C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bld\Debug\ProjectArchitectures.txt

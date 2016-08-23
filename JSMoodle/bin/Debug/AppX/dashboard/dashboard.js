@@ -43,16 +43,18 @@ $(document).ready(function () {
                 setTooltips();
 
                 $('.btn-floating').click(function (event) {
-                    if (document.getElementById("ulActivities" + event.target.id) != null) {
-                        $("#ulActivities" + event.target.id).parent().children("ul").each(function () {
+                    if (document.getElementById("ulActivities" + event.target.id) != null && document.getElementById("ulActivities" + event.target.id).style.display != "none") {
+                        document.getElementById("ulActivities" + event.target.id).style.display = "none";
+                        /*$("#ulActivities" + event.target.id).parent().children("ul").each(function () {
                             $(this).remove();
-                        });
+                        });*/
                         $(this).val("➕");
                         $(this).attr("style", "");
                         return;
                     }
                     $(this).val("➖");
                     $(this).attr("style", "background-color: #80cbc4")
+
                     var innerHTMLBuilder = "<ul id='ulActivities" + event.target.id + "'>";
 
                     // começo da requisição de atividades
@@ -114,7 +116,7 @@ $(document).ready(function () {
                         async: false
                     }).done(function (data, textStatus, jqXHR) {
                         if (data.length <= 1) {
-                            document.getElementById(event.target.id).parentNode.innerHTML += "<ul><li><div>Nenhum quizz cadastrado para esse curso.</div></li></ul>";
+                            innerHTMLBuilder += "<ul><li><div>Nenhum quizz cadastrado para esse curso.</div></li></ul>";
                         } else {
                             var innerHTMLQuizzes = "";
                             // categoriza as quizzes por tipo
@@ -164,7 +166,7 @@ $(document).ready(function () {
                         async: false
                     }).done(function (data, textStatus, jqXHR) {
                         if (data.length <= 1) {
-                            document.getElementById(event.target.id).parentNode.innerHTML += "<ul><li><div>Nenhuma enquete cadastrada para esse curso.</div></li></ul>";
+                            innerHTMLBuilder += "<ul><li><div>Nenhuma enquete cadastrada para esse curso.</div></li></ul>";
                         } else {
                             var innerHTMLenquetes = "";
                             // categoriza as enquetes por tipo
@@ -199,12 +201,15 @@ $(document).ready(function () {
                             innerHTMLBuilder += innerHTMLenquetes;
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        console.log("<li>Requisição dos enquetes falhou.</li>");
+                        console.log("Requisição das enquetes falhou.");
                     });
 
                     // finaliza e adiciona o HTML ao list item pai
-                    var innerHTMLQuizzes = "";
-                    document.getElementById(event.target.id).parentNode.innerHTML += innerHTMLBuilder + "</ul>";
+                    if (document.getElementById("ulActivities" + event.target.id) != null) {
+                        document.getElementById(event.target.id).parentNode.innerHTML = document.getElementById(event.target.id).parentNode.innerHTML.substring(0, document.getElementById(event.target.id).parentNode.innerHTML.indexOf("<ul")) + innerHTMLBuilder + "</ul>";
+                    } else {
+                        document.getElementById(event.target.id).parentNode.innerHTML += innerHTMLBuilder + "</ul>";
+                    }
 
                     // o código de algum dos cursos foi carregado e o dispositivo tentará persistir na pasta localFolder
                     persistCoursePage();

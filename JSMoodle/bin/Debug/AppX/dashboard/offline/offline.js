@@ -9,16 +9,19 @@ $(document).ready(function () {
             try {
                 $('#courses').html(resultString.substring(0, resultString.indexOf("#WRITE_OK")));
                 $('.btn-floating').click(function (event) {
-                    if (document.getElementById("ulActivities" + event.target.id) != null) {
-                        $("#ulActivities" + event.target.id).parent().children("ul").each(function () {
-                            $(this).remove();
-                        });
+                    if (document.getElementById("ulActivities" + event.target.id) != null && document.getElementById("ulActivities" + event.target.id).style.display != "none") {
+                        document.getElementById("ulActivities" + event.target.id).style.display = "none";
                         $(this).val("➕");
                         $(this).attr("style", "");
                         return;
                     }
                     $(this).val("➖");
-                    $(this).attr("style", "background-color: #80cbc4");
+                    if (document.getElementById("ulActivities" + event.target.id) != null) {
+                        document.getElementById("ulActivities" + event.target.id).removeAttribute("style");
+                        $(this).attr("style", "background-color: #80cbc4");
+                    } else {
+                        $(this).attr("style", "background-color: #ffff66");
+                    }
                 });
             } catch (exception) {
                 // escrita do arquivo foi corrompida

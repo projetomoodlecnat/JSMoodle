@@ -12,12 +12,17 @@ var currentOperation;
 var operating;
 
 $(document).ready(function () {
-    $('.paragraphReload').click(function () {
-        window.location = window.location.toString();
+    $('.paragraphGoBack').click(function () {
+        $('.paragraphGoBack').html("<img src='../../images/universal/loading.gif' alt='animacao_carregando'>");
+        history.back();
     });
     $('.paragraphSave').click(function () {
-        operating = setInterval(checkCurrentOperation, 1000);
         currentOperation = "salvar_progresso";
+        operating = setInterval(checkCurrentOperation, 1000);
+    });
+    $('.paragraphClear').click(function () {
+        currentOperation = "excluir_progresso";
+        operating = setInterval(checkCurrentOperation, 1000);
     });
     activityType = window.location.toString().substring((window.location.toString().indexOf('?') + 1), window.location.toString().indexOf('='));
     operating = setInterval(checkCurrentOperation, 1000);
@@ -46,6 +51,8 @@ function inicializarPastas() {
     var quizzFolder = Windows.Storage.ApplicationData.current.localFolder.createFolderAsync("quizzes");
     quizzFolder.done(function () {
         quizzesFolder = quizzFolder.operation.getResults();
+        currentOperation = 'obter_arquivo';
+        setStatus("progressing", "Pastas carregadas. Tentando obter o arquivo... ");
     }, function () {
         try {
             quizzFolder = Windows.Storage.ApplicationData.current.localFolder.getFolderAsync("quizzes");
@@ -58,7 +65,9 @@ function inicializarPastas() {
                 return setStatus("error", "Não foi possível criar ou carregar a pasta de quizzes. Algum erro ocorreu! ");
             });
         } catch (exception) {
-            return endOperation();}
+            endOperation();
+            return;
+        }
     });
 }
 
@@ -172,7 +181,7 @@ function carregarQuestoesBanco() {
                         event.target.setAttribute("checked", true);
                     });
                 });
-                endOperation();
+                currentOperation = "salvar_progresso";
             }).error(function () {
                 setStatus("error", "A requisição à API do Moodle falhou na obtenção das questões. ");
                 endOperation();
@@ -189,7 +198,7 @@ function carregarQuestoesBanco() {
 }
 
 function salvarProgresso(activityFile) {
-    setStatus("progressing", "Salvando o seu processo num arquivo, aguarde!");
+    setStatus("progressing", "Salvando o seu processo num arquivo, aguarde... ");
     $('.paragraphSave').html("<img src='../../images/universal/loading.gif' alt='animacao_carregando'>");
     var savingOperation = Windows.Storage.FileIO.writeTextAsync(activityFile, $('#content').html());
     savingOperation.done(function () {
@@ -202,6 +211,27 @@ function salvarProgresso(activityFile) {
         $('.paragraphSave').html('SALVAR O SEU PROGRESSO');
         endOperation();
         return;
+    });
+}
+
+function excluirProgresso(activityFile) {
+    setStatus("progressing", "Excluindo o seu progresso dos arquivos, aguarde... ");
+    $('.paragraphClear').html("<img src='../../images/universal/loading.gif' alt='animacao_carregando'>");
+    var fileDeleteOperation = activityFile.deleteAsync(Windows.Storage.StorageDeleteOption.permanentDelete);
+    fileDeleteOperation.done(function () {
+        $('#content').html("Excluído com sucesso. Recarregarei a página... ");
+        setTimeout(function () {
+            window.location = window.location.toString();
+            console.log("deletion_ok");
+        }, 2000);
+        endOperation();
+    }, function () {
+        $('#content').html("Falha ao excluir o arquivo corrompido. Tente excluir o arquivo manualmente!");
+        setTimeout(function () {
+            window.location = "/index.html";
+            console.log("deletion_failed");
+        }, 2000);
+        endOperation();
     });
 }
 
@@ -234,6 +264,10 @@ function checkCurrentOperation() {
         case 'salvar_progresso':
             currentOperation = 'working_salvar_progresso';
             salvarProgresso(activityFile);
+            break;
+        case 'excluir_progresso':
+            currentOperation = 'working_excluir_progresso';
+            excluirProgresso(activityFile);
             break;
         default:
             break;

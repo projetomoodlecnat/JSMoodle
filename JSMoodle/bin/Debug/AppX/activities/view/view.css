@@ -7,7 +7,7 @@
     text-align: justify;
 }
 
-.paragraphReload {
+.paragraphGoBack {
     background-color: blue;
     color: white;
     height: 20px;
@@ -24,7 +24,16 @@
     margin-top: -10px;
 }
 
-.paragraphReload img {
+.paragraphClear {
+    background-color: red;
+    color: white;
+    height: 20px;
+    width: 100%;
+    cursor: pointer;
+    margin-top: -10px;
+}
+
+.loadingHolder img {
     height: 20px;
     width: 20px;
 }

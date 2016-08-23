@@ -3,6 +3,9 @@
   touch-action: manipulation;
   */
   padding: 12px 12px 12px 12px;
+  overflow-y: auto;
+  overflow-x: auto;
+  min-width: 300px;
 }
 
 .imgOfflineNavigation {
