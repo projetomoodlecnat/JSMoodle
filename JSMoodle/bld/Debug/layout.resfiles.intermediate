@@ -80,7 +80,8 @@ images\universal\loading.gif
 images\universal\navegacaooffline.jpg
 images\Wide310x150Logo.scale-200.png
 index.html
-js\index.js
+index.js
+js\applib.js
 js\jquery-2.2.4.js
 js\materialize.js
 js\materialize.min.js

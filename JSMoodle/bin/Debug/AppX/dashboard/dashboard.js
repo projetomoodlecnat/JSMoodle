@@ -212,7 +212,7 @@ $(document).ready(function () {
                     }
 
                     // o código de algum dos cursos foi carregado e o dispositivo tentará persistir na pasta localFolder
-                    persistCoursePage();
+                    persistCoursesList();
 
                     unsetTooltips();
                     setTooltips();
@@ -234,18 +234,6 @@ $(document).ready(function () {
             $('#courses').html("<p class='red-text'>A consulta à API falhou.</p>");
     });
 });
-
-// separa a string de cookies e transforma em array
-
-function cookiesToDict() {
-    var hashTable = {}
-    var i = 0;
-    for (; document.cookie.split(";")[i];) {
-        hashTable[document.cookie.split(";")[i].substring(0, document.cookie.split(";")[i].indexOf("=")).trim()] = document.cookie.split(";")[i].substring(document.cookie.split(";")[i].indexOf("=") + 1);
-        i++;
-    }
-    return hashTable;
-}
 
 // toggle ON/OFF das tooltips da interface
 
@@ -295,10 +283,11 @@ function getUnixTime() {
     return Math.round(new Date().getTime() / 1000);
 }
 
-function persistCoursePage() {
+function persistCoursesList() {
     var initiatePersistence = Windows.Storage.ApplicationData.current.localFolder.createFileAsync("dashboard.html");
+    // compareCoursesLists(readFromCreatedFile.operation.getResults(), parseCoursesListFromFile(readFromCreatedFile.operation.getResults()), parseCoursesListFromPage())
     initiatePersistence.done(function () {
-        var writeOnCreatedFile = Windows.Storage.FileIO.writeTextAsync(initiatePersistence.operation.getResults(), $('#courses').html() + "#WRITE_OK");
+        var writeOnCreatedFile = Windows.Storage.FileIO.writeTextAsync(initiatePersistence.operation.getResults(), $('#courses').html());
         writeOnCreatedFile.done(function () {
             console.log("write_ok");
         }, function () {
@@ -307,14 +296,44 @@ function persistCoursePage() {
     }, function () {
         var getCoursesFromFile = Windows.Storage.ApplicationData.current.localFolder.getFileAsync("dashboard.html");
         getCoursesFromFile.done(function () {
-            var writeOnRetrievedFile = Windows.Storage.FileIO.writeTextAsync(getCoursesFromFile.operation.getResults(), $('#courses').html() + "#WRITE_OK");
-            writeOnRetrievedFile.done(function () {
-                console.log("write_ok");
-            }, function () {
-                console.log("failed_write_or_retrieval");
-            });
+            var readFromCreatedFile = Windows.Storage.FileIO.readTextAsync(getCoursesFromFile.operation.getResults());
+            readFromCreatedFile.done(function () {
+                var writeOnRetrievedFile = Windows.Storage.FileIO.writeTextAsync(getCoursesFromFile.operation.getResults(), compareCoursesLists(readFromCreatedFile.operation.getResults(), parseCoursesListFromFile(readFromCreatedFile.operation.getResults()), parseCoursesListFromPage()));
+                writeOnRetrievedFile.done(function () {
+                    console.log("write_ok");
+                }, function () {
+                    console.log("failed_write_or_retrieval");
+                });
+            }, function () { });
         }, function () {
             console.log("file_exists_retrieval_failed");
         });
     });
+}
+
+function parseCoursesListFromFile(dashboardFileContent) {
+    return dashboardFileContent.split('</li><br>');
+}
+
+function parseCoursesListFromPage() {
+    return $('#courses').html().split('</li><br>');
+}
+
+function compareCoursesLists(parsedFileString, parsedFileList, pageList) {
+    finalHTMLList = "";
+    pageListI = 0;
+    parsedFileListI = 0;
+    for (pageListI; pageListI < pageList.length; pageListI++) {
+        if (parsedFileString.indexOf(pageList[pageListI].substring(pageList[pageListI].indexOf('index.html?id='), pageList[pageListI].indexOf('index.html?id=') + 15)) == -1) {
+            finalHTMLList += pageList[pageListI] + "</li><br>";
+        } else {
+            if (pageList[pageListI].indexOf('ulActivities') == -1) {
+                finalHTMLList += parsedFileList[parsedFileListI] + "</li><br>";
+            } else {
+                finalHTMLList += pageList[pageListI] + "</li><br>";
+            }
+            parsedFileListI++;
+        }
+    }
+    return finalHTMLList;
 }

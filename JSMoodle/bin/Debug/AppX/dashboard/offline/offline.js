@@ -7,7 +7,8 @@ $(document).ready(function () {
         readFile.done(function () {
             resultString = readFile.operation.getResults();
             try {
-                $('#courses').html(resultString.substring(0, resultString.indexOf("#WRITE_OK")));
+                //$('#courses').html(resultString.substring(0, resultString.indexOf("#WRITE_OK")));
+                $('#courses').html(resultString);
                 $('.btn-floating').click(function (event) {
                     if (document.getElementById("ulActivities" + event.target.id) != null && document.getElementById("ulActivities" + event.target.id).style.display != "none") {
                         document.getElementById("ulActivities" + event.target.id).style.display = "none";

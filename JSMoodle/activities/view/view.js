@@ -6,6 +6,7 @@ var enquetesFolder;
 var activityType;
 var activityFile;
 var activityID;
+var offline = false;
 
 // variáveis que controlam a sequência de operações
 var currentOperation;
@@ -100,19 +101,28 @@ function carregarArquivoNaInterface(file) {
         setStatus("progressing", "Lendo do arquivo e transformando na interface... ");
         var readFromFile = Windows.Storage.FileIO.readTextAsync(file);
         readFromFile.done(function () {
-            setStatus("success", "Arquivo carregado com sucesso. ");
-            $('#content').html(readFromFile.operation.getResults());
-            $('input[type="radio"]').each(function () {
-                rdbutton = $(this);
-                rdbutton.click(function () {
-                    $('input[name="' + event.target.name + '"]').each(function () {
-                        $(this).prop("checked", false);
+            if (readFromFile.operation.getResults() == "") {
+                if (offline) {
+                    setStatus("neutral", "Você não tem a atividade salva no dispositivo.");
+                } else {
+                    currentOperation = 'carregar_questoes_banco';
+                    return;
+                }
+            } else {
+                setStatus("success", "Arquivo carregado com sucesso. ");
+                $('#content').html(readFromFile.operation.getResults());
+                $('input[type="radio"]').each(function () {
+                    rdbutton = $(this);
+                    rdbutton.click(function () {
+                        $('input[name="' + event.target.name + '"]').each(function () {
+                            $(this).prop("checked", false);
+                        });
+                        $(event.target).prop("checked", true);
+                        event.target.checked = true;
+                        event.target.setAttribute("checked", true);
                     });
-                    $(event.target).prop("checked", true);
-                    event.target.checked = true;
-                    event.target.setAttribute("checked", true);
                 });
-            });
+            }
             endOperation();
             return;
         }, function () {
@@ -188,12 +198,11 @@ function carregarQuestoesBanco() {
             });
         }
     }).error(function () {
-        if (cookiesDict["databaseType"] == null) {
-            setStatus("neutral", "Não foi possível determinar o tipo do banco para fazer a requisição. Verifique a conexão com a internet.");
-        } else {
-            setStatus("error", "A requisição de acesso à API do Moodle falhou no primeiro estágio. Verifique a conexão com a internet!");
-        }
-        endOperation();
+        // Requisição à API falhou
+        // Tentará carregar o arquivo do dispositivo
+        offline = true;
+        setStatus("neutral", "A requisição de acesso à API do Moodle falhou no primeiro estágio. Você está conectado à internet? Se não, aguarde enquanto procuro o arquivo da atividade... ");
+        currentOperation = 'ler_arquivo';
     });
 }
 
@@ -276,14 +285,4 @@ function checkCurrentOperation() {
 
 function endOperation() {
     clearInterval(operating);
-}
-
-function cookiesToDict() {
-    var hashTable = {}
-    var i = 0;
-    for (; document.cookie.split(";")[i];) {
-        hashTable[document.cookie.split(";")[i].substring(0, document.cookie.split(";")[i].indexOf("=")).trim()] = document.cookie.split(";")[i].substring(document.cookie.split(";")[i].indexOf("=") + 1);
-        i++;
-    }
-    return hashTable;
 }

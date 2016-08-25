@@ -140,9 +140,10 @@
     <Content Include="images\universal\navegacaooffline.jpg" />
     <Content Include="images\Wide310x150Logo.scale-200.png" />
     <Content Include="index.html" />
+    <Content Include="index.js" />
+    <Content Include="js\applib.js" />
     <Content Include="js\jquery-2.2.4.js" />
     <Content Include="css\main.css" />
-    <Content Include="js\index.js" />
     <Content Include="js\materialize.js" />
     <Content Include="js\materialize.min.js" />
     <None Include="JSMoodle_TemporaryKey.pfx" />

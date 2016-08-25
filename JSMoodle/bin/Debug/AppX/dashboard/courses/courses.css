@@ -1,11 +1,5 @@
-﻿.turnback {
-    text-decoration: none;
-    color: black;
-}
-
-.turnback:hover {
-    text-decoration: underline;
-    color: blue;
+﻿.btnVoltar:hover {
+    font-weight: bold;
 }
 
 .header {
