@@ -111,17 +111,7 @@ function carregarArquivoNaInterface(file) {
             } else {
                 setStatus("success", "Arquivo carregado com sucesso. ");
                 $('#content').html(readFromFile.operation.getResults());
-                $('input[type="radio"]').each(function () {
-                    rdbutton = $(this);
-                    rdbutton.click(function () {
-                        $('input[name="' + event.target.name + '"]').each(function () {
-                            $(this).prop("checked", false);
-                        });
-                        $(event.target).prop("checked", true);
-                        event.target.checked = true;
-                        event.target.setAttribute("checked", true);
-                    });
-                });
+                loadOrReloadListeners();
             }
             endOperation();
             return;
@@ -178,19 +168,9 @@ function carregarQuestoesBanco() {
                     }
                     stringHTMLBuilder += "<li><input class='with-gap' name='" + data[i][data[0].indexOf("QUESTIONID")] + "' type='radio' style='margin-right: 5px; float:left; position:static; opacity: 1'>" + data[i][data[0].indexOf("ANSWER")] + "</li>";
                 }
-                $("#content").html(stringHTMLBuilder);
+                $("#content").html(stringHTMLBuilder+"<br><p class='paragraphFinishAttempt'>FINALIZAR A SUA TENTATIVA</p>");
                 setStatus("succeeded", "As questões foram carregadas com sucesso e renderizadas na interface. ");
-                $('input[type="radio"]').each(function () {
-                    rdbutton = $(this);
-                    rdbutton.click(function () {
-                        $('input[name="' + event.target.name + '"]').each(function () {
-                            $(this).prop("checked", false);
-                        });
-                        $(event.target).prop("checked", true);
-                        event.target.checked = true;
-                        event.target.setAttribute("checked", true);
-                    });
-                });
+                loadOrReloadListeners();
                 currentOperation = "salvar_progresso";
             }).error(function () {
                 setStatus("error", "A requisição à API do Moodle falhou na obtenção das questões. ");
@@ -285,4 +265,78 @@ function checkCurrentOperation() {
 
 function endOperation() {
     clearInterval(operating);
+}
+
+function loadOrReloadListeners() {
+    $('input[type="radio"]').each(function () {
+        rdbutton = $(this);
+        rdbutton.click(function () {
+            $('input[name="' + event.target.name + '"]').each(function () {
+                $(this).prop("checked", false);
+            });
+            $(event.target).prop("checked", true);
+            event.target.checked = true;
+            event.target.setAttribute("checked", true);
+        });
+    });
+    $('.paragraphFinishAttempt').click(function () {
+        $.ajax(cookiesDict["api_Path"] + "dbproperties?index=" + cookiesDict["databaseIndex"], {
+            contentType: "application/json",
+            method: "GET",
+            async: true,
+            success: function (firstStep) {
+                try {
+                    firstStep = JSON.parse(firstStep);
+                    document.cookie = "databaseType=" + firstStep[0]["databaseType"];
+                    document.cookie = "databaseIndex=" + firstStep[1]["idconexao"];
+                } catch (Exception) {
+                    setStatus("error", "Parsing dos dados da API falhou no primeiro estágio.");
+                    endOperation();
+                    return;
+                }
+                $.post({
+                    url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                    async: true,
+                    data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[11]["comando"] + " where fullmodule.instance =" + activityID }
+                }).done(function (data, textStatus, jqXHR) {
+                    if (data.length == 1) {
+                        // o registro em question usages não existe. iniciam-se as operações para inserir novos valores na tabela.
+                        $.post({
+                            url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                            async: true,
+                            data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[12]["comando"] + " where fullmodule.instance=" + activityID + " order by mc.id limit 1" }
+                        }).done(function (data, textStatus, jqXHR) {
+                            try {
+                                var contextID = data[1][data[0].indexOf("ID")];
+                                $.post({
+                                    url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                    async: true,
+                                    data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": "select id from mdl_question_usages order by id desc limit 1" }
+                                }).done(function (data, textStatus, jqXHR) {
+                                    try {
+                                        $.post({
+                                            url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                            async: true,
+                                            data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[13]["comando"] + " values (" + data[1][0] + "," + contextID + ",'mod quiz','deferredfeedback') returning id" }
+                                        }).done(function (data, textStatus, jqXHR) {
+                                            var questionUsageID = data[1][0];
+                                            // a partir do ID recém-inserido na tabela mdl_question_usages retornado será possível construir tentativas de respostas
+                                        }).error(function () {
+                                        });
+                                    } catch (exception) { }
+                                }).error(function () { });
+                            } catch(exception) {}
+                        }).error(function () { });
+                    } else {
+                        // o registro em question_usages existe. não será necessário criar um novo manualmente.
+                        // deve ser o caso na maioria das vezes!
+                        var questionUsageID = data[1][data[0].indexOf("ID")];
+                    }
+                }).error(function () {
+                });
+            }
+        }).error(function () {
+            // Requisição à API falhou
+        });
+    });
 }
