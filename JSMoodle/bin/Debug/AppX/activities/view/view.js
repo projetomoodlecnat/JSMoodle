@@ -312,12 +312,12 @@ function loadOrReloadListeners() {
                                     url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                                     async: true,
                                     data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": "select id from mdl_question_usages order by id desc limit 1" }
-                                }).done(function (data, textStatus, jqXHR) {
+                                }).done(function (firstdata, textStatus, jqXHR) {
                                     try {
                                         $.post({
                                             url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                                             async: true,
-                                            data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[13]["comando"] + " values (" + data[1][0] + "," + contextID + ",'mod quiz','deferredfeedback') returning id" }
+                                            data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[13]["comando"] + " values (" + (parseInt(firstdata[1][0]) + 1) + "," + contextID + ",'mod quiz','deferredfeedback') returning id" }
                                         }).done(function (data, textStatus, jqXHR) {
                                             var questionUsageID = data[1][0];
                                             // a partir do ID recém-inserido na tabela mdl_question_usages retornado será possível construir tentativas de respostas
