@@ -21,3 +21,9 @@ function isAppOnline() {
         return false;
     }
 }
+
+// retornar a data atual em timestamp (formato unix) para comparação na tabela MDL_ASSIGN
+
+function getUnixTime() {
+    return Math.round(new Date().getTime() / 1000);
+}

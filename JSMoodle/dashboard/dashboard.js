@@ -277,12 +277,6 @@ function unsetTooltips() {
     });
 }
 
-// retornar a data atual em timestamp (formato unix) para comparação na tabela MDL_ASSIGN
-
-function getUnixTime() {
-    return Math.round(new Date().getTime() / 1000);
-}
-
 function persistCoursesList() {
     var initiatePersistence = Windows.Storage.ApplicationData.current.localFolder.createFileAsync("dashboard.html");
     // compareCoursesLists(readFromCreatedFile.operation.getResults(), parseCoursesListFromFile(readFromCreatedFile.operation.getResults()), parseCoursesListFromPage())
