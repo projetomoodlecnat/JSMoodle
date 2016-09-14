@@ -285,6 +285,7 @@ function processarTentativa(questionUsageID, connectionIndex, command) {
         selectedElement = $(this);
         var finalFractionGrade = 0.0
         var rightAnswerAndValue = ["", -9999.0];
+        var attempt_to_steps = []
         command = command.replace(/[\r\n]/g, "");
         $.post({
             url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
@@ -301,7 +302,6 @@ function processarTentativa(questionUsageID, connectionIndex, command) {
                     }
                 }
             }
-
             for (i = 1; i < data.length; i++) {
                 if (selectedElement[0].nextSibling.wholeText.indexOf(data[i][data[0].indexOf("ANSWER")]) > -1) {
                     finalFractionGrade += parseFloat(data[i][data[0].indexOf("FRACTION")]);
@@ -311,16 +311,43 @@ function processarTentativa(questionUsageID, connectionIndex, command) {
                         data: { "connectionIndex": connectionIndex, "query": "select id from mdl_question_attempts order by id desc limit 1" }
                     }).done(function (secondData, textStatus, jqXHR) {
                         // data[i][data[0].indexOf("QUESTIONTEXT")].split("<p>");
+                        splittedText = data[i][data[0].indexOf("QUESTIONTEXT")].substring(data[i][data[0].indexOf("QUESTIONTEXT")].indexOf(">") + 1);
+                        splittedText = splittedText.substring(splittedText.indexOf(">") + 1);
+                        splittedText = splittedText.substring(0, splittedText.indexOf("<"));
+                        secondData[1][0] = parseInt(secondData[1][0]) + 1;
                         $.post({
                             url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                             async: false,
                             data: {
                                 "connectionIndex": connectionIndex, "query": "insert into mdl_question_attempts (id, questionusageid, slot, behaviour, questionid, variant, maxmark, minfraction, maxfraction, flagged, questionsummary, rightanswer, responsesummary, timemodified) values ("
-                                    + (parseInt(secondData[1][0]) + 1).toString() + "," + questionUsageID.toString() + "," + data[i][data[0].indexOf("SLOT")] + ",'" + data[i][data[0].indexOf("PREFERREDBEHAVIOUR")] + "'," + data[i][data[0].indexOf("QUESTIONID")] + ",1," + data[i][data[0].indexOf("MAXMARK")] +
-                                    ",0," + data[i][data[0].indexOf("FRACTION")] + ",0,'" + data[i][data[0].indexOf("QUESTIONTEXT")] + "','" + rightAnswerAndValue[0] + "',null," + getUnixTime().toString() + ")"
+                                    + secondData[1][0].toString() + "," + questionUsageID.toString() + "," + data[i][data[0].indexOf("SLOT")] + ",'" + data[i][data[0].indexOf("PREFERREDBEHAVIOUR")] + "'," + data[i][data[0].indexOf("QUESTIONID")] + ",1," + data[i][data[0].indexOf("MAXMARK")] +
+                                    ",0," + rightAnswerAndValue[1].toString() + ",0,'" + splittedText + "','" + rightAnswerAndValue[0] + "',null," + getUnixTime().toString() + ") returning id"
                             }
-                        }).done(function (data, textStatus, jqXHR) {
+                        }).done(function (insertData, textStatus, jqXHR) {
+                            // tentando contornar o problema do ID não ser serializado (auto-incremental)
+                            while (insertData.indexOf("duplicate") > -1) {
+                                secondData[1][0] += 1;
+                                $.post({
+                                    url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                    async: false,
+                                    data: {
+                                        "connectionIndex": connectionIndex, "query": "insert into mdl_question_attempts (id, questionusageid, slot, behaviour, questionid, variant, maxmark, minfraction, maxfraction, flagged, questionsummary, rightanswer, responsesummary, timemodified) values ("
+                                            + secondData[1][0].toString() + "," + questionUsageID.toString() + "," + data[i][data[0].indexOf("SLOT")] + ",'" + data[i][data[0].indexOf("PREFERREDBEHAVIOUR")] + "'," + data[i][data[0].indexOf("QUESTIONID")] + ",1," + data[i][data[0].indexOf("MAXMARK")] +
+                                            ",0," + rightAnswerAndValue[1].toString() + ",0,'" + data[i][data[0].indexOf("QUESTIONTEXT")] + "','" + rightAnswerAndValue[0] + "','" + selectedElement[0].nextSibling.wholeText + "'," + getUnixTime().toString() + ") returning id"
+                                    }
+                                }).done(function (data, textStatus, jqXHR) {
 
+                                }).error(function () {
+                                    setStatus("error", "Não consegui registrar as informações da sua tentativa no banco. Por favor, tente mais tarde. [1/4]");
+                                    return;
+                                });
+                            }
+                            try {
+                                attempt_to_steps_ids.push(insertData[1][0]);
+                            } catch (exception) {
+                                setStatus("error", "Não consegui registrar as informações da sua tentativa no banco. Por favor, tente mais tarde. [1/4]");
+                                return;
+                            }
                         });
                     });
                     break;
@@ -372,56 +399,44 @@ function loadOrReloadListeners() {
                 }
                 switch (activityType) {
                     case 'quizz':
-                        if (checarQuestoesSemResposta()) return;
                         $.post({
                             url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                             async: true,
-                            data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[11]["comando"] + " where fullmodule.instance =" + activityID }
+                            data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[12]["comando"] + " where fullmodule.instance=" + activityID + " order by mc.id limit 1" }
                         }).done(function (data, textStatus, jqXHR) {
-                            if (data.length == 1) {
-                                // o registro em question usages não existe. iniciam-se as operações para inserir novos valores na tabela.
+                            try {
+                                var contextID = data[1][data[0].indexOf("ID")];
                                 $.post({
                                     url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                                     async: true,
-                                    data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[12]["comando"] + " where fullmodule.instance=" + activityID + " order by mc.id limit 1" }
-                                }).done(function (data, textStatus, jqXHR) {
+                                    data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": "select id from mdl_question_usages order by id desc limit 1" }
+                                }).done(function (firstdata, textStatus, jqXHR) {
                                     try {
-                                        var contextID = data[1][data[0].indexOf("ID")];
                                         $.post({
                                             url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                                             async: true,
-                                            data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": "select id from mdl_question_usages order by id desc limit 1" }
-                                        }).done(function (firstdata, textStatus, jqXHR) {
-                                            try {
-                                                $.post({
-                                                    url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                                                    async: true,
-                                                    data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[13]["comando"] + " values (" + (parseInt(firstdata[1][0]) + 1) + "," + contextID + ",'mod quiz','deferredfeedback') returning id" }
-                                                }).done(function (data, textStatus, jqXHR) {
-                                                    // a partir do ID recém-inserido na tabela mdl_question_usages retornado será possível construir tentativas de respostas
-                                                    processarTentativa(data[1][0], (firstStep[1]["idconexao"] - 1), firstStep[14]["comando"]);
-                                                }).error(function () {
-                                                });
-                                            } catch (exception) {
-                                                setStatus("error", "Erro na submissão de sua tentativa. Por favor, tente novamente!");
-                                            }
-                                        }).error(function () { });
-                                    } catch (exception) { }
+                                            data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[13]["comando"] + " values (" + (parseInt(firstdata[1][0]) + 1) + "," + contextID + ",'mod quiz','deferredfeedback') returning id" }
+                                        }).done(function (data, textStatus, jqXHR) {
+                                            // a partir do ID recém-inserido na tabela mdl_question_usages retornado será possível construir tentativas de respostas
+                                            processarTentativa(data[1][0], (firstStep[1]["idconexao"] - 1), firstStep[14]["comando"]);
+                                        }).error(function () {
+                                            setStatus("error", "Erro na requisição de submissão de sua tentativa. Por favor, tente novamente!");
+                                        });
+                                    } catch (exception) {
+                                        setStatus("error", "Erro na requisição de submissão de sua tentativa. Por favor, tente novamente!");
+                                    }
                                 }).error(function () { });
-                            } else {
-                                // o registro em question_usages existe. não será necessário criar um novo manualmente.
-                                // deve ser o caso na maioria das vezes!
-                                processarTentativa(data[1][data[0].indexOf("ID")], (firstStep[1]["idconexao"] - 1), firstStep[14]["comando"]);
-                            }
-                        }).error(function () {
-                        });
+                            } catch (exception) { }
+                        }).error(function () { });
                         break;
                     default:
-                        break;
+                        break;}
+                                // o registro em question_usages existe. não será necessário criar um novo manualmente.
+                                // deve ser o caso na maioria das vezes!
+                                // processarTentativa(data[1][data[0].indexOf("ID")], (firstStep[1]["idconexao"] - 1), firstStep[14]["comando"]);
                 }
-            }
+            })
         }).error(function () {
             // Requisição à API falhou
         });
-    });
-}
+    }
