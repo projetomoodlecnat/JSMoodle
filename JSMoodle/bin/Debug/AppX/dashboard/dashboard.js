@@ -27,7 +27,7 @@ $(document).ready(function () {
             $.post({
                 url: cookiesDict["api_Path"] + "selector" + firstStep[0]["databaseType"],
                 async: true,
-                data: { "connectionIndex": cookiesDict["databaseIndex"], "query": firstStep[4]["comando"] + " where userid=" + cookiesDict["userId"] }
+                data: { "connectionIndex": cookiesDict["databaseIndex"], "query": firstStep[4]["comando"] + " where userid=" + cookiesDict["userID"] }
             }).done(function (data, textStatus, jqXHR) {
                 strBuilder = "";
                 var i = 1;

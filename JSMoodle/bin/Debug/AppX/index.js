@@ -55,7 +55,7 @@
                     switch (data.split(";")[0]) {
                         case "user_authenticated":
                             document.cookie = "api_Path=" + api_Path;
-                            document.cookie = "userId=" + data.split(";")[1];
+                            document.cookie = "userID=" + data.split(";")[1];
                             document.cookie = "username=" + data.split(";")[2];
                             document.getElementById("username").setAttribute("disabled", "true");
                             document.getElementById("password").setAttribute("disabled", "true");
