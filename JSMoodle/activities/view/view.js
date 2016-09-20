@@ -271,7 +271,8 @@ function endOperation() {
     clearInterval(operating);
 }
 
-// a ser implementado
+// TENTATIVAS
+
 function checarQuestoesSemResposta() {
     $(".questioncontainer input[checked='true']").each(function () {
 
@@ -279,21 +280,44 @@ function checarQuestoesSemResposta() {
     return false;
 }
 
+function contarQuestoesComResposta() {
+    i = 0;
+    $(".questioncontainer input[checked='true']").each(function () {
+        i++;
+    });
+    return i;
+}
+
+function stateQuizzAttempt(answer_fraction, max_fraction) {
+    if (answer_fraction == max_fraction) {
+        return "gradedright";
+    } else if (answer_fraction == 0) {
+        return "gradedwrong";
+    } else {
+        return "gradedpartial";
+    }
+}
+
 function processarTentativa(questionUsageID, connectionIndex, command) {
+    var isDone = false;
+    processedQuestionsLength = 0;
+
+    // variáveis de quizz
+    var finalFractionGrade = 0.0;
+    var layoutSlots = "";
+
     switch (activityType) {
         case 'quizz':
-            // variáveis que definem a nota final do aluno e parcial de cada questão, respectivamente
-            var finalFractionGrade = 0.0;
-            var rightAnswerAndValue;
-            var layoutSlots = "";
             // inserindo na tabela mdl_question_attempts e mdl_question_attempts_step
             $(".questioncontainer input[checked='true']").each(function () {
-                rightAnswerAndValue = ["", -9999.0];
                 selectedElement = $(this);
+                var persistAttemptInterval;
+                var persistAttemptIsWorking = "not_working";
+                var rightAnswerAndValue = ["", -9999.0];
                 command = command.replace(/[\r\n]/g, "");
                 $.post({
                     url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                    async: true,
+                    async: false,
                     data: { "connectionIndex": connectionIndex, "query": command + " where mdl_quiz_slots.id=" + selectedElement.attr("slot") }
                 }).done(function (data, textStatus, jqXHR) {
                     for (i = 1; i < data.length; i++) {
@@ -309,10 +333,9 @@ function processarTentativa(questionUsageID, connectionIndex, command) {
                     for (i = 1; i < data.length; i++) {
                         if (selectedElement[0].nextSibling.wholeText.indexOf(data[i][data[0].indexOf("ANSWER")]) > -1) {
                             layoutSlots += data[i][data[0].indexOf("SLOT")] + ",";
-                            finalFractionGrade += parseFloat(data[i][data[0].indexOf("FRACTION")]);
                             $.post({
                                 url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                                async: true,
+                                async: false,
                                 data: { "connectionIndex": connectionIndex, "query": "select id from mdl_question_attempts order by id desc limit 1" }
                             }).done(function (secondData, textStatus, jqXHR) {
                                 splittedText = data[i][data[0].indexOf("QUESTIONTEXT")].substring(data[i][data[0].indexOf("QUESTIONTEXT")].indexOf(">") + 1);
@@ -327,131 +350,161 @@ function processarTentativa(questionUsageID, connectionIndex, command) {
                                             + secondData[1][0].toString() + "," + questionUsageID.toString() + "," + data[i][data[0].indexOf("SLOT")] + ",'" + data[i][data[0].indexOf("PREFERREDBEHAVIOUR")] + "'," + data[i][data[0].indexOf("QUESTIONID")] + ",1," + data[i][data[0].indexOf("MAXMARK")] +
                                             ",0," + rightAnswerAndValue[1].toString() + ",0,'" + splittedText + "','" + rightAnswerAndValue[0] + "',null," + getUnixTime().toString() + ") returning id"
                                     }
-                                }).done(function (serialData, textStatus, jqXHR) {
+                                }).done(function (insertSerialData, textStatus, jqXHR) {
                                     // tentando contornar o problema do ID não ser serializado (auto-incremental)
-                                    while (serialData.indexOf("duplicate") > -1) {
-                                        secondData[1][0] += 1;
-                                        $.post({
-                                            url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                                            async: false,
-                                            data: {
-                                                "connectionIndex": connectionIndex, "query": "insert into mdl_question_attempts (id, questionusageid, slot, behaviour, questionid, variant, maxmark, minfraction, maxfraction, flagged, questionsummary, rightanswer, responsesummary, timemodified) values ("
-                                                    + secondData[1][0].toString() + "," + questionUsageID.toString() + "," + data[i][data[0].indexOf("SLOT")] + ",'" + data[i][data[0].indexOf("PREFERREDBEHAVIOUR")] + "'," + data[i][data[0].indexOf("QUESTIONID")] + ",1," + data[i][data[0].indexOf("MAXMARK")] +
-                                                    ",0," + rightAnswerAndValue[1].toString() + ",0,'" + data[i][data[0].indexOf("QUESTIONTEXT")] + "','" + rightAnswerAndValue[0] + "','" + selectedElement[0].nextSibling.wholeText + "'," + getUnixTime().toString() + ") returning id"
+                                    var persistAttemptInterval = setInterval(function () {
+                                        if (insertSerialData.indexOf("duplicate") > -1) {
+                                            if (persistAttemptIsWorking != "working_first") {
+                                                persistAttemptIsWorking = "working_first";
+                                                secondData[1][0] += 1;
+                                                $.post({
+                                                    url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                                    async: false,
+                                                    data: {
+                                                        "connectionIndex": connectionIndex, "query": "insert into mdl_question_attempts (id, questionusageid, slot, behaviour, questionid, variant, maxmark, minfraction, maxfraction, flagged, questionsummary, rightanswer, responsesummary, timemodified) values ("
+                                                            + secondData[1][0].toString() + "," + questionUsageID.toString() + "," + data[i][data[0].indexOf("SLOT")] + ",'" + data[i][data[0].indexOf("PREFERREDBEHAVIOUR")] + "'," + data[i][data[0].indexOf("QUESTIONID")] + ",1," + data[i][data[0].indexOf("MAXMARK")] +
+                                                            ",0," + rightAnswerAndValue[1].toString() + ",0,'" + data[i][data[0].indexOf("QUESTIONTEXT")] + "','" + rightAnswerAndValue[0] + "','" + selectedElement[0].nextSibling.wholeText + "'," + getUnixTime().toString() + ")"
+                                                    }
+                                                }).done(function (insertSerialData) {
+                                                    persistAttemptIsWorking = "done_working_first";
+                                                }).error(function () {
+                                                    setStatus("error", "Requisição à API falhou. Por favor, tente mais tarde.");
+                                                    clearInterval(persistAttemptInterval);
+                                                    return;
+                                                });
                                             }
-                                        }).done(function (serialData) { }).error(function () {
-                                            setStatus("error", "Requisição à API falhou. Por favor, tente mais tarde.");
-                                            return;
-                                        });
-                                    }
-
-                                    try {
-                                        $.post({
-                                            url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                                            async: false,
-                                            data: {
-                                                "connectionIndex": connectionIndex, "query": "select id from mdl_quiz_attempts order by id desc limit 1"
-                                            }
-                                        }).done(function (serialData2, textStatus, jqXHR) {
-                                            serialData2[1][0] = parseInt(serialData2[1][0]) + 1;
+                                        } else {
+                                            clearInterval(persistAttemptInterval);
                                             $.post({
                                                 url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                                                 async: false,
                                                 data: {
-                                                    "connectionIndex": connectionIndex, "query": "insert into mdl_question_attempt_steps(id, questionattemptid, sequencenumber, state, fraction, timecreated, userid) values (" +
-                                                        serialData2[1][0].toString() + "," + secondData[1][0].toString + ",1," + stateQuizzAttempt(parseFloat(data[i][data[0].indexOf("FRACTION")]), rightAnswerAndValue[1]) +
-                                                        "," + data[i][data[0].indexOf("FRACTION")] + "," + getUnixTime().toString()+ "," + cookiesDict["userID"] + ")"
+                                                    "connectionIndex": connectionIndex, "query": "select id from mdl_question_attempt_steps order by id desc limit 1"
                                                 }
-                                            }).done(function (insertData, textStatus, jqXHR) {
-                                                while (serialData2.indexOf("duplicate") > -1) {
-                                                    secondData2[1][0] += 1;
-                                                    $.post({
-                                                        url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                                                        async: false,
-                                                        data: {
-                                                            "connectionIndex": connectionIndex, "query": "insert into mdl_question_attempt_steps(id, questionattemptid, sequencenumber, state, fraction, timecreated, userid) values (" +
-                                                                serialData2[1][0].toString() + "," + secondData[1][0].toString + ",1," + stateQuizzAttempt(parseFloat(data[i][data[0].indexOf("FRACTION")]), rightAnswerAndValue[1]) +
-                                                                "," + data[i][data[0].indexOf("FRACTION")] + "," + getUnixTime().toString()+ "," + cookiesDict["userID"] + ")"
-                                                        }
-                                                    }).done(function (serialData2) { }).error(function () {
-                                                        setStatus("error", "Requisição à API falhou. Por favor, tente mais tarde.");
-                                                        return;
+                                            }).done(function (secondData2, textStatus, jqXHR) {
+                                                secondData2[1][0] = parseInt(secondData2[1][0]) + 1;
+                                                $.post({
+                                                    url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                                    async: false,
+                                                    data: {
+                                                        "connectionIndex": connectionIndex, "query": "insert into mdl_question_attempt_steps(id, questionattemptid, sequencenumber, state, fraction, timecreated, userid) values (" +
+                                                            secondData2[1][0].toString() + "," + secondData[1][0].toString() + ",1,'" + stateQuizzAttempt(parseFloat(data[i][data[0].indexOf("FRACTION")]), rightAnswerAndValue[1]) +
+                                                            "'," + data[i][data[0].indexOf("FRACTION")] + "," + getUnixTime().toString() + "," + cookiesDict["userID"] + ")"
                                                     }
-                                                    );
-                                                }
+                                                }).done(function (insertSerialData, textStatus, jqXHR) {
+                                                    var persistAttemptInterval = setInterval(function () {
+                                                        if (insertSerialData.indexOf("duplicate") > -1) {
+                                                            if (persistentAttemptIsWorking != "working_second") {
+                                                                secondData2[1][0] += 1;
+                                                                persistAttemptIsWorking = "working_second";
+                                                                $.post({
+                                                                    url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                                                    async: false,
+                                                                    data: {
+                                                                        "connectionIndex": connectionIndex, "query": "insert into mdl_question_attempt_steps(id, questionattemptid, sequencenumber, state, fraction, timecreated, userid) values (" +
+                                                                            secondData2[1][0].toString() + "," + secondData[1][0].toString() + ",1,'" + stateQuizzAttempt(parseFloat(data[i][data[0].indexOf("FRACTION")]), rightAnswerAndValue[1]) +
+                                                                            "'," + data[i][data[0].indexOf("FRACTION")] + "," + getUnixTime().toString() + "," + cookiesDict["userID"] + ")"
+                                                                    }
+                                                                }).done(function (insertSerialData, textStatus, jqXHR) {
+                                                                    persistAttemptIsWorking = "done_working_second";
+                                                                });
+                                                            }
+                                                        } else {
+                                                            clearInterval(persistAttemptInterval);
+                                                            processedQuestionsLength++;
+                                                            if (processedQuestionsLength == contarQuestoesComResposta()) {
+                                                                isDone = true;
+                                                            }
+                                                        }
+                                                    }, 500);
+                                                });
                                             });
-                                        }).error(function () {
-                                            setStatus("error", "Requisição à API falhou. Por favor, tente mais tarde.");
-                                            return;
-                                        });
-                                    } catch (exception) {
-                                        setStatus("error", "Não consegui registrar as informações da sua tentativa no banco. Por favor, tente mais tarde.");
-                                        return;
-                                    }
+                                        }
+                                    }, 500);
                                 });
                             });
                             finalFractionGrade += parseFloat(data[i][data[0].indexOf("FRACTION")]) * parseFloat(data[i][data[0].indexOf("MAXMARK")]);
                             break;
                         }
                     }
-
-                    // mdl_quiz_attempts
-                    layoutSlots += "0";
+                });
+            });
+            // finalizou de processar todas as questões com resposta marcada
+            $("input").prop("disabled", true);
+            break;
+        default:
+            break;
+    }
+    setStatus("progressing", "Sua tentativa está sendo cadastrada no banco de dados, aguarde...");
+    var greaterInterval = setInterval(function () {
+        var persistAttemptInterval;
+        if (isDone && activityType=='quizz') {
+            clearInterval(greaterInterval);
+            // mdl_quiz_attempts
+            layoutSlots += "0";
+            $.post({
+                url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                async: false,
+                data: {
+                    "connectionIndex": connectionIndex, "query": "select id, (select attempt from mdl_quiz_attempts where userid=" + cookiesDict["userID"] + " and quiz=" + activityID + " order by attempt desc limit 1) attempt, (select attempts from mdl_quiz where id=" + activityID + ") max_attempts from mdl_quiz_attempts order by id desc limit 1"
+                }
+            }).done(function (serialData, textStatus, jqXHR) {
+                serialData[1][0] = parseInt(serialData[1][0]) + 1;
+                serialData[1][2] = parseInt(serialData[1][2]);
+                if (serialData[1][1] == "") {
+                    serialData[1][1] = 0;
+                }
+                serialData[1][1] = parseInt(serialData[1][1]) + 1;
+                /*if (serialData[1][1] >= serialData[1][2] && serialData[1][2] != 0) {
+                    // fazer tentativas estouradas
+                    return;
+                }*/
+                try {
                     $.post({
                         url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                         async: false,
                         data: {
-                            "connectionIndex": connectionIndex, "query": "select id, (select attempt from mdl_quiz_attempts where userid=" + cookiesDict["userID"] + " and quiz=" + activityID + " order by attempt desc limit 1) attempt, (select attempts from mdl_quiz where id=" + activityID + ") max_attempts from mdl_quiz_attempts order by id desc limit 1"
+                            "connectionIndex": connectionIndex, "query": "insert into mdl_quiz_attempts(id, quiz, userid, attempt, uniqueid, layout, currentpage, preview, state, timestart, timefinish, timemodified, timecheckstate, sumgrades) values (" +
+                                serialData[1][0].toString() + "," + activityID + "," + cookiesDict["userID"] + "," + serialData[1][1].toString() + "," + questionUsageID + ",'" + layoutSlots + "',0,1,'finished'," + getUnixTime().toString() + "," + getUnixTime().toString() + "," + getUnixTime().toString() + ",0," + finalFractionGrade + ")"
                         }
-                    }).done(function (serialData, textStatus, jqXHR) {
-                        serialData[1][0] = parseInt(serialData[1][0]) + 1;
-                        serialData[1][2] = parseInt(serialData[1][2]);
-                        if (serialData[1][1] == "") {
-                            serialData[1][1] = 0;
-                        }
-                        serialData[1][1] += 1;
-                        if (serialData[1][1] >= serialData[1][2] && serialData[1][2] != 0) {
-                            // fazer tentativas estouradas
-                            return;
-                        }
-
-                        try {
-                            $.post({
-                                url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                                async: false,
-                                data: {
-                                    "connectionIndex": connectionIndex, "query": "insert into mdl_quiz_attempts(id, quiz, userid, attempt, uniqueid, layout, currentpage, preview, state, timestart, timefinish, timemodified, timecheckstate, sumgrades) values (" +
-                                        serialData[1][0].toString() + "," + activityID + "," + cookiesDict["userID"] + "," + serialData[1][1].toString() + "," + questionUsageID + "," + layoutSlots + ",0,1,completed," + getUnixTime().toString() + "," + getUnixTime().toString() + "," + getUnixTime().toString() + ",0," + finalFractionGrade + ")"
-                                }
-                            }).done(function (insertData, textStatus, jqXHR) {
-                                while (insertData.indexOf("duplicate") > -1) {
+                    }).done(function (insertSerialData, textStatus, jqXHR) {
+                        persistAttemptInterval = setInterval(function () {
+                            if (insertSerialData.indexOf("duplicate") > -1) {
+                                if (persistAttemptIsWorking != "working_third") {
+                                    persistAttemptIsWorking = "working_third";
                                     serialData[1][0] += 1;
                                     $.post({
                                         url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                                         async: false,
                                         data: {
                                             "connectionIndex": connectionIndex, "query": "insert into mdl_quiz_attempts(id, quiz, userid, attempt, uniqueid, layout, currentpage, preview, state, timestart, timefinish, timemodified, timecheckstate, sumgrades) values (" +
-                                                serialData[1][0].toString() + "," + activityID + "," + cookiesDict["userID"] + "," + serialData[1][1].toString() + "," + questionUsageID + "," + layoutSlots + ",0,1,completed," + getUnixTime().toString() + "," + getUnixTime().toString() + "," + getUnixTime().toString() + ",0," + finalFractionGrade + ")"
+                                                serialData[1][0].toString() + "," + activityID + "," + cookiesDict["userID"] + "," + serialData[1][1].toString() + "," + questionUsageID + "," + layoutSlots + ",0,1,'finished'," + getUnixTime().toString() + "," + getUnixTime().toString() + "," + getUnixTime().toString() + ",0," + finalFractionGrade + ")"
                                         }
-                                    }).done(function (insertData) {}).error(function() {
-                                        setStatus("error", "Requisição à API falhou. Por favor, tente mais tarde.");
-                                        return;
+                                    }).done(function (insertSerialData, textStatus, jqXHR) {
+                                        persistAttemptIsWorking = "done_working_third";
                                     });
                                 }
-                            }).error(function () {
-                                setStatus("error", "Requisição à API falhou. Por favor, tente mais tarde.");
-                                return;
-                            });
-                        } catch (exception) {
-                        }
+                            } else {
+                                setStatus("succeeded", "Sua tentativa foi cadastrada no banco com sucesso. Confira abaixo o resultado das questões!");
+                            }
+                        }, 500);
+                    }).error(function () {
+                        setStatus("error", "Requisição à API falhou. Por favor, tente mais tarde.");
+                        clearInterval(persistAttemptInterval);
+                        return;
                     });
-                });
+                } catch (exception) {
+                    setStatus("error", "Tracking Error #1");
+                    clearInterval(persistAttemptInterval);
+                }
             });
-            break;
-        default:
-            break;
-    }
+        }
+    }, 3000);
 }
+
+// FIM TENTATIVAS
+
+// LISTENERS DE ELEMENTOS
 
 function loadOrReloadListeners() {
     $('input[type="radio"]').each(function () {
@@ -466,83 +519,162 @@ function loadOrReloadListeners() {
         });
     });
     $('.paragraphFinishAttempt').click(function () {
-        $.ajax(cookiesDict["api_Path"] + "dbproperties?index=" + cookiesDict["databaseIndex"], {
-            contentType: "application/json",
-            method: "GET",
-            async: true,
-            success: function (firstStep) {
-                try {
-                    firstStep = JSON.parse(firstStep);
-                    document.cookie = "databaseType=" + firstStep[0]["databaseType"];
-                    document.cookie = "databaseIndex=" + firstStep[1]["idconexao"];
-                } catch (Exception) {
-                    setStatus("error", "Parsing dos dados da API falhou no primeiro estágio.");
-                    return;
-                }
-                switch (activityType) {
-                    case 'quizz':
-                        $.post({
-                            url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                            async: true,
-                            data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[12]["comando"] + " where fullmodule.instance=" + activityID + " order by mc.id limit 1" }
-                        }).done(function (data, textStatus, jqXHR) {
-                            try {
-                                var contextID = data[1][data[0].indexOf("ID")];
-                                $.post({
-                                    url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                                    async: true,
-                                    data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": "select id from mdl_question_usages order by id desc limit 1" }
-                                }).done(function (firstdata, textStatus, jqXHR) {
-                                    try {
-                                        $.post({
-                                            url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                                            async: true,
-                                            data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[13]["comando"] + " values (" + (parseInt(firstdata[1][0]) + 1) + "," + contextID + ",'mod quiz','deferredfeedback') returning id" }
-                                        }).done(function (data, textStatus, jqXHR) {
-                                            // a partir do ID recém-inserido na tabela mdl_question_usages retornado será possível construir tentativas de respostas
-                                            processarTentativa(data[1][0], (firstStep[1]["idconexao"] - 1), firstStep[14]["comando"]);
-                                        }).error(function () {
-                                            setStatus("error", "Erro na requisição de submissão de sua tentativa. Por favor, tente novamente!");
-                                        });
-                                    } catch (exception) {
-                                        setStatus("error", "Erro na requisição de submissão de sua tentativa. Por favor, tente novamente!");
-                                    }
-                                }).error(function () {
-                                    setStatus("error", "Requisição à API falhou. Por favor, tente mais tarde.");
-                                    return;
-                                });
-                            } catch (exception) {
-                                setStatus("error", "Erro interno da aplicação. Por favor, contate o desenvolvedor.");
-                                return;
-                            }
-                        }).error(function () {
-                            setStatus("error", "Requisição à API falhou. Por favor, tente mais tarde.");
-                            return;
-                        });
-                        break;
-                    default:
-                        break;
-                }
-            }
-        })
-    }).error(function () {
         if (offline) {
             setStatus("neutral", "Você não pode submeter tentativas no modo off-line.");
             return;
-        } else {
-            // requisição à API falhou
-            setStatus("error", "Requisição à API falhou. Por favor, tente mais tarde.");
-            return;
         }
+        setStatus("progressing", "Confira todas as suas questões antes de enviar!");
+        $('.paragraphFinishAttempt').replaceWith("<div id='divButtonsHolder'><input type='button' class='buttonConfirmAttempt center btn' value='CONFIRMAR ENVIO' /><input type='button' class='center buttonCancelAttempt btn' value='CANCELAR ENVIO' /></div>");
+        $('.buttonConfirmAttempt').click(function () {
+            $("input[type='button']").remove();
+            $.ajax(cookiesDict["api_Path"] + "dbproperties?index=" + cookiesDict["databaseIndex"], {
+                contentType: "application/json",
+                method: "GET",
+                async: true,
+                success: function (firstStep) {
+                    try {
+                        firstStep = JSON.parse(firstStep);
+                        document.cookie = "databaseType=" + firstStep[0]["databaseType"];
+                        document.cookie = "databaseIndex=" + firstStep[1]["idconexao"];
+                    } catch (Exception) {
+                        setStatus("error", "Parsing dos dados da API falhou no primeiro estágio.");
+                        return;
+                    }
+                    switch (activityType) {
+                        case 'quizz':
+                            $.post({
+                                url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                async: true,
+                                data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[12]["comando"] + " where fullmodule.instance=" + activityID + " order by mc.id limit 1" }
+                            }).done(function (data, textStatus, jqXHR) {
+                                try {
+                                    var contextID = data[1][data[0].indexOf("ID")];
+                                    $.post({
+                                        url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                        async: true,
+                                        data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": "select id from mdl_question_usages order by id desc limit 1" }
+                                    }).done(function (firstdata, textStatus, jqXHR) {
+                                        try {
+                                            $.post({
+                                                url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                                async: true,
+                                                data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[13]["comando"] + " values (" + (parseInt(firstdata[1][0]) + 1) + "," + contextID + ",'mod quiz','deferredfeedback') returning id" }
+                                            }).done(function (data, textStatus, jqXHR) {
+                                                // a partir do ID recém-inserido na tabela mdl_question_usages retornado será possível construir tentativas de respostas
+                                                processarTentativa(data[1][0], (firstStep[1]["idconexao"] - 1), firstStep[14]["comando"]);
+                                            }).error(function () {
+                                                setStatus("error", "Erro na requisição de submissão de sua tentativa. Por favor, tente novamente!");
+                                            });
+                                        } catch (exception) {
+                                            setStatus("error", "Erro na requisição de submissão de sua tentativa. Por favor, tente novamente!");
+                                        }
+                                    }).error(function () {
+                                        setStatus("error", "Requisição à API falhou. Por favor, tente mais tarde.");
+                                        return;
+                                    });
+                                } catch (exception) {
+                                    setStatus("error", "Erro interno da aplicação. Por favor, contate o desenvolvedor.");
+                                    return;
+                                }
+                            }).error(function () {
+                                setStatus("error", "Requisição à API falhou. Por favor, tente mais tarde.");
+                                return;
+                            });
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+        });
+        $('.buttonCancelAttempt').click(function () {
+            $("#divButtonsHolder").replaceWith("<p class='paragraphFinishAttempt'>FINALIZAR A SUA TENTATIVA</p>");
+            $('.paragraphFinishAttempt').click(function () {
+                if (offline) {
+                    setStatus("neutral", "Você não pode submeter tentativas no modo off-line.");
+                    return;
+                }
+                setStatus("progressing", "Confira todas as suas questões antes de enviar!");
+                $('.paragraphFinishAttempt').replaceWith("<div id='divButtonsHolder'><input type='button' class='buttonConfirmAttempt center btn' value='CONFIRMAR ENVIO' /><input type='button' class='center buttonCancelAttempt btn' value='CANCELAR ENVIO' /></div>");
+                $('.buttonConfirmAttempt').click(function () {
+
+                    $.ajax(cookiesDict["api_Path"] + "dbproperties?index=" + cookiesDict["databaseIndex"], {
+                        contentType: "application/json",
+                        method: "GET",
+                        async: true,
+                        success: function (firstStep) {
+                            try {
+                                firstStep = JSON.parse(firstStep);
+                                document.cookie = "databaseType=" + firstStep[0]["databaseType"];
+                                document.cookie = "databaseIndex=" + firstStep[1]["idconexao"];
+                            } catch (Exception) {
+                                setStatus("error", "Parsing dos dados da API falhou no primeiro estágio.");
+                                return;
+                            }
+                            switch (activityType) {
+                                case 'quizz':
+                                    $.post({
+                                        url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                        async: true,
+                                        data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[12]["comando"] + " where fullmodule.instance=" + activityID + " order by mc.id limit 1" }
+                                    }).done(function (data, textStatus, jqXHR) {
+                                        try {
+                                            var contextID = data[1][data[0].indexOf("ID")];
+                                            $.post({
+                                                url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                                async: true,
+                                                data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": "select id from mdl_question_usages order by id desc limit 1" }
+                                            }).done(function (firstdata, textStatus, jqXHR) {
+                                                try {
+                                                    $.post({
+                                                        url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                                        async: true,
+                                                        data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[13]["comando"] + " values (" + (parseInt(firstdata[1][0]) + 1) + "," + contextID + ",'mod quiz','deferredfeedback') returning id" }
+                                                    }).done(function (data, textStatus, jqXHR) {
+                                                        // a partir do ID recém-inserido na tabela mdl_question_usages retornado será possível construir tentativas de respostas
+                                                        processarTentativa(data[1][0], (firstStep[1]["idconexao"] - 1), firstStep[14]["comando"]);
+                                                    }).error(function () {
+                                                        setStatus("error", "Erro na requisição de submissão de sua tentativa. Por favor, tente novamente!");
+                                                    });
+                                                } catch (exception) {
+                                                    setStatus("error", "Erro na requisição de submissão de sua tentativa. Por favor, tente novamente!");
+                                                }
+                                            }).error(function () {
+                                                setStatus("error", "Requisição à API falhou. Por favor, tente mais tarde.");
+                                                return;
+                                            });
+                                        } catch (exception) {
+                                            setStatus("error", "Erro interno da aplicação. Por favor, contate o desenvolvedor.");
+                                            return;
+                                        }
+                                    }).error(function () {
+                                        setStatus("error", "Requisição à API falhou. Por favor, tente mais tarde.");
+                                        return;
+                                    });
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    });
+                });
+                $('.buttonCancelAttempt').click(function () {
+                    $("#divButtonsHolder").replaceWith("<p class='paragraphFinishAttempt'>FINALIZAR A SUA TENTATIVA</p>");
+                });
+            });
+        });
     });
 }
 
-function stateQuizzAttempt(answer_fraction, max_fraction) {
-    if (answer_fraction == max_fraction) {
-        return "gradedright";
-    } else if (answer_fraction == 0) {
-        return "gradedwrong";
+// FIM LISTENERS
+
+/*error(function () {
+    if (offline) {
+        setStatus("neutral", "Você não pode submeter tentativas no modo off-line.");
+        return;
     } else {
-        return "gradedpartial";
+        // requisição à API falhou
+        setStatus("error", "Requisição à API falhou. Por favor, tente mais tarde.");
+        return;
     }
-}
+});*/
