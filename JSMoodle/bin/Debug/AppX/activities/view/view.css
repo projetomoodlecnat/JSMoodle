@@ -45,22 +45,20 @@
 }
 
 .buttonConfirmAttempt {
-    width: 45%;
-    display: inline-block;
-    margin-left: 20px;
+    width: 80%;
+    margin-bottom: 12px;
+    text-align: center !important;
 }
 
 .buttonCancelAttempt {
-    width: 45%;
-    display: inline-block;
+    width: 80%;
     background-color: red !important;
-    margin-right:20px;
+    text-align: center !important;
 }
 
 .divButtonsHolder {
     width: 100%;
     clear: both;
-    text-align: center;
 }
 
 .divGradedRight {
