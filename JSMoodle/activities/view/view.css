@@ -62,19 +62,23 @@
 }
 
 .divGradedRight {
-    border: 2px solid green;
+    border: 4px solid green;
+    padding: 1px 1px 1px 1px;
 }
 
 .divGradedWrong {
-    border: 2px solid red;
+    border: 4px solid red;
+    padding: 1px 1px 1px 1px;
 }
 
 .divGradedPartial {
-    border: 2px solid yellow;
+    border: 4px solid yellow;
+    padding: 1px 1px 1px 1px;
 }
 
 .divNotGraded {
     border: 2px solid black;
+    padding: 1px 1px 1px 1px;
 }
 
 .loadingHolder img {
