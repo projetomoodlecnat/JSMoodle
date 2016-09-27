@@ -162,6 +162,33 @@ function carregarQuestoesBanco() {
                     return;
                 }
                 for (var i = 1; i < data.length; i++) {
+                    var optionType = "";
+                    switch (data[i][data[0].indexOf("QTYPE")]) {
+                        case 'multichoice':
+                            $.post({
+                                url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                async: false,
+                                data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": "select single from mdl_qtype_multichoice_options where questionid=" + data[i][data[0].indexOf("QUESTIONID")] }
+                            }).done(function (data, textStatus, jqXHR) {
+                                if (data[1][0] == "0") {
+                                    optionType = "checkbox";
+                                } else {
+                                    optionType = "radio";
+                                }
+                            }).error(function () {
+                                setStatus("error", "Erro na requisição que define o tipo das questões.");
+                                $('#content').html("");
+                                endOperation();
+                            });
+                            break;
+                        case 'truefalse':
+                            optionType = "radio";
+                            break;
+                        default:
+                            $('#content').html("Essa tarefa contém tipos de questões não suportadas pela aplicação e não poderá ser mostrada.");
+                            endOperation();
+                            return;
+                    }
                     if (questionNames.indexOf(data[i][data[0].indexOf("QUESTIONID")]) == -1) {
                         questionNames.push(data[i][data[0].indexOf("QUESTIONID")]);
                         if (data[i][data[0].indexOf("QTYPE")] == 'description') {
@@ -170,7 +197,7 @@ function carregarQuestoesBanco() {
                         }
                         stringHTMLBuilder += "</ul></div><div class='questioncontainer'><b>Questão: </b>" + data[i][data[0].indexOf("QUESTIONTEXT")] + "<ul>";
                     }
-                    stringHTMLBuilder += "<li><input class='with-gap' slot='" + data[i][data[0].indexOf("SLOTID")] + "' name='" + data[i][data[0].indexOf("QUESTIONID")] + "' type='radio' style='margin-right: 5px; float:left; position:static; opacity: 1'>" + data[i][data[0].indexOf("ANSWER")] + "</li>";
+                    stringHTMLBuilder += "<li><input class='with-gap' slot='" + data[i][data[0].indexOf("SLOTID")] + "' name='" + data[i][data[0].indexOf("QUESTIONID")] + "' type='" + optionType + "' style='margin-right: 5px; float:left; position:static; opacity: 1'>" + data[i][data[0].indexOf("ANSWER")] + "</li>";
                 }
                 $("#content").html(stringHTMLBuilder + "<br><p class='paragraphFinishAttempt'>FINALIZAR A SUA TENTATIVA</p>");
                 setStatus("succeeded", "As questões foram carregadas com sucesso e renderizadas na interface. ");
@@ -462,22 +489,55 @@ function processarTentativa(questionUsageID, connectionIndex, command) {
                                                     }
                                                 }).done(function (secondData3) {
                                                     secondData3[1][0] = parseInt(secondData3[1][0]) + 1;
-                                                    $.post({
-                                                        url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                                                        async: false,
-                                                        data: {
-                                                            "connectionIndex": connectionIndex, "query": "INSERT INTO mdl_question_attempt_step_data(id, attemptstepid, name, value) VALUES (" +
-                                                                secondData3[1][0].toString() + "," + savedSerialData[1] + ",'-finish', '1'),(" + (secondData3[1][0] + 1).toString() + "," + savedSerialData[2] + ",'answer','1')"
-                                                        }
-                                                    }).done(function (insertSerialData, textStatus, jqXHR) {
+                                                    if (selectedElement.attr('type') == 'radio') {
+                                                        $.post({
+                                                            url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                                            async: false,
+                                                            data: {
+                                                                "connectionIndex": connectionIndex, "query": "INSERT INTO mdl_question_attempt_step_data(id, attemptstepid, name, value) VALUES (" +
+                                                                    secondData3[1][0].toString() + "," + savedSerialData[1] + ",'-finish', '1'),(" + (secondData3[1][0] + 1).toString() + "," + savedSerialData[2] + ",'answer','1')"
+                                                            }
+                                                        }).done(function (insertSerialData, textStatus, jqXHR) {
+                                                            while (insertSerialData.indexOf("duplicate") > -1) {
+                                                                secondData3[1][0] += 1;
+                                                                $.post({
+                                                                    url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                                                    async: false,
+                                                                    data: {
+                                                                        "connectionIndex": connectionIndex, "query": "INSERT INTO mdl_question_attempt_step_data(id, attemptstepid, name, value) VALUES (" +
+                                                                            secondData3[1][0].toString() + "," + savedSerialData[1] + ",'-finish', '1'),(" + (secondData3[1][0] + 1).toString() + "," + savedSerialData[2] + ",'answer','1')"
+                                                                    }
+                                                                }).done(function (insertSerialData) {
+                                                                });
+                                                            }
+                                                            processedQuestionsLength++;
+                                                            if (processedQuestionsLength == questionsToProcess) {
+                                                                isDone = true;
+                                                            }
+                                                        });
+                                                    } else if (selectedElement.attr('type') == 'checkbox') {
+                                                        var insertSerialData = "duplicate";
+                                                        secondData3[1][0] -= 1;
                                                         while (insertSerialData.indexOf("duplicate") > -1) {
                                                             secondData3[1][0] += 1;
+                                                            var choiceI = 0;
+                                                            var finalQuery = "INSERT INTO mdl_question_attempt_step_data(id, attemptstepid, name, value) VALUES ";
+                                                            $("[slot='" + selectedElement.attr("slot") + "']").each(function () {
+                                                                var element = $(this);
+                                                                if (element.attr('checked') == true) {
+                                                                    finalQuery += "(" + (secondData3[1][0] + choiceI).toString() + "," + savedSerialData[1] + ",'choice" + choiceI.toString() + "',1),";
+                                                                } else {
+                                                                    finalQuery += "(" + (secondData3[1][0] + choiceI).toString() + "," + savedSerialData[1] + ",'choice" + choiceI.toString() + "',0),";
+                                                                }
+                                                                choiceI++;
+                                                            }).promise().done(function () {
+                                                                finalQuery += "(" + (secondData3[1][0] + choiceI).toString() + "," + savedSerialData[2] + ",'-finish',1)";
+                                                            });
                                                             $.post({
                                                                 url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                                                                 async: false,
                                                                 data: {
-                                                                    "connectionIndex": connectionIndex, "query": "INSERT INTO mdl_question_attempt_step_data(id, attemptstepid, name, value) VALUES (" +
-                                                                        secondData3[1][0].toString() + "," + savedSerialData[1] + ",'-finish', '1'),(" + (secondData3[1][0] + 1).toString() + "," + savedSerialData[2] + ",'answer','1')"
+                                                                    "connectionIndex": connectionIndex, "query": finalQuery
                                                                 }
                                                             }).done(function (insertSerialData) {
                                                             });
@@ -486,8 +546,10 @@ function processarTentativa(questionUsageID, connectionIndex, command) {
                                                         if (processedQuestionsLength == questionsToProcess) {
                                                             isDone = true;
                                                         }
-                                                    });
-
+                                                    } else {
+                                                        console.log("erro");
+                                                    //erro
+                                                    }
                                                     // end POST on MDL_QUESTION_ATTEMPT_STEP_DATA with MDL_QUESTION_ATTEMPT_STEPS query results
                                                 });
                                             });
@@ -620,6 +682,18 @@ function loadOrReloadListeners() {
             event.target.setAttribute("checked", true);
         });
     });
+
+    $('input[type="checkbox"]').each(function () {
+        chkbox = $(this);
+        chkbox.click(function () {
+            if ($(event.target).prop("checked")) {
+                event.target.checked = true;
+            } else {
+                event.target.checked = false;
+            };
+        })
+    });
+
     $('.paragraphFinishAttempt').click(function () {
         if (offline) {
             setStatus("neutral", "Você não pode submeter tentativas no modo off-line.");
@@ -762,8 +836,10 @@ function loadOrReloadListeners() {
                 });
                 $('.buttonCancelAttempt').click(function () {
                     $("#divButtonsHolder").replaceWith("<p class='paragraphFinishAttempt'>FINALIZAR A SUA TENTATIVA</p>");
+                    setStatus("neutral", "Você cancelou o envio.");
                 });
             });
+            setStatus("neutral", "Você cancelou o envio.");
         });
     });
 }
