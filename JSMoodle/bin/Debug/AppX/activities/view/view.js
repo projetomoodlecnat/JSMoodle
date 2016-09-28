@@ -325,6 +325,17 @@ function contarQuestoesComResposta() {
     return i;
 }
 
+function calculateFractionsMultiAnswer(multiAnswerQuestion) {
+    var sumFractions = 0.0;
+    for (var i = 1; i < data.length; i++) {
+        var fraction = parseFloat(multiAnswerQuestion[i][multiAnswerQuestion[0].indexOf("FRACTION")]);
+        if (fraction > 0) {
+            sumFractions += fraction;
+        }
+    }
+    return sumFractions;
+}
+
 function stateQuizzAttempt(answer_fraction, max_fraction) {
     if (answer_fraction == max_fraction) {
         return "gradedright";
@@ -340,8 +351,11 @@ function processarTentativa(questionUsageID, connectionIndex, command) {
     var processedQuestionsLength = 0;
     var questionsToProcess = contarQuestoesComResposta();
     var processedMultiSlot = null;
+
+    // variáveis de questão
     var lastProcessedSlotAttemptID;
     var lastProcessedAttemptDataID;
+    var individualFraction = 0.0;
 
     // variáveis de quizz
     var finalFractionGrade = 0.0;
@@ -354,6 +368,7 @@ function processarTentativa(questionUsageID, connectionIndex, command) {
             matchSelected.each(function (index) {
                 var selectedElement = $(this);
                 var rightAnswerAndValue = ["", -9999.0];
+                var sumFractions;
                 command = command.replace(/[\r\n]/g, "");
                 $.post({
                     url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
@@ -361,8 +376,12 @@ function processarTentativa(questionUsageID, connectionIndex, command) {
                     data: { "connectionIndex": connectionIndex, "query": command + " where mdl_quiz_slots.id=" + selectedElement.attr("slot") }
                 }).done(function (data, textStatus, jqXHR) {
                     try {
+                        sumFractions = 0.0;
                         for (var i = 1; i < data.length; i++) {
                             if (parseFloat(data[i][data[0].indexOf("FRACTION")]) >= rightAnswerAndValue[1]) {
+                                if (parseFloat(data[i][data[0].indexOf("FRACTION")]) > 0) {
+                                    sumFractions += parseFloat(data[i][data[0].indexOf("FRACTION")]);
+                                }
                                 if (parseFloat(data[i][data[0].indexOf("FRACTION")]) == rightAnswerAndValue[1]) {
                                     rightAnswerAndValue[0] += splitHTMLText(data[i][data[0].indexOf("ANSWER")]);
                                 } else {
@@ -372,9 +391,11 @@ function processarTentativa(questionUsageID, connectionIndex, command) {
                             }
                         }
                         // contornando os True/Falses do Moodle
+
                         if (selectedElement[0].nextSibling.toString() == "[object Text]") {
                             selectedElement[0].nextSibling.outerHTML = selectedElement[0].nextSibling.wholeText;
                         }
+
                         // end contornando os True/Falses do Moodle
                     } catch (exception) {
                         setStatus("error", "Os resultados da requisição falharam no primeiro estágio.");
@@ -385,6 +406,8 @@ function processarTentativa(questionUsageID, connectionIndex, command) {
                         if (data[i][data[0].indexOf("ANSWER")].indexOf(splitHTMLText(selectedElement[0].nextSibling.outerHTML)) > -1) {
                             // A questão faz parte de um quizz de multi-escolhas e os registros já foram inseridos
 
+                            data[i][data[0].indexOf("FRACTION")] = data[i][data[0].indexOf("FRACTION")].replace(",", ".");
+                            data[i][data[0].indexOf("MAXMARK")] = data[i][data[0].indexOf("MAXMARK")].replace(",", ".");
                             if (processedMultiSlot == selectedElement.attr('slot')) {
                                 $.post({
                                     url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
@@ -392,29 +415,47 @@ function processarTentativa(questionUsageID, connectionIndex, command) {
                                     data: { "connectionIndex": connectionIndex, "query": "UPDATE mdl_question_attempts SET responsesummary = responsesummary || '; " + splitHTMLText(selectedElement[0].nextSibling.outerHTML) + "' where id =" + lastProcessedSlotAttemptID }
                                 }).done(function (updateData) {
                                 });
-                                data[i][data[0].indexOf("FRACTION")] = data[i][data[0].indexOf("FRACTION")].replace(",", ".");
-                                var newGrade = finalFractionGrade + parseFloat(data[i][data[0].indexOf("FRACTION")]);
-                                if (newGrade >= 0) {
-                                    finalFractionGrade += parseFloat(data[i][data[0].indexOf("FRACTION")]) * parseFloat(data[i][data[0].indexOf("MAXMARK")]);
+                                individualFraction += parseFloat(data[i][data[0].indexOf("FRACTION")]);
+                                if (matchSelected.eq(index + 1).length == 0) {
+                                    finalFractionGrade += (individualFraction * parseFloat(data[i][data[0].indexOf("MAXMARK")]));
+                                    if (finalFractionGrade < 0) {
+                                        finalFractionGrade = 0;
+                                    }
+                                    if (individualFraction < 0) {
+                                        individualFraction = 0;
+                                    }
                                     $.post({
                                         url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                                         async: false,
-                                        data: { "connectionIndex": connectionIndex, "query": "UPDATE mdl_question_attempt_steps SET state='" + stateQuizzAttempt(newGrade, parseFloat(data[i][data[0].indexOf('MAXFRACTION')])) + "', fraction=" + newGrade + " where id=" + lastProcessedAttemptDataID }
+                                        data: { "connectionIndex": connectionIndex, "query": "UPDATE mdl_question_attempt_steps SET state='" + stateQuizzAttempt(individualFraction, sumFractions) + "', fraction=" + individualFraction.toString() + " where id=" + lastProcessedAttemptDataID }
                                     }).done(function (updateData) {
                                     });
-                                }
-                                if (matchSelected.eq(index + 1).length == 0) {
+                                    styleQuestion(selectedElement, individualFraction, sumFractions, data[i][data[0].indexOf("FEEDBACK")]);
                                     isDone = true;
                                 }
                                 break;
-                            } else if (processedMultiSlot!=null) {
+                            } else if (processedMultiSlot != null) {
                                 processedMultiSlot = null;
+                                individualFraction += parseFloat(data[i][data[0].indexOf("FRACTION")]);
+                                finalFractionGrade += (individualFraction * parseFloat(data[i][data[0].indexOf("MAXMARK")]));
+                                if (finalFractionGrade < 0) {
+                                    finalFractionGrade = 0;
+                                }
+                                if (individualFraction < 0) {
+                                    individualFraction = 0;
+                                }
+                                $.post({
+                                    url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                    async: false,
+                                    data: { "connectionIndex": connectionIndex, "query": "UPDATE mdl_question_attempt_steps SET state='" + stateQuizzAttempt(individualFraction, sumFractions) + "', fraction=" + individualFraction.toString() + " where id=" + lastProcessedAttemptDataID }
+                                }).done(function (updateData) {
+                                });
+                                styleQuestion(selectedElement, individualFraction, sumFractions, data[i][data[0].indexOf("FEEDBACK")]);
                                 processedQuestionsLength++;
                             }
 
                             // end A questão faz parte de um quizz de multi-escolhas e os registros já foram inseridos
                             layoutSlots += data[i][data[0].indexOf("SLOT")] + ",";
-                            data[i][data[0].indexOf("FRACTION")] = data[i][data[0].indexOf("FRACTION")].replace(",", ".");
                             var userAnswer = splitHTMLText(selectedElement[0].nextSibling.outerHTML);
                             // contornando os True/Falses do Moodle
 
@@ -446,175 +487,150 @@ function processarTentativa(questionUsageID, connectionIndex, command) {
                                     }
                                 }).done(function (insertSerialData, textStatus, jqXHR) {
                                     // tentando contornar o problema do ID não ser serializado (auto-incremental)
-                                    // try {
-                                        // POST on MDL_QUESTION_ATTEMPTS
+                                    // POST on MDL_QUESTION_ATTEMPTS
 
-                                        while (insertSerialData.indexOf("duplicate") > -1) {
-                                            secondData[1][0] += 1;
-                                            $.post({
-                                                url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                                                async: false,
-                                                data: {
-                                                    "connectionIndex": connectionIndex, "query": "insert into mdl_question_attempts (id, questionusageid, slot, behaviour, questionid, variant, maxmark, minfraction, maxfraction, flagged, questionsummary, rightanswer, responsesummary, timemodified) values ("
-                                                        + secondData[1][0].toString() + "," + questionUsageID.toString() + "," + data[i][data[0].indexOf("SLOT")] + ",'" + data[i][data[0].indexOf("PREFERREDBEHAVIOUR")] + "'," + data[i][data[0].indexOf("QUESTIONID")] + ",1," + data[i][data[0].indexOf("MAXMARK")] +
-                                                        ",0," + rightAnswerAndValue[1].toString() + ",0,'" + splitHTMLText(data[i][data[0].indexOf("QUESTIONTEXT")]) + "','" + rightAnswerAndValue[0] + "','" + userAnswer + "'," + getUnixTime().toString() + ")"
-                                                }
-                                            }).done(function (insertSerialData) {
-                                            }).error(function () {
-                                                setStatus("error", "Requisição à API falhou.");
-                                                return;
-                                            });
-                                        }
-
-                                        // end POST on MDL_QUESTION_ATTEMPTS
-                                        // POST on MDL_QUESTION_ATTEMPT_STEPS with MDL_QUESTION_ATTEMPTS query results
-
+                                    while (insertSerialData.indexOf("duplicate") > -1) {
+                                        secondData[1][0] += 1;
                                         $.post({
                                             url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                                             async: false,
                                             data: {
-                                                "connectionIndex": connectionIndex, "query": "select id from mdl_question_attempt_steps order by id desc limit 1"
+                                                "connectionIndex": connectionIndex, "query": "insert into mdl_question_attempts (id, questionusageid, slot, behaviour, questionid, variant, maxmark, minfraction, maxfraction, flagged, questionsummary, rightanswer, responsesummary, timemodified) values ("
+                                                    + secondData[1][0].toString() + "," + questionUsageID.toString() + "," + data[i][data[0].indexOf("SLOT")] + ",'" + data[i][data[0].indexOf("PREFERREDBEHAVIOUR")] + "'," + data[i][data[0].indexOf("QUESTIONID")] + ",1," + data[i][data[0].indexOf("MAXMARK")] +
+                                                    ",0," + rightAnswerAndValue[1].toString() + ",0,'" + splitHTMLText(data[i][data[0].indexOf("QUESTIONTEXT")]) + "','" + rightAnswerAndValue[0] + "','" + userAnswer + "'," + getUnixTime().toString() + ")"
                                             }
-                                        }).done(function (secondData2, textStatus, jqXHR) {
-                                            secondData2[1][0] = parseInt(secondData2[1][0]) + 1;
-                                            $.post({
-                                                url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                                                async: false,
-                                                data: {
-                                                    "connectionIndex": connectionIndex, "query": "insert into mdl_question_attempt_steps(id, questionattemptid, sequencenumber, state, fraction, timecreated, userid) values (" +
-                                                        secondData2[1][0].toString() + "," + secondData[1][0].toString() + ",2,'" + stateQuizzAttempt(parseFloat(data[i][data[0].indexOf("FRACTION")]), rightAnswerAndValue[1]) +
-                                                        "'," + data[i][data[0].indexOf("FRACTION")] + "," + getUnixTime().toString() + "," + cookiesDict["userID"] + "),(" + (secondData2[1][0] + 1).toString() + "," + secondData[1][0].toString() +
-                                                        ",1,'complete',NULL," + getUnixTime().toString() + "," + cookiesDict["userID"] + ") returning id"
-                                                }
-                                            }).done(function (insertSerialData, textStatus, jqXHR) {
-                                                while (insertSerialData.indexOf("duplicate") > -1) {
-                                                    secondData2[1][0] += 1;
-                                                    $.post({
-                                                        url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                                                        async: false,
-                                                        data: {
-                                                            "connectionIndex": connectionIndex, "query": "insert into mdl_question_attempt_steps(id, questionattemptid, sequencenumber, state, fraction, timecreated, userid) values (" +
-                                                                secondData2[1][0].toString() + "," + secondData[1][0].toString() + ",2,'" + stateQuizzAttempt(parseFloat(data[i][data[0].indexOf("FRACTION")]), rightAnswerAndValue[1]) +
-                                                                "'," + data[i][data[0].indexOf("FRACTION")] + "," + getUnixTime().toString() + "," + cookiesDict["userID"] + "),(" + (secondData2[1][0] + 1).toString() + "," + secondData[1][0].toString() +
-                                                                ",1,'complete',NULL," + getUnixTime().toString() + "," + cookiesDict["userID"] + ") returning id"
-                                                        }
-                                                    }).done(function (insertSerialData) { })
-                                                    .error(function () {
-                                                        setStatus("error", "Requisição à API falhou.");
-                                                        return;
-                                                    });
-                                                }
-                                                var savedSerialData = []
-                                                savedSerialData[1] = insertSerialData[1][0];
-                                                lastProcessedAttemptDataID = savedSerialData[1];
-                                                savedSerialData[2] = insertSerialData[2][0];
-                                                // POST on MDL_QUESTION_ATTEMPT_STEP_DATA with MDL_QUESTION_ATTEMPT_STEPS query results
+                                        }).done(function (insertSerialData) {
+                                        }).error(function () {
+                                            setStatus("error", "Requisição à API falhou.");
+                                            return;
+                                        });
+                                    }
 
+                                    // end POST on MDL_QUESTION_ATTEMPTS
+                                    // POST on MDL_QUESTION_ATTEMPT_STEPS with MDL_QUESTION_ATTEMPTS query results
+
+                                    $.post({
+                                        url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                        async: false,
+                                        data: {
+                                            "connectionIndex": connectionIndex, "query": "select id from mdl_question_attempt_steps order by id desc limit 1"
+                                        }
+                                    }).done(function (secondData2, textStatus, jqXHR) {
+                                        secondData2[1][0] = parseInt(secondData2[1][0]) + 1;
+                                        $.post({
+                                            url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                            async: false,
+                                            data: {
+                                                "connectionIndex": connectionIndex, "query": "insert into mdl_question_attempt_steps(id, questionattemptid, sequencenumber, state, fraction, timecreated, userid) values (" +
+                                                    secondData2[1][0].toString() + "," + secondData[1][0].toString() + ",2,'" + stateQuizzAttempt(parseFloat(data[i][data[0].indexOf("FRACTION")]), rightAnswerAndValue[1]) +
+                                                    "'," + data[i][data[0].indexOf("FRACTION")] + "," + getUnixTime().toString() + "," + cookiesDict["userID"] + "),(" + (secondData2[1][0] + 1).toString() + "," + secondData[1][0].toString() +
+                                                    ",1,'complete',NULL," + getUnixTime().toString() + "," + cookiesDict["userID"] + ") returning id"
+                                            }
+                                        }).done(function (insertSerialData, textStatus, jqXHR) {
+                                            while (insertSerialData.indexOf("duplicate") > -1) {
+                                                secondData2[1][0] += 1;
                                                 $.post({
                                                     url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                                                     async: false,
                                                     data: {
-                                                        "connectionIndex": connectionIndex, "query": "select id from mdl_question_attempt_step_data order by id desc limit 1"
+                                                        "connectionIndex": connectionIndex, "query": "insert into mdl_question_attempt_steps(id, questionattemptid, sequencenumber, state, fraction, timecreated, userid) values (" +
+                                                            secondData2[1][0].toString() + "," + secondData[1][0].toString() + ",2,'" + stateQuizzAttempt(parseFloat(data[i][data[0].indexOf("FRACTION")]), rightAnswerAndValue[1]) +
+                                                            "'," + data[i][data[0].indexOf("FRACTION")] + "," + getUnixTime().toString() + "," + cookiesDict["userID"] + "),(" + (secondData2[1][0] + 1).toString() + "," + secondData[1][0].toString() +
+                                                            ",1,'complete',NULL," + getUnixTime().toString() + "," + cookiesDict["userID"] + ") returning id"
                                                     }
-                                                }).done(function (secondData3) {
-                                                    secondData3[1][0] = parseInt(secondData3[1][0]) + 1;
-                                                    if (selectedElement.attr('type') == 'radio') {
-                                                        $.post({
-                                                            url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                                                            async: false,
-                                                            data: {
-                                                                "connectionIndex": connectionIndex, "query": "INSERT INTO mdl_question_attempt_step_data(id, attemptstepid, name, value) VALUES (" +
-                                                                    secondData3[1][0].toString() + "," + savedSerialData[1] + ",'-finish', '1'),(" + (secondData3[1][0] + 1).toString() + "," + savedSerialData[2] + ",'answer','1')"
-                                                            }
-                                                        }).done(function (insertSerialData, textStatus, jqXHR) {
-                                                            while (insertSerialData.indexOf("duplicate") > -1) {
-                                                                secondData3[1][0] += 1;
-                                                                $.post({
-                                                                    url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                                                                    async: false,
-                                                                    data: {
-                                                                        "connectionIndex": connectionIndex, "query": "INSERT INTO mdl_question_attempt_step_data(id, attemptstepid, name, value) VALUES (" +
-                                                                            secondData3[1][0].toString() + "," + savedSerialData[1] + ",'-finish', '1'),(" + (secondData3[1][0] + 1).toString() + "," + savedSerialData[2] + ",'answer','1')"
-                                                                    }
-                                                                }).done(function (insertSerialData) {
-                                                                });
-                                                            }
-                                                            processedQuestionsLength++;
-                                                            if (processedQuestionsLength == questionsToProcess) {
-                                                                isDone = true;
-                                                            }
-                                                        });
-                                                    } else if (selectedElement.attr('type') == 'checkbox') {
-                                                        var insertSerialData = "duplicate";
-                                                        secondData3[1][0] -= 1;
+                                                }).done(function (insertSerialData) { })
+                                                .error(function () {
+                                                    setStatus("error", "Requisição à API falhou.");
+                                                    return;
+                                                });
+                                            }
+                                            var savedSerialData = []
+                                            savedSerialData[1] = insertSerialData[1][0];
+                                            lastProcessedAttemptDataID = savedSerialData[1];
+                                            savedSerialData[2] = insertSerialData[2][0];
+                                            // POST on MDL_QUESTION_ATTEMPT_STEP_DATA with MDL_QUESTION_ATTEMPT_STEPS query results
+
+                                            $.post({
+                                                url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                                async: false,
+                                                data: {
+                                                    "connectionIndex": connectionIndex, "query": "select id from mdl_question_attempt_step_data order by id desc limit 1"
+                                                }
+                                            }).done(function (secondData3) {
+                                                secondData3[1][0] = parseInt(secondData3[1][0]) + 1;
+                                                if (selectedElement.attr('type') == 'radio') {
+                                                    $.post({
+                                                        url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                                        async: false,
+                                                        data: {
+                                                            "connectionIndex": connectionIndex, "query": "INSERT INTO mdl_question_attempt_step_data(id, attemptstepid, name, value) VALUES (" +
+                                                                secondData3[1][0].toString() + "," + savedSerialData[1] + ",'-finish', '1'),(" + (secondData3[1][0] + 1).toString() + "," + savedSerialData[2] + ",'answer','1')"
+                                                        }
+                                                    }).done(function (insertSerialData, textStatus, jqXHR) {
                                                         while (insertSerialData.indexOf("duplicate") > -1) {
                                                             secondData3[1][0] += 1;
-                                                            var choiceI = 0;
-                                                            var finalQuery = "INSERT INTO mdl_question_attempt_step_data(id, attemptstepid, name, value) VALUES ";
-                                                            $("[slot='" + selectedElement.attr("slot") + "']").each(function () {
-                                                                var element = $(this);
-                                                                if (element.attr('checked') == 'checked') {
-                                                                    finalQuery += "(" + (secondData3[1][0] + choiceI).toString() + "," + savedSerialData[1] + ",'choice" + choiceI.toString() + "',1),";
-                                                                } else {
-                                                                    finalQuery += "(" + (secondData3[1][0] + choiceI).toString() + "," + savedSerialData[1] + ",'choice" + choiceI.toString() + "',0),";
-                                                                }
-                                                                choiceI++;
-                                                            }).promise().done(function () {
-                                                                finalQuery += "(" + (secondData3[1][0] + choiceI).toString() + "," + savedSerialData[2] + ",'-finish',1)";
-                                                            });
                                                             $.post({
                                                                 url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                                                                 async: false,
                                                                 data: {
-                                                                    "connectionIndex": connectionIndex, "query": finalQuery
+                                                                    "connectionIndex": connectionIndex, "query": "INSERT INTO mdl_question_attempt_step_data(id, attemptstepid, name, value) VALUES (" +
+                                                                        secondData3[1][0].toString() + "," + savedSerialData[1] + ",'-finish', '1'),(" + (secondData3[1][0] + 1).toString() + "," + savedSerialData[2] + ",'answer','1')"
                                                                 }
-                                                            }).done(function (hasErrors) {
-                                                                insertSerialData = hasErrors;
+                                                            }).done(function (insertSerialData) {
                                                             });
                                                         }
-                                                        processedMultiSlot = selectedElement.attr('slot');
-                                                        lastProcessedSlotAttemptID = secondData[1][0].toString();
-                                                    } else {
-                                                        console.log("erro");
+                                                        if (finalFractionGrade + parseFloat(data[i][data[0].indexOf("FRACTION")]) >= 0) {
+                                                            finalFractionGrade += parseFloat(data[i][data[0].indexOf("FRACTION")]) * parseFloat(data[i][data[0].indexOf("MAXMARK")]);
+                                                        }
+                                                        processedQuestionsLength++;
+                                                        if (processedQuestionsLength == questionsToProcess) {
+                                                            isDone = true;
+                                                        }
+                                                    });
+                                                    styleQuestion(selectedElement, parseFloat(data[i][data[0].indexOf("FRACTION")]), rightAnswerAndValue[1], data[i][data[0].indexOf("FEEDBACK")]);
+                                                } else if (selectedElement.attr('type') == 'checkbox') {
+                                                    var insertSerialData = "duplicate";
+                                                    secondData3[1][0] -= 1;
+                                                    while (insertSerialData.indexOf("duplicate") > -1) {
+                                                        secondData3[1][0] += 1;
+                                                        var choiceI = 0;
+                                                        var finalQuery = "INSERT INTO mdl_question_attempt_step_data(id, attemptstepid, name, value) VALUES ";
+                                                        $("[slot='" + selectedElement.attr("slot") + "']").each(function () {
+                                                            var element = $(this);
+                                                            if (element.attr('checked') == 'checked') {
+                                                                finalQuery += "(" + (secondData3[1][0] + choiceI).toString() + "," + savedSerialData[1] + ",'choice" + choiceI.toString() + "',1),";
+                                                            } else {
+                                                                finalQuery += "(" + (secondData3[1][0] + choiceI).toString() + "," + savedSerialData[1] + ",'choice" + choiceI.toString() + "',0),";
+                                                            }
+                                                            choiceI++;
+                                                        }).promise().done(function () {
+                                                            finalQuery += "(" + (secondData3[1][0] + choiceI).toString() + "," + savedSerialData[2] + ",'-finish',1)";
+                                                        });
+                                                        $.post({
+                                                            url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                                            async: false,
+                                                            data: {
+                                                                "connectionIndex": connectionIndex, "query": finalQuery
+                                                            }
+                                                        }).done(function (hasErrors) {
+                                                            insertSerialData = hasErrors;
+                                                        });
                                                     }
-                                                    // end POST on MDL_QUESTION_ATTEMPT_STEP_DATA with MDL_QUESTION_ATTEMPT_STEPS query results
-                                                });
+                                                    processedMultiSlot = selectedElement.attr('slot');
+                                                    lastProcessedSlotAttemptID = secondData[1][0].toString();
+                                                    individualFraction = parseFloat(data[i][data[0].indexOf("FRACTION")]);
+                                                } else {
+                                                    console.log("erro");
+                                                }
+
+                                                // end POST on MDL_QUESTION_ATTEMPT_STEP_DATA with MDL_QUESTION_ATTEMPT_STEPS query results
                                             });
                                         });
+                                    });
 
-                                        // end POST on MDL_QUESTION_ATTEMPT_STEPS with MDL_QUESTION_ATTEMPTS query results
-                                    //} catch (exception) {
-                                    //    setStatus("error", "Erro de processamento na segunda fase de persistência.");
-                                    //    return;
-                                   // }
+                                    // end POST on MDL_QUESTION_ATTEMPT_STEPS with MDL_QUESTION_ATTEMPTS query results
                                 });
                             });
-
-                            try {
-                                var findDivContainer = selectedElement;
-                                while (findDivContainer.parent()[0] != null) {
-                                    findDivContainer = findDivContainer.parent();
-                                    if (findDivContainer.attr('class') != "questioncontainer") {
-                                        continue;
-                                    }
-                                    if (parseFloat(data[i][data[0].indexOf("FRACTION")]) == rightAnswerAndValue[1]) {
-                                        findDivContainer.attr('class', 'divGradedRight');
-                                        findDivContainer[0].innerHTML += "<p>Correto. " + data[i][data[0].indexOf("FEEDBACK")] + "</p>";
-                                    } else if (parseFloat(data[i][data[0].indexOf("FRACTION")]) > 0) {
-                                        findDivContainer.attr('class', 'divGradedPartial');
-                                        findDivContainer[0].innerHTML += "<p>Parcialmente correto. " + data[i][data[0].indexOf("FEEDBACK")] + "</p>";
-                                    } else {
-                                        findDivContainer.attr('class', 'divGradedWrong');
-                                        findDivContainer[0].innerHTML += "<p>Errado. " + data[i][data[0].indexOf("FEEDBACK")] + "</p>";
-                                    }
-                                }
-                            } catch (exception) {
-                                // erro na marcação
-                                console.log("error");
-                            }
-                            if (finalFractionGrade + parseFloat(data[i][data[0].indexOf("FRACTION")]) >= 0) {
-                                finalFractionGrade += parseFloat(data[i][data[0].indexOf("FRACTION")]) * parseFloat(data[i][data[0].indexOf("MAXMARK")]);
-                            }
                             break;
                         }
                     }
@@ -633,7 +649,7 @@ function processarTentativa(questionUsageID, connectionIndex, command) {
     setStatus("progressing", "Sua tentativa está nos processos finais de cadastro, aguarde...");
 
     var greaterInterval = setInterval(function () {
-        if (isDone && activityType=='quizz') {
+        if (isDone && activityType == 'quizz') {
             clearInterval(greaterInterval);
             layoutSlots += "0";
             $.post({
@@ -692,6 +708,31 @@ function processarTentativa(questionUsageID, connectionIndex, command) {
             });
         }
     }, 3000);
+}
+
+function styleQuestion(selectedElement, fraction, rightFraction, feedback) {
+    try {
+        var findDivContainer = selectedElement;
+        while (findDivContainer.parent()[0] != null) {
+            findDivContainer = findDivContainer.parent();
+            if (findDivContainer.attr('class') != "questioncontainer") {
+                continue;
+            }
+            if (fraction == rightFraction) {
+                findDivContainer.attr('class', 'divGradedRight');
+                findDivContainer[0].innerHTML += "<p>Correto. " + feedback + "</p>";
+            } else if (fraction > 0) {
+                findDivContainer.attr('class', 'divGradedPartial');
+                findDivContainer[0].innerHTML += "<p>Parcialmente correto. " + feedback + "</p>";
+            } else {
+                findDivContainer.attr('class', 'divGradedWrong');
+                findDivContainer[0].innerHTML += "<p>Errado. " + feedback + "</p>";
+            }
+        }
+    } catch (exception) {
+        // erro na marcação
+        console.log("error");
+    }
 }
 
 // FIM TENTATIVAS
