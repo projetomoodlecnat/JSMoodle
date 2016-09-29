@@ -17,7 +17,7 @@ var currentOperation;
 var operating;
 
 $(document).ready(function () {
-    var request = new Windows.Web.Http.HttpClient().getAsync(new Windows.Foundation.Uri("http://ultraimg.com/images/2016/07/29/Simplest-Responsive-jQuery-Image-Lightbox-Plugin-simple-lightbox.jpg"));
+    /*var request = new Windows.Web.Http.HttpClient().getAsync(new Windows.Foundation.Uri("http://ultraimg.com/images/2016/07/29/Simplest-Responsive-jQuery-Image-Lightbox-Plugin-simple-lightbox.jpg"));
     var fileBytes;
     var fileCreated;
     request.done(function () {
@@ -30,7 +30,7 @@ $(document).ready(function () {
                 });
             });
         });
-    });
+    });*/
     $('.paragraphGoBack').click(function () {
         $('.paragraphGoBack').html("<img src='../../images/universal/loading.gif' alt='animacao_carregando'>");
         history.back();
@@ -363,6 +363,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
     var lastProcessedSlotAttemptID;
     var lastProcessedAttemptDataID;
     var individualFraction = 0.0;
+    var answerValue;
 
     // variáveis de quizz
     var finalFractionGrade = 0.0;
@@ -381,7 +382,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                 $.post({
                     url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                     async: false,
-                    data: { "connectionIndex": connectionIndex, "query": command + " where mdl_quiz_slots.id=" + selectedElement.attr("slot") }
+                    data: { "connectionIndex": connectionIndex, "query": command + " where mdl_quiz_slots.id=" + selectedElement.attr("slot") + "order by mdl_question_answers.id" }
                 }).done(function (data, textStatus, jqXHR) {
                     try {
                         sumFractions = 0.0;
@@ -415,6 +416,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                     for (var i = 1; i < data.length; i++) {
                         if (data[i][data[0].indexOf("ANSWER")].indexOf(splitHTMLText(selectedElement[0].nextSibling.outerHTML)) > -1) {
                             // A questão faz parte de um quizz de multi-escolhas e os registros já foram inseridos
+                            answerValue = i - 1;
 
                             data[i][data[0].indexOf("FRACTION")] = data[i][data[0].indexOf("FRACTION")].replace(",", ".");
                             data[i][data[0].indexOf("MAXMARK")] = data[i][data[0].indexOf("MAXMARK")].replace(",", ".");
@@ -499,7 +501,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                     // tentando contornar o problema do ID não ser serializado (auto-incremental)
                                     // POST on MDL_QUESTION_ATTEMPTS
 
-                                    while (insertSerialData.indexOf("duplicate") > -1) {
+                                    while (insertSerialData[0].indexOf("duplicate") > -1) {
                                         secondData[1][0] += 1;
                                         $.post({
                                             url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
@@ -509,7 +511,8 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                                     + secondData[1][0].toString() + "," + questionUsageID.toString() + "," + data[i][data[0].indexOf("SLOT")] + ",'" + data[i][data[0].indexOf("PREFERREDBEHAVIOUR")] + "'," + data[i][data[0].indexOf("QUESTIONID")] + ",1," + data[i][data[0].indexOf("MAXMARK")] +
                                                     ",0," + rightAnswerAndValue[1].toString() + ",0,'" + splitHTMLText(data[i][data[0].indexOf("QUESTIONTEXT")]) + "','" + rightAnswerAndValue[0] + "','" + userAnswer + "'," + getUnixTime().toString() + ")"
                                             }
-                                        }).done(function (insertSerialData) {
+                                        }).done(function (hasErrors) {
+                                            insertSerialData = hasErrors;
                                         }).error(function () {
                                             setStatus("error", "Requisição à API falhou.");
                                             return;
@@ -538,7 +541,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                                             ",1,'complete',NULL," + getUnixTime().toString() + "," + cookiesDict["userID"] + ") returning id"
                                             }
                                         }).done(function (insertSerialData, textStatus, jqXHR) {
-                                            while (insertSerialData.indexOf("duplicate") > -1) {
+                                            while (insertSerialData[0].indexOf("duplicate") > -1) {
                                                 secondData2[1][0] += 1;
                                                 $.post({
                                                     url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
@@ -550,7 +553,9 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                                             "'," + data[i][data[0].indexOf("FRACTION")] + "," + getUnixTime().toString() + "," + cookiesDict["userID"] + "),(" + (secondData2[1][0] + 2).toString() + "," + secondData[1][0].toString() +
                                                             ",1,'complete',NULL," + getUnixTime().toString() + "," + cookiesDict["userID"] + ") returning id"
                                                     }
-                                                }).done(function (insertSerialData) { })
+                                                }).done(function (hasErrors) {
+                                                    insertSerialData = hasErrors;
+                                                })
                                                 .error(function () {
                                                     setStatus("error", "Requisição à API falhou.");
                                                     return;
@@ -577,19 +582,22 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                                         async: false,
                                                         data: {
                                                             "connectionIndex": connectionIndex, "query": "INSERT INTO mdl_question_attempt_step_data(id, attemptstepid, name, value) VALUES (" +
-                                                                secondData3[1][0].toString() + "," + savedSerialData[1] + ",'-finish', '1'),(" + (secondData3[1][0] + 1).toString() + "," + savedSerialData[2] + ",'answer','1')"
+                                                                        secondData3[1][0].toString() + "," + savedSerialData[3] + ",'_order','" + cumulativeAnswerID.substring(0, cumulativeAnswerID.lastIndexOf(",")) + "'),(" +
+                                                                        (secondData3[1][0] + 1).toString() + "," + savedSerialData[1] + ",'-finish', '1'),(" + (secondData3[1][0] + 2).toString() + "," + savedSerialData[2] + ",'answer','" + answerValue + "')"
                                                         }
                                                     }).done(function (insertSerialData, textStatus, jqXHR) {
-                                                        while (insertSerialData.indexOf("duplicate") > -1) {
+                                                        while (insertSerialData[0].indexOf("duplicate") > -1) {
                                                             secondData3[1][0] += 1;
                                                             $.post({
                                                                 url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                                                                 async: false,
                                                                 data: {
                                                                     "connectionIndex": connectionIndex, "query": "INSERT INTO mdl_question_attempt_step_data(id, attemptstepid, name, value) VALUES (" +
-                                                                        secondData3[1][0].toString() + "," + savedSerialData[1] + ",'-finish', '1'),(" + (secondData3[1][0] + 1).toString() + "," + savedSerialData[2] + ",'answer','1')"
+                                                                        secondData3[1][0].toString() + "," + savedSerialData[3] + ",'_order','" + cumulativeAnswerID.substring(0, cumulativeAnswerID.lastIndexOf(",")) + "'),(" +
+                                                                        (secondData3[1][0]+1).toString() + "," + savedSerialData[1] + ",'-finish', '1'),(" + (secondData3[1][0] + 2).toString() + "," + savedSerialData[2] + ",'answer','" + answerValue + "')"
                                                                 }
-                                                            }).done(function (insertSerialData) {
+                                                            }).done(function (hasErrors) {
+                                                                insertSerialData = hasErrors;
                                                             });
                                                         }
                                                         if (finalFractionGrade + parseFloat(data[i][data[0].indexOf("FRACTION")]) >= 0) {
@@ -604,7 +612,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                                 } else if (selectedElement.attr('type') == 'checkbox') {
                                                     var insertSerialData = "duplicate";
                                                     secondData3[1][0] -= 1;
-                                                    while (insertSerialData.indexOf("duplicate") > -1) {
+                                                    while (insertSerialData[0].indexOf("duplicate") > -1) {
                                                         secondData3[1][0] += 1;
                                                         var choiceI = 0;
                                                         var finalQuery = "INSERT INTO mdl_question_attempt_step_data(id, attemptstepid, name, value) VALUES ";
@@ -715,7 +723,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                 serialData[1][0].toString() + "," + activityID + "," + cookiesDict["userID"] + "," + serialData[1][1].toString() + "," + questionUsageID + ",'" + layoutSlots + "',0,1,'finished'," + getUnixTime().toString() + "," + getUnixTime().toString() + "," + getUnixTime().toString() + ",NULL," + finalFractionGrade + ")"
                         }
                     }).done(function (insertSerialData, textStatus, jqXHR) {
-                        while (insertSerialData.indexOf("duplicate") > -1) {
+                        while (insertSerialData[0].indexOf("duplicate") > -1) {
                             serialData[1][0] += 1;
                             $.post({
                                 url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
@@ -724,7 +732,8 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                     "connectionIndex": connectionIndex, "query": "insert into mdl_quiz_attempts(id, quiz, userid, attempt, uniqueid, layout, currentpage, preview, state, timestart, timefinish, timemodified, timecheckstate, sumgrades) values (" +
                                         serialData[1][0].toString() + "," + activityID + "," + cookiesDict["userID"] + "," + serialData[1][1].toString() + "," + questionUsageID + ",'" + layoutSlots + "',0,1,'finished'," + getUnixTime().toString() + "," + getUnixTime().toString() + "," + getUnixTime().toString() + ",NULL," + finalFractionGrade + ")"
                                 }
-                            }).done(function (insertSerialData, textStatus, jqXHR) {
+                            }).done(function (hasErrors, textStatus, jqXHR) {
+                                insertSerialData = hasErrors;
                             });
                         }
                         setStatus("succeeded", "Consegui executar todas as tarefas e cadastrar a sua tentativa no Moodle. Veja os resultados abaixo!")

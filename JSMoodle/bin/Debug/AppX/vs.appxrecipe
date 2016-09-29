@@ -16,7 +16,7 @@
     <PackageRegistrationPath>
     </PackageRegistrationPath>
     <RemoveNonLayoutFiles>true</RemoveNonLayoutFiles>
-    <RegisteredManifestChecksum>74DE02C2E600F4552C2D391D150880C50CE284A2F0EA05421DD415A83257DA4D</RegisteredManifestChecksum>
+    <RegisteredManifestChecksum>4ED2DF89D7FB247076DFC9928416E87393240DAE976CA81E01B4C39C5AEE0D9B</RegisteredManifestChecksum>
     <RegisteredPackageMoniker>91b3016b-63e8-4f30-afb2-8d0df63c2e27_1.0.0.0_neutral__qqx2hgsnr56ng</RegisteredPackageMoniker>
     <RegisteredUserModeAppID>91b3016b-63e8-4f30-afb2-8d0df63c2e27_qqx2hgsnr56ng!App</RegisteredUserModeAppID>
     <RegisteredPackageID>91b3016b-63e8-4f30-afb2-8d0df63c2e27</RegisteredPackageID>
@@ -28,7 +28,7 @@
     <AppXManifest Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bin\Debug\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2016-09-08T15:42:25.352</Modified>
+      <Modified>2016-09-29T18:59:56.956</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
@@ -66,7 +66,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\activities\view\view.js">
       <PackagePath>activities\view\view.js</PackagePath>
-      <Modified>2016-09-29T17:43:57.928</Modified>
+      <Modified>2016-09-29T21:58:26.100</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\dashboard\courses\courses.js">
       <PackagePath>dashboard\courses\courses.js</PackagePath>
@@ -388,7 +388,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bin\Debug\ReverseMap\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-      <Modified>2016-09-08T15:42:24.891</Modified>
+      <Modified>2016-09-29T18:59:56.309</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>
