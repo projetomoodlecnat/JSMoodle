@@ -17,6 +17,20 @@ var currentOperation;
 var operating;
 
 $(document).ready(function () {
+    var request = new Windows.Web.Http.HttpClient().getAsync(new Windows.Foundation.Uri("http://ultraimg.com/images/2016/07/29/Simplest-Responsive-jQuery-Image-Lightbox-Plugin-simple-lightbox.jpg"));
+    var fileBytes;
+    var fileCreated;
+    request.done(function () {
+        request = request.operation.getResults().content.readAsBufferAsync();
+        request.done(function () {
+            fileCreated = Windows.Storage.ApplicationData.current.localCacheFolder.createFileAsync("image.jpg");
+            fileCreated.done(function () {
+                Windows.Storage.FileIO.writeBufferAsync(fileCreated.operation.getResults(), request.operation.getResults()).done(function () {
+
+                });
+            });
+        });
+    });
     $('.paragraphGoBack').click(function () {
         $('.paragraphGoBack').html("<img src='../../images/universal/loading.gif' alt='animacao_carregando'>");
         history.back();
@@ -32,7 +46,7 @@ $(document).ready(function () {
     activityType = window.location.toString().substring((window.location.toString().indexOf('?') + 1), window.location.toString().indexOf('='));
     operating = setInterval(checkCurrentOperation, 1000);
     currentOperation = "working_inicializar_pasta";
-    inicializarPastas();
+    initializeFolders();
 });
 
 function setStatus(type, message) {
@@ -51,7 +65,7 @@ function setStatus(type, message) {
     }
 }
 
-function inicializarPastas() {
+function initializeFolders() {
     setStatus("progressing", "Tentando carregar as pastas com as suas atividades... ");
     var quizzFolder = Windows.Storage.ApplicationData.current.localFolder.createFolderAsync("quizzes");
     quizzFolder.done(function () {
@@ -76,7 +90,7 @@ function inicializarPastas() {
     });
 }
 
-function inicializarArquivoAtividade(pasta, id) {
+function initializeActivityFile(pasta, id) {
     setStatus("progressing", "Carregando o arquivo da sua atividade...");
     try {
         var createFile = pasta.createFileAsync(id);
@@ -100,7 +114,7 @@ function inicializarArquivoAtividade(pasta, id) {
     }
 }
 
-function carregarArquivoNaInterface(file) {
+function loadFileIntoInterface(file) {
     try {
         setStatus("progressing", "Lendo do arquivo e transformando na interface... ");
         var readFromFile = Windows.Storage.FileIO.readTextAsync(file);
@@ -131,7 +145,7 @@ function carregarArquivoNaInterface(file) {
     }
 }
 
-function carregarQuestoesBanco() {
+function loadQuestionsFromDatabase() {
     setStatus("progressing", "Foi criado um arquivo no qual guardarei as suas respostas. Carregando a atividade do banco... ");
     var stringHTMLBuilder = "";
     $.ajax(cookiesDict["api_Path"] + "dbproperties?index=" + cookiesDict["databaseIndex"], {
@@ -217,7 +231,7 @@ function carregarQuestoesBanco() {
     });
 }
 
-function salvarProgresso(activityFile) {
+function saveActivityProgress(activityFile) {
     setStatus("progressing", "Salvando o seu processo num arquivo, aguarde... ");
     $('.paragraphSave').html("<img src='../../images/universal/loading.gif' alt='animacao_carregando'>");
     var savingOperation = Windows.Storage.FileIO.writeTextAsync(activityFile, $('#content').html());
@@ -234,7 +248,7 @@ function salvarProgresso(activityFile) {
     });
 }
 
-function excluirProgresso(activityFile) {
+function excludeActivityProgress(activityFile) {
     setStatus("progressing", "Excluindo o seu progresso dos arquivos, aguarde... ");
     $('.paragraphClear').html("<img src='../../images/universal/loading.gif' alt='animacao_carregando'>");
     var fileDeleteOperation = activityFile.deleteAsync(Windows.Storage.StorageDeleteOption.permanentDelete);
@@ -265,7 +279,7 @@ function checkCurrentOperation() {
                     activityID = window.location.toString().substr(window.location.toString().indexOf('=') + 1);
                     // verifica a cada segundo se a tarefa de criação já completou
                     // parâmetro da query string para determinar o id da atividade
-                    inicializarArquivoAtividade(quizzesFolder, activityID);
+                    initializeActivityFile(quizzesFolder, activityID);
                     break;
                 default:
                     endOperation();
@@ -275,19 +289,19 @@ function checkCurrentOperation() {
             break;
         case 'ler_arquivo':
             currentOperation = 'working_ler_arquivo';
-            carregarArquivoNaInterface(activityFile);
+            loadFileIntoInterface(activityFile);
             break;
         case 'carregar_questoes_banco':
             currentOperation = 'carregar_questoes_banco';
-            carregarQuestoesBanco();
+            loadQuestionsFromDatabase();
             break;
         case 'salvar_progresso':
             currentOperation = 'working_salvar_progresso';
-            salvarProgresso(activityFile);
+            saveActivityProgress(activityFile);
             break;
         case 'excluir_progresso':
             currentOperation = 'working_excluir_progresso';
-            excluirProgresso(activityFile);
+            excludeActivityProgress(activityFile);
             break;
         default:
             break;
@@ -300,13 +314,6 @@ function endOperation() {
 
 // TENTATIVAS
 
-function checarQuestoesSemResposta() {
-    $(".questioncontainer input[checked='true']").each(function () {
-
-    });
-    return false;
-}
-
 function splitHTMLText(questionText) {
     if (questionText.indexOf("<p") == -1) {
         return questionText;
@@ -317,7 +324,7 @@ function splitHTMLText(questionText) {
     return splittedText;
 }
 
-function contarQuestoesComResposta() {
+function countAnsweredQuestions() {
     var i = 0;
     $(".questioncontainer input[checked='true']").each(function () {
         i++;
@@ -346,10 +353,10 @@ function stateQuizzAttempt(answer_fraction, max_fraction) {
     }
 }
 
-function processarTentativa(questionUsageID, connectionIndex, command) {
+function processActivityAttempt(questionUsageID, connectionIndex, command) {
     var isDone = false;
     var processedQuestionsLength = 0;
-    var questionsToProcess = contarQuestoesComResposta();
+    var questionsToProcess = countAnsweredQuestions();
     var processedMultiSlot = null;
 
     // variáveis de questão
@@ -360,6 +367,7 @@ function processarTentativa(questionUsageID, connectionIndex, command) {
     // variáveis de quizz
     var finalFractionGrade = 0.0;
     var layoutSlots = "";
+    var cumulativeAnswerID;
 
     switch (activityType) {
         case 'quizz':
@@ -377,7 +385,9 @@ function processarTentativa(questionUsageID, connectionIndex, command) {
                 }).done(function (data, textStatus, jqXHR) {
                     try {
                         sumFractions = 0.0;
+                        cumulativeAnswerID = "";
                         for (var i = 1; i < data.length; i++) {
+                            cumulativeAnswerID += data[i][data[0].indexOf("ANSWERID")] + ",";
                             if (parseFloat(data[i][data[0].indexOf("FRACTION")]) >= rightAnswerAndValue[1]) {
                                 if (parseFloat(data[i][data[0].indexOf("FRACTION")]) > 0) {
                                     sumFractions += parseFloat(data[i][data[0].indexOf("FRACTION")]);
@@ -522,9 +532,10 @@ function processarTentativa(questionUsageID, connectionIndex, command) {
                                             async: false,
                                             data: {
                                                 "connectionIndex": connectionIndex, "query": "insert into mdl_question_attempt_steps(id, questionattemptid, sequencenumber, state, fraction, timecreated, userid) values (" +
-                                                    secondData2[1][0].toString() + "," + secondData[1][0].toString() + ",2,'" + stateQuizzAttempt(parseFloat(data[i][data[0].indexOf("FRACTION")]), rightAnswerAndValue[1]) +
-                                                    "'," + data[i][data[0].indexOf("FRACTION")] + "," + getUnixTime().toString() + "," + cookiesDict["userID"] + "),(" + (secondData2[1][0] + 1).toString() + "," + secondData[1][0].toString() +
-                                                    ",1,'complete',NULL," + getUnixTime().toString() + "," + cookiesDict["userID"] + ") returning id"
+                                                            secondData2[1][0].toString() + "," + secondData[1][0].toString() + ",0, 'todo', null," + getUnixTime().toString() + "," + cookiesDict["userID"] + "),(" +
+                                                            (secondData2[1][0] + 1).toString() + "," + secondData[1][0].toString() + ",2,'" + stateQuizzAttempt(parseFloat(data[i][data[0].indexOf("FRACTION")]), rightAnswerAndValue[1]) +
+                                                            "'," + data[i][data[0].indexOf("FRACTION")] + "," + getUnixTime().toString() + "," + cookiesDict["userID"] + "),(" + (secondData2[1][0] + 2).toString() + "," + secondData[1][0].toString() +
+                                                            ",1,'complete',NULL," + getUnixTime().toString() + "," + cookiesDict["userID"] + ") returning id"
                                             }
                                         }).done(function (insertSerialData, textStatus, jqXHR) {
                                             while (insertSerialData.indexOf("duplicate") > -1) {
@@ -534,8 +545,9 @@ function processarTentativa(questionUsageID, connectionIndex, command) {
                                                     async: false,
                                                     data: {
                                                         "connectionIndex": connectionIndex, "query": "insert into mdl_question_attempt_steps(id, questionattemptid, sequencenumber, state, fraction, timecreated, userid) values (" +
-                                                            secondData2[1][0].toString() + "," + secondData[1][0].toString() + ",2,'" + stateQuizzAttempt(parseFloat(data[i][data[0].indexOf("FRACTION")]), rightAnswerAndValue[1]) +
-                                                            "'," + data[i][data[0].indexOf("FRACTION")] + "," + getUnixTime().toString() + "," + cookiesDict["userID"] + "),(" + (secondData2[1][0] + 1).toString() + "," + secondData[1][0].toString() +
+                                                            secondData2[1][0].toString() + "," + secondData[1][0].toString() + ",0, 'todo', null," + getUnixTime().toString() + "," + cookiesDict["userID"] + "),(" +
+                                                            (secondData2[1][0] + 1).toString() + "," + secondData[1][0].toString() + ",2,'" + stateQuizzAttempt(parseFloat(data[i][data[0].indexOf("FRACTION")]), rightAnswerAndValue[1]) +
+                                                            "'," + data[i][data[0].indexOf("FRACTION")] + "," + getUnixTime().toString() + "," + cookiesDict["userID"] + "),(" + (secondData2[1][0] + 2).toString() + "," + secondData[1][0].toString() +
                                                             ",1,'complete',NULL," + getUnixTime().toString() + "," + cookiesDict["userID"] + ") returning id"
                                                     }
                                                 }).done(function (insertSerialData) { })
@@ -545,9 +557,10 @@ function processarTentativa(questionUsageID, connectionIndex, command) {
                                                 });
                                             }
                                             var savedSerialData = []
-                                            savedSerialData[1] = insertSerialData[1][0];
+                                            savedSerialData[1] = insertSerialData[2][0];
                                             lastProcessedAttemptDataID = savedSerialData[1];
-                                            savedSerialData[2] = insertSerialData[2][0];
+                                            savedSerialData[2] = insertSerialData[3][0];
+                                            savedSerialData[3] = insertSerialData[1][0];
                                             // POST on MDL_QUESTION_ATTEMPT_STEP_DATA with MDL_QUESTION_ATTEMPT_STEPS query results
 
                                             $.post({
@@ -595,16 +608,17 @@ function processarTentativa(questionUsageID, connectionIndex, command) {
                                                         secondData3[1][0] += 1;
                                                         var choiceI = 0;
                                                         var finalQuery = "INSERT INTO mdl_question_attempt_step_data(id, attemptstepid, name, value) VALUES ";
+                                                        finalQuery += "(" + secondData3[1][0].toString() + "," + savedSerialData[3] + ",'_order','" + cumulativeAnswerID.substring(0, cumulativeAnswerID.lastIndexOf(",")) + "'),"
                                                         $("[slot='" + selectedElement.attr("slot") + "']").each(function () {
                                                             var element = $(this);
                                                             if (element.attr('checked') == 'checked') {
-                                                                finalQuery += "(" + (secondData3[1][0] + choiceI).toString() + "," + savedSerialData[1] + ",'choice" + choiceI.toString() + "',1),";
+                                                                finalQuery += "(" + (secondData3[1][0] + 1 + choiceI).toString() + "," + savedSerialData[1] + ",'choice" + choiceI.toString() + "',1),";
                                                             } else {
-                                                                finalQuery += "(" + (secondData3[1][0] + choiceI).toString() + "," + savedSerialData[1] + ",'choice" + choiceI.toString() + "',0),";
+                                                                finalQuery += "(" + (secondData3[1][0] + 1 + choiceI).toString() + "," + savedSerialData[1] + ",'choice" + choiceI.toString() + "',0),";
                                                             }
                                                             choiceI++;
                                                         }).promise().done(function () {
-                                                            finalQuery += "(" + (secondData3[1][0] + choiceI).toString() + "," + savedSerialData[2] + ",'-finish',1)";
+                                                            finalQuery += "(" + (secondData3[1][0] + 1 + choiceI).toString() + "," + savedSerialData[2] + ",'-finish',1)";
                                                         });
                                                         $.post({
                                                             url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
@@ -619,6 +633,23 @@ function processarTentativa(questionUsageID, connectionIndex, command) {
                                                     processedMultiSlot = selectedElement.attr('slot');
                                                     lastProcessedSlotAttemptID = secondData[1][0].toString();
                                                     individualFraction = parseFloat(data[i][data[0].indexOf("FRACTION")]);
+                                                    if (matchSelected.eq(index + 1).length == 0) {
+                                                        finalFractionGrade += (individualFraction * parseFloat(data[i][data[0].indexOf("MAXMARK")]));
+                                                        if (finalFractionGrade < 0) {
+                                                            finalFractionGrade = 0;
+                                                        }
+                                                        if (individualFraction < 0) {
+                                                            individualFraction = 0;
+                                                        }
+                                                        $.post({
+                                                            url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                                            async: false,
+                                                            data: { "connectionIndex": connectionIndex, "query": "UPDATE mdl_question_attempt_steps SET state='" + stateQuizzAttempt(individualFraction, sumFractions) + "', fraction=" + individualFraction.toString() + " where id=" + lastProcessedAttemptDataID }
+                                                        }).done(function (updateData) {
+                                                        });
+                                                        styleQuestion(selectedElement, individualFraction, sumFractions, data[i][data[0].indexOf("FEEDBACK")]);
+                                                        isDone = true;
+                                                    }
                                                 } else {
                                                     console.log("erro");
                                                 }
@@ -807,7 +838,7 @@ function loadOrReloadListeners() {
                                                 data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[13]["comando"] + " values (" + (parseInt(firstdata[1][0]) + 1) + "," + contextID + ",'mod quiz','deferredfeedback') returning id" }
                                             }).done(function (data, textStatus, jqXHR) {
                                                 // a partir do ID recém-inserido na tabela mdl_question_usages retornado será possível construir tentativas de respostas
-                                                processarTentativa(data[1][0], (firstStep[1]["idconexao"] - 1), firstStep[14]["comando"]);
+                                                processActivityAttempt(data[1][0], (firstStep[1]["idconexao"] - 1), firstStep[14]["comando"]);
                                             }).error(function () {
                                                 setStatus("error", "Erro na requisição de submissão de sua tentativa. Por favor, tente novamente!");
                                             });
@@ -878,7 +909,7 @@ function loadOrReloadListeners() {
                                                         data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[13]["comando"] + " values (" + (parseInt(firstdata[1][0]) + 1) + "," + contextID + ",'mod quiz','deferredfeedback') returning id" }
                                                     }).done(function (data, textStatus, jqXHR) {
                                                         // a partir do ID recém-inserido na tabela mdl_question_usages retornado será possível construir tentativas de respostas
-                                                        processarTentativa(data[1][0], (firstStep[1]["idconexao"] - 1), firstStep[14]["comando"]);
+                                                        processActivityAttempt(data[1][0], (firstStep[1]["idconexao"] - 1), firstStep[14]["comando"]);
                                                     }).error(function () {
                                                         setStatus("error", "Erro na requisição de submissão de sua tentativa. Por favor, tente novamente!");
                                                     });
@@ -915,3 +946,21 @@ function loadOrReloadListeners() {
 }
 
 // FIM LISTENERS
+
+/* 
+    $.ajax(cookiesDict["api_Path"] + "dbproperties?index=" + cookiesDict["databaseIndex"], {
+        contentType: "application/json",
+        method: "GET",
+        async: false,
+        success: function (firstStep) {
+            $.post({
+                url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                data: {
+                    "connectionIndex": firstStep[1]["idconexao"] - 1, "query": "cc"
+                },
+                async: false
+            }).done(function (data, txtStatus, jqXHR) {
+            });
+        }
+    });
+*/
