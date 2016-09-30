@@ -27,3 +27,26 @@ function isAppOnline() {
 function getUnixTime() {
     return Math.round(new Date().getTime() / 1000);
 }
+
+function persistCacheImage(url) {
+    var request = new Windows.Web.Http.HttpClient().getAsync(new Windows.Foundation.Uri(url));
+    var fileBytes;
+    var fileCreated;
+    request.done(function () {
+        request = request.operation.getResults().content.readAsBufferAsync();
+        request.done(function () {
+            fileCreated = Windows.Storage.ApplicationData.current.localCacheFolder.createFileAsync("image.jpg");
+            fileCreated.done(function () {
+                Windows.Storage.FileIO.writeBufferAsync(fileCreated.operation.getResults(), request.operation.getResults()).done(function () {
+
+                });
+            }, function () {
+                console.log("[ERRO] Arquivo já existe ou não pode escrever");
+                return;
+            });
+        }, function () {
+            console.log("[ERRO] Requisição");
+            return;
+        });
+    });
+}
