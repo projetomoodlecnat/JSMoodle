@@ -184,6 +184,8 @@ function loadQuestionsFromDatabase() {
                         case 'truefalse':
                             optionType = "radio";
                             break;
+                        case 'description':
+                            break;
                         default:
                             $('#content').html("Essa tarefa contém tipos de questões não suportadas pela aplicação e não poderá ser mostrada.");
                             endOperation();

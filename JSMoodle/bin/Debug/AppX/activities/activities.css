@@ -1,2 +1,16 @@
-﻿body {
+﻿.paragraphLogout {
+    background-color: #e53935;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: -5px;
+}
+
+.paragraphViewActivities {
+    background-color: blue;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: -10px;
+    text-align: center;
 }

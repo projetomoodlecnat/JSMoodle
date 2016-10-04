@@ -65,7 +65,7 @@ $(document).ready(function () {
                         async: false
                     }).done(function (data, textStatus, jqXHR) {
                         if (data.length <= 1) {
-                            innerHTMLBuilder += "<ul><li><div>Nenhuma tarefa cadastrada para esse curso.</div></li></ul>";
+                            innerHTMLBuilder += "<ul style='clear:both'><li><div>Nenhuma tarefa cadastrada para esse curso.</div></li></ul>";
                         } else {
                             var innerHTMLActivity = "";
                             // categoriza as atividades por tipo
@@ -81,7 +81,6 @@ $(document).ready(function () {
                                 if (getUnixTime() < data[i][data[0].indexOf("DUEDATE")] || data[i][data[0].indexOf("DUEDATE")] === "0") {
                                     // caso onde a tarefa está aberta
                                     atividades.atividadesnoprazo.push("<li class='liOpen'><img class='liActivityIcon' src='../images/dashboard/icons/assignment_duedate.png' /><b tooltipvalue='EM ABERTO'>Atividade " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
-                                    console.log(data[i][data[0].indexOf("DUEDATE")]);
                                 } else if (getUnixTime() > data[i][data[0].indexOf("DUEDATE")] && (getUnixTime() < data[i][data[0].indexOf("CUTOFFDATE")] || data[i][data[0].indexOf("CUTOFFDATE")] === "0")) {
                                     // caso onde a tarefa extrapolou o prazo, mas ainda está aberta
                                     atividades.atividadesforadoprazo.push("<li class='liOverdue'><img class='liActivityIcon' src='../images/dashboard/icons/assignment_overdue.png' /><b tooltipvalue='FORA DO PRAZO'>Atividade " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
@@ -116,7 +115,7 @@ $(document).ready(function () {
                         async: false
                     }).done(function (data, textStatus, jqXHR) {
                         if (data.length <= 1) {
-                            innerHTMLBuilder += "<ul><li><div>Nenhum quizz cadastrado para esse curso.</div></li></ul>";
+                            innerHTMLBuilder += "<ul style='clear:both'><li><div>Nenhum quizz cadastrado para esse curso.</div></li></ul>";
                         } else {
                             var innerHTMLQuizzes = "";
                             // categoriza as quizzes por tipo
@@ -166,7 +165,7 @@ $(document).ready(function () {
                         async: false
                     }).done(function (data, textStatus, jqXHR) {
                         if (data.length <= 1) {
-                            innerHTMLBuilder += "<ul><li><div>Nenhuma enquete cadastrada para esse curso.</div></li></ul>";
+                            innerHTMLBuilder += "<ul style='clear:both'><li><div>Nenhuma enquete cadastrada para esse curso.</div></li></ul>";
                         } else {
                             var innerHTMLenquetes = "";
                             // categoriza as enquetes por tipo
@@ -181,7 +180,6 @@ $(document).ready(function () {
                                 if (getUnixTime() < data[i][data[0].indexOf("TIMECLOSE")] || data[i][data[0].indexOf("TIMECLOSE")] === "0") {
                                     // caso onde a tarefa está aberta
                                     enquetes.enquetesnoprazo.push("<li class='liOpen'><img class='liActivityIcon' src='../images/dashboard/icons/enquete_duedate.png' /><b tooltipvalue='EM ABERTO'>Enquete " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
-                                    console.log(data[i][data[0].indexOf("DUEDATE")]);
                                 } else {
                                     // caso onde a tarefa não está mais aberta
                                     enquetes.enquetesfechadas.push("<li class='liClosed'><img class='liActivityIcon' src='../images/dashboard/icons/enquete_closed.png' /><b tooltipvalue='FECHADA'>Enquete " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
