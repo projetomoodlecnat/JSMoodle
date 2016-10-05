@@ -8,7 +8,7 @@
         history.back();
     });
     var finalHTMLContent = "";
-    var activitiesFolderDone = 0;
+    var activitiesFoldersDoneAmount = 0;
     // tentando varrer as pastas
     var quizzOperation = Windows.Storage.ApplicationData.current.localFolder.getFolderAsync("quizzes");
     quizzOperation.done(function () {
@@ -24,17 +24,17 @@
                 }
                 finalHTMLContent += "</ul>";
             }
-            activitiesFolderDone++;
+            activitiesFoldersDoneAmount++;
         }, function () {
             finalHTMLContent += "<p>Erro na requisição dos arquivos de quizz.</p>";
-            activitiesFolderDone++;
+            activitiesFoldersDoneAmount++;
         });
     }, function () {
         finalHTMLContent += "<p>Nenhum quizz salvo.</p>";
-        activitiesFolderDone++;
+        activitiesFoldersDoneAmount++;
     });
     var contentInterval = setInterval(function () {
-        if (activitiesFolderDone == 1) {
+        if (activitiesFoldersDoneAmount == getFoldersAmount()) {
             clearInterval(contentInterval);
             $(".content").html(finalHTMLContent);
         }
