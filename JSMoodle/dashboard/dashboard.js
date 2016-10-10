@@ -179,7 +179,7 @@ $(document).ready(function () {
                             for (; data[i];) {
                                 if (getUnixTime() < data[i][data[0].indexOf("TIMECLOSE")] || data[i][data[0].indexOf("TIMECLOSE")] === "0") {
                                     // caso onde a tarefa está aberta
-                                    enquetes.enquetesnoprazo.push("<li class='liOpen'><img class='liActivityIcon' src='../images/dashboard/icons/enquete_duedate.png' /><b tooltipvalue='EM ABERTO'>Enquete " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
+                                    enquetes.enquetesnoprazo.push("<a href='../surveys/index.html?surveyid=" + data[i][data[0].indexOf("ID")] + "'><li class='liOpen'><img class='liActivityIcon' src='../images/dashboard/icons/enquete_duedate.png' /><b tooltipvalue='EM ABERTO'>Enquete " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li></a>");
                                 } else {
                                     // caso onde a tarefa não está mais aberta
                                     enquetes.enquetesfechadas.push("<li class='liClosed'><img class='liActivityIcon' src='../images/dashboard/icons/enquete_closed.png' /><b tooltipvalue='FECHADA'>Enquete " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");

@@ -85,3 +85,6 @@ js\applib.js
 js\jquery-2.2.4.js
 js\materialize.js
 js\materialize.min.js
+surveys\index.html
+surveys\surveys.css
+surveys\surveys.js

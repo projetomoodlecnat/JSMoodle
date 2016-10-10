@@ -1,0 +1,15 @@
+﻿.paragraphGoBack {
+    background-color: blue;
+    color: white;
+    height: 20px;
+    width: 100%;
+    cursor: pointer;
+    margin-top: -8px;
+    font-weight: bold;
+}
+
+.titulo {
+    text-align: center;
+    font-weight: 800;
+    font-size: medium;
+}

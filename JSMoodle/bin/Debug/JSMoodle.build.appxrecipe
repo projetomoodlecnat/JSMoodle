@@ -43,6 +43,9 @@
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\css\main.css">
       <PackagePath>css\main.css</PackagePath>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\surveys\surveys.css">
+      <PackagePath>surveys\surveys.css</PackagePath>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\activities\activities.js">
       <PackagePath>activities\activities.js</PackagePath>
     </AppxPackagedFile>
@@ -73,6 +76,9 @@
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\js\materialize.min.js">
       <PackagePath>js\materialize.min.js</PackagePath>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\surveys\surveys.js">
+      <PackagePath>surveys\surveys.js</PackagePath>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\activities\index.html">
       <PackagePath>activities\index.html</PackagePath>
     </AppxPackagedFile>
@@ -90,6 +96,9 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\index.html">
       <PackagePath>index.html</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\surveys\index.html">
+      <PackagePath>surveys\index.html</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\fonts\roboto\Roboto-Bold.eot">
       <PackagePath>fonts\roboto\Roboto-Bold.eot</PackagePath>

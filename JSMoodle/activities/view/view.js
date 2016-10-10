@@ -4,7 +4,6 @@ var cookiesDict = cookiesToDict();
 // variáveis que armazenam os locais de pasta e arquivo
 var quizzesFolder;
 var assignmentsFolder;
-var enquetesFolder;
 var activityFile;
 
 // variáveis de atributo da atividade

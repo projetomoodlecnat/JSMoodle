@@ -28,7 +28,7 @@
     <AppXManifest Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bin\Debug\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2016-10-04T16:16:27.771</Modified>
+      <Modified>2016-10-10T17:42:12.473</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
@@ -38,7 +38,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\activities\view\view.css">
       <PackagePath>activities\view\view.css</PackagePath>
-      <Modified>2016-10-04T17:30:36.996</Modified>
+      <Modified>2016-10-10T17:44:49.947</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\css\materialize.css">
       <PackagePath>css\materialize.css</PackagePath>
@@ -60,13 +60,17 @@
       <PackagePath>css\main.css</PackagePath>
       <Modified>2016-08-23T20:10:00.968</Modified>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\surveys\surveys.css">
+      <PackagePath>surveys\surveys.css</PackagePath>
+      <Modified>2016-10-10T17:44:07.131</Modified>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\activities\activities.js">
       <PackagePath>activities\activities.js</PackagePath>
       <Modified>2016-10-05T14:22:48.823</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\activities\view\view.js">
       <PackagePath>activities\view\view.js</PackagePath>
-      <Modified>2016-10-04T16:29:21.589</Modified>
+      <Modified>2016-10-10T16:22:46.692</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\dashboard\courses\courses.js">
       <PackagePath>dashboard\courses\courses.js</PackagePath>
@@ -74,7 +78,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\dashboard\dashboard.js">
       <PackagePath>dashboard\dashboard.js</PackagePath>
-      <Modified>2016-10-04T16:26:03.918</Modified>
+      <Modified>2016-10-10T16:08:43.019</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\dashboard\offline\offline.js">
       <PackagePath>dashboard\offline\offline.js</PackagePath>
@@ -100,29 +104,37 @@
       <PackagePath>js\materialize.min.js</PackagePath>
       <Modified>2016-04-02T07:48:00.000</Modified>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\surveys\surveys.js">
+      <PackagePath>surveys\surveys.js</PackagePath>
+      <Modified>2016-10-10T17:39:35.796</Modified>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\activities\index.html">
       <PackagePath>activities\index.html</PackagePath>
-      <Modified>2016-10-05T14:24:25.950</Modified>
+      <Modified>2016-10-10T16:03:23.101</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\activities\view\index.html">
       <PackagePath>activities\view\index.html</PackagePath>
-      <Modified>2016-08-25T15:18:18.198</Modified>
+      <Modified>2016-10-10T16:03:23.142</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\dashboard\courses\index.html">
       <PackagePath>dashboard\courses\index.html</PackagePath>
-      <Modified>2016-08-25T16:19:07.424</Modified>
+      <Modified>2016-10-10T16:03:23.085</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\dashboard\index.html">
       <PackagePath>dashboard\index.html</PackagePath>
-      <Modified>2016-10-04T16:39:52.252</Modified>
+      <Modified>2016-10-10T16:03:23.074</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\dashboard\offline.html">
       <PackagePath>dashboard\offline.html</PackagePath>
-      <Modified>2016-10-04T16:39:47.686</Modified>
+      <Modified>2016-10-10T16:03:23.012</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\index.html">
       <PackagePath>index.html</PackagePath>
-      <Modified>2016-08-25T15:20:48.085</Modified>
+      <Modified>2016-10-10T16:03:22.999</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\surveys\index.html">
+      <PackagePath>surveys\index.html</PackagePath>
+      <Modified>2016-10-10T17:43:34.088</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\fonts\roboto\Roboto-Bold.eot">
       <PackagePath>fonts\roboto\Roboto-Bold.eot</PackagePath>
@@ -388,7 +400,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bin\Debug\ReverseMap\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-      <Modified>2016-10-04T16:16:27.114</Modified>
+      <Modified>2016-10-10T17:42:12.243</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

@@ -146,6 +146,9 @@
     <Content Include="css\main.css" />
     <Content Include="js\materialize.js" />
     <Content Include="js\materialize.min.js" />
+    <Content Include="surveys\index.html" />
+    <Content Include="surveys\surveys.css" />
+    <Content Include="surveys\surveys.js" />
     <None Include="JSMoodle_TemporaryKey.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\$(WMSJSProjectDirectory)\Microsoft.VisualStudio.$(WMSJSProject).targets" />
