@@ -312,9 +312,9 @@ function parseCoursesListFromPage() {
 }
 
 function compareCoursesLists(parsedFileString, parsedFileList, pageList) {
-    finalHTMLList = "";
-    pageListI = 0;
-    parsedFileListI = 0;
+    var finalHTMLList = "";
+    var pageListI = 0;
+    var parsedFileListI = 0;
     for (pageListI; pageListI < pageList.length; pageListI++) {
         if (parsedFileString.indexOf(pageList[pageListI].substring(pageList[pageListI].indexOf('index.html?id='), pageList[pageListI].indexOf('index.html?id=') + 15)) == -1) {
             finalHTMLList += pageList[pageListI] + "</li><br>";

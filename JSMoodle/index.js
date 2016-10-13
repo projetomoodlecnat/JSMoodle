@@ -31,6 +31,8 @@
 
     // Método que tenta a autenticação por seleção na tabela MDL_USER através da API
     $('#btnSubmitLoginBanco').click(function () {
+        enableTextFields(false);
+        $("#status").html('<img src="images/universal/loading.gif" style="width: 20px" alt="carregando_gif" />');
         api_Path = document.getElementById('api_Path').value;
         $.ajax(api_Path + "dbproperties?index=" + document.getElementById("moodleSelector").value, {
             contentType: "application/json",
@@ -57,37 +59,41 @@
                             document.cookie = "api_Path=" + api_Path;
                             document.cookie = "userID=" + data.split(";")[1];
                             document.cookie = "username=" + data.split(";")[2];
-                            document.getElementById("username").setAttribute("disabled", "true");
-                            document.getElementById("password").setAttribute("disabled", "true");
                             setStatus("succeeded", "A autenticação pelo banco do Moodle foi concluída com sucesso!<br>Redirecionando para a página de Dashboard... ");
                             setTimeout(function () {
                                 window.location = window.location.toString().substring(0, location.toString().lastIndexOf("/")) + "/dashboard/index.html";
                             }, 2000);
                             break;
                         case "user_login_incorrect":
+                            enableTextFields(true);
                             document.getElementById("username").value = "";
                             document.getElementById("password").value = "";
                             document.getElementById("username").focus();
                             setStatus("error", "Usuário ou senha estão incorretos.");
                             break;
                         case "user_non_existent":
+                            enableTextFields(true);
                             setStatus("error", "O usuário que você inseriu não existe. ");
                             document.getElementById("username").value = "";
                             document.getElementById("username").focus();
                             break;
                         case "user_password_null":
+                            enableTextFields(true);
                             setStatus("error", "A senha não pode ficar em branco!");
                             document.getElementById("password").focus();
                             break;
                         default:
+                            enableTextFields(true);
                             setStatus("error", "Algum erro interno ocorreu na API. Tente novamente mais tarde!");
                             break;
                     }
                 }).error(function () {
+                    enableTextFields(true);
                     setStatus("error", "A requisição à API do Moodle falhou no segundo estágio. ");
                 });
             }
         }).error(function () {
+            enableTextFields(true);
             setStatus("error", "A requisição de acesso à API do Moodle falhou no primeiro estágio. ");
         });
     });
@@ -122,7 +128,7 @@
 
     function saveUserSettings(connectionIndex, api_Path) {
         document.cookie = "api_Path" + api_Path;
-        operation = Windows.Storage.ApplicationData.current.localFolder.getFileAsync("config.ini");
+        var operation = Windows.Storage.ApplicationData.current.localFolder.getFileAsync("config.ini");
         file = null;
         try {
             operation.done(function () {
@@ -153,11 +159,11 @@
     }
 
     function readUserSettings() {
-        operation = Windows.Storage.ApplicationData.current.localFolder.getFileAsync("config.ini");
+        var operation = Windows.Storage.ApplicationData.current.localFolder.getFileAsync("config.ini");
         operation.done(function () {
             fileReader = Windows.Storage.FileIO.readTextAsync(operation.operation.getResults());
             fileReader.done(function () {
-                parseString = fileReader.operation.getResults();
+                var parseString = fileReader.operation.getResults();
                 document.getElementById('moodleSelector').selectedIndex = parseFromConfigIni(parseString, 'connectionIndex');
                 document.getElementById('api_Path').value = parseFromConfigIni(parseString, 'api_Path');
                 document.cookie = "api_Path" + parseFromConfigIni(parseString, 'api_Path');
@@ -173,5 +179,15 @@
     function parseFromConfigIni(parseString, key) {
         parseString = parseString.substring(parseString.indexOf(key)+key.length+1);
         return parseString.substring(0, parseString.indexOf("\n"));
+    }
+
+    function enableTextFields(shouldEnable) {
+        if (shouldEnable == true) {
+            document.getElementById("username").removeAttribute("disabled");
+            document.getElementById("password").removeAttribute("disabled");
+            return;
+        }
+        document.getElementById("username").setAttribute("disabled", "true");
+        document.getElementById("password").setAttribute("disabled", "true");
     }
 });

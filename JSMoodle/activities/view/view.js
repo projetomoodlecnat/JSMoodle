@@ -811,7 +811,85 @@ function loadOrReloadListeners() {
             };
         })
     });
+    loadFinishAttemptListener();
+}
 
+function loadSubmitAttemptListeners() {
+    $('.buttonConfirmAttempt').click(function () {
+        setStatus("progressing", "Estou enviando a sua tentativa, aguarde um pouco...");
+        if (canUserAttempQuizz() == false) {
+            return;
+        }
+        $("#divButtonsHolder").remove();
+        $.ajax(cookiesDict["api_Path"] + "dbproperties?index=" + cookiesDict["databaseIndex"], {
+            contentType: "application/json",
+            method: "GET",
+            async: true,
+            success: function (firstStep) {
+                try {
+                    firstStep = JSON.parse(firstStep);
+                    document.cookie = "databaseType=" + firstStep[0]["databaseType"];
+                    document.cookie = "databaseIndex=" + firstStep[1]["idconexao"];
+                } catch (Exception) {
+                    setStatus("error", "Parsing dos dados da API falhou no primeiro estágio.");
+                    return;
+                }
+                switch (activityType) {
+                    case 'quizz':
+                        $.post({
+                            url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                            async: true,
+                            data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[12]["comando"] + " where fullmodule.instance=" + activityID + " order by mc.id limit 1" }
+                        }).done(function (data, textStatus, jqXHR) {
+                            try {
+                                var contextID = data[1][data[0].indexOf("ID")];
+                                $.post({
+                                    url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                    async: true,
+                                    data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": "select id from mdl_question_usages order by id desc limit 1" }
+                                }).done(function (firstdata, textStatus, jqXHR) {
+                                    try {
+                                        $.post({
+                                            url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                            async: true,
+                                            data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[13]["comando"] + " values (" + (parseInt(firstdata[1][0]) + 1) + "," + contextID + ",'mod quiz','deferredfeedback') returning id" }
+                                        }).done(function (data, textStatus, jqXHR) {
+                                            // a partir do ID recém-inserido na tabela mdl_question_usages retornado será possível construir tentativas de respostas
+                                            processActivityAttempt(data[1][0], (firstStep[1]["idconexao"] - 1), firstStep[14]["comando"]);
+                                        }).error(function () {
+                                            setStatus("error", "Erro na requisição de submissão de sua tentativa. Por favor, tente novamente!");
+                                        });
+                                    } catch (exception) {
+                                        setStatus("error", "Erro na requisição de submissão de sua tentativa. Por favor, tente novamente!");
+                                    }
+                                }).error(function () {
+                                    setStatus("error", "Requisição à API falhou. Por favor, tente mais tarde.");
+                                    return;
+                                });
+                            } catch (exception) {
+                                setStatus("error", "Erro interno da aplicação. Por favor, contate o desenvolvedor.");
+                                return;
+                            }
+                        }).error(function () {
+                            setStatus("error", "Requisição à API falhou. Por favor, tente mais tarde.");
+                            return;
+                        });
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+    });
+
+    $('.buttonCancelAttempt').click(function () {
+        $("#divButtonsHolder").replaceWith("<p class='paragraphFinishAttempt'>FINALIZAR A SUA TENTATIVA</p>");
+        loadFinishAttemptListener();
+        setStatus("neutral", "Você cancelou o envio.");
+    });
+}
+
+function loadFinishAttemptListener() {
     $('.paragraphFinishAttempt').click(function () {
         if (offline) {
             setStatus("neutral", "Você não pode submeter tentativas no modo off-line.");
@@ -819,157 +897,7 @@ function loadOrReloadListeners() {
         }
         setStatus("progressing", "Confira todas as suas questões antes de enviar!");
         $('.paragraphFinishAttempt').replaceWith("<div id='divButtonsHolder' style='text-align: center'><input type='button' class='buttonConfirmAttempt btn' value='CONFIRMAR ENVIO' /><input type='button' class='buttonCancelAttempt btn' value='CANCELAR ENVIO' /></div>");
-        $('.buttonConfirmAttempt').click(function () {
-            setStatus("progressing", "Estou enviando a sua tentativa, aguarde um pouco...");
-            if (canUserAttempQuizz() == false) {
-                return;
-            }
-            $("#divButtonsHolder").remove();
-            $.ajax(cookiesDict["api_Path"] + "dbproperties?index=" + cookiesDict["databaseIndex"], {
-                contentType: "application/json",
-                method: "GET",
-                async: true,
-                success: function (firstStep) {
-                    try {
-                        firstStep = JSON.parse(firstStep);
-                        document.cookie = "databaseType=" + firstStep[0]["databaseType"];
-                        document.cookie = "databaseIndex=" + firstStep[1]["idconexao"];
-                    } catch (Exception) {
-                        setStatus("error", "Parsing dos dados da API falhou no primeiro estágio.");
-                        return;
-                    }
-                    switch (activityType) {
-                        case 'quizz':
-                            $.post({
-                                url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                                async: true,
-                                data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[12]["comando"] + " where fullmodule.instance=" + activityID + " order by mc.id limit 1" }
-                            }).done(function (data, textStatus, jqXHR) {
-                                try {
-                                    var contextID = data[1][data[0].indexOf("ID")];
-                                    $.post({
-                                        url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                                        async: true,
-                                        data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": "select id from mdl_question_usages order by id desc limit 1" }
-                                    }).done(function (firstdata, textStatus, jqXHR) {
-                                        try {
-                                            $.post({
-                                                url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                                                async: true,
-                                                data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[13]["comando"] + " values (" + (parseInt(firstdata[1][0]) + 1) + "," + contextID + ",'mod quiz','deferredfeedback') returning id" }
-                                            }).done(function (data, textStatus, jqXHR) {
-                                                // a partir do ID recém-inserido na tabela mdl_question_usages retornado será possível construir tentativas de respostas
-                                                processActivityAttempt(data[1][0], (firstStep[1]["idconexao"] - 1), firstStep[14]["comando"]);
-                                            }).error(function () {
-                                                setStatus("error", "Erro na requisição de submissão de sua tentativa. Por favor, tente novamente!");
-                                            });
-                                        } catch (exception) {
-                                            setStatus("error", "Erro na requisição de submissão de sua tentativa. Por favor, tente novamente!");
-                                        }
-                                    }).error(function () {
-                                        setStatus("error", "Requisição à API falhou. Por favor, tente mais tarde.");
-                                        return;
-                                    });
-                                } catch (exception) {
-                                    setStatus("error", "Erro interno da aplicação. Por favor, contate o desenvolvedor.");
-                                    return;
-                                }
-                            }).error(function () {
-                                setStatus("error", "Requisição à API falhou. Por favor, tente mais tarde.");
-                                return;
-                            });
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            });
-        });
-        $('.buttonCancelAttempt').click(function () {
-            $("#divButtonsHolder").replaceWith("<p class='paragraphFinishAttempt'>FINALIZAR A SUA TENTATIVA</p>");
-            $('.paragraphFinishAttempt').click(function () {
-                if (offline) {
-                    setStatus("neutral", "Você não pode submeter tentativas no modo off-line.");
-                    return;
-                }
-                setStatus("progressing", "Confira todas as suas questões antes de enviar!");
-                $('.paragraphFinishAttempt').replaceWith("<div id='divButtonsHolder' style='text-align: center'><input type='button' class='buttonConfirmAttempt center btn' value='CONFIRMAR ENVIO' /><input type='button' class='center buttonCancelAttempt btn' value='CANCELAR ENVIO' /></div>");
-                $('.buttonConfirmAttempt').click(function () {
-                    setStatus("progressing", "Estou enviando a sua tentativa, aguarde um pouco...");
-                    if (canUserAttempQuizz() == false) {
-                        return;
-                    }
-                    $.ajax(cookiesDict["api_Path"] + "dbproperties?index=" + cookiesDict["databaseIndex"], {
-                        contentType: "application/json",
-                        method: "GET",
-                        async: true,
-                        success: function (firstStep) {
-                            try {
-                                firstStep = JSON.parse(firstStep);
-                                document.cookie = "databaseType=" + firstStep[0]["databaseType"];
-                                document.cookie = "databaseIndex=" + firstStep[1]["idconexao"];
-                            } catch (Exception) {
-                                setStatus("error", "Parsing dos dados da API falhou no primeiro estágio.");
-                                return;
-                            }
-                            switch (activityType) {
-                                case 'quizz':
-                                    if (canUserAttempQuizz() == false) {
-                                        return;
-                                    }
-                                    $.post({
-                                        url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                                        async: true,
-                                        data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[12]["comando"] + " where fullmodule.instance=" + activityID + " order by mc.id limit 1" }
-                                    }).done(function (data, textStatus, jqXHR) {
-                                        try {
-                                            var contextID = data[1][data[0].indexOf("ID")];
-                                            $.post({
-                                                url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                                                async: true,
-                                                data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": "select id from mdl_question_usages order by id desc limit 1" }
-                                            }).done(function (firstdata, textStatus, jqXHR) {
-                                                try {
-                                                    $.post({
-                                                        url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                                                        async: true,
-                                                        data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[13]["comando"] + " values (" + (parseInt(firstdata[1][0]) + 1) + "," + contextID + ",'mod quiz','deferredfeedback') returning id" }
-                                                    }).done(function (data, textStatus, jqXHR) {
-                                                        // a partir do ID recém-inserido na tabela mdl_question_usages retornado será possível construir tentativas de respostas
-                                                        processActivityAttempt(data[1][0], (firstStep[1]["idconexao"] - 1), firstStep[14]["comando"]);
-                                                    }).error(function () {
-                                                        setStatus("error", "Erro na requisição de submissão de sua tentativa. Por favor, tente novamente!");
-                                                    });
-                                                } catch (exception) {
-                                                    setStatus("error", "Erro na requisição de submissão de sua tentativa. Por favor, tente novamente!");
-                                                }
-                                            }).error(function () {
-                                                setStatus("error", "Requisição à API falhou. Por favor, tente mais tarde.");
-                                                return;
-                                            });
-                                        } catch (exception) {
-                                            setStatus("error", "Erro interno da aplicação. Por favor, contate o desenvolvedor.");
-                                            return;
-                                        }
-                                    }).error(function () {
-                                        setStatus("error", "Requisição à API falhou. Por favor, tente mais tarde.");
-                                        return;
-                                    });
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    });
-                });
-                $('.buttonCancelAttempt').click(function () {
-                    $("#divButtonsHolder").replaceWith("<p class='paragraphFinishAttempt'>FINALIZAR A SUA TENTATIVA</p>");
-                    setStatus("neutral", "Você cancelou o envio.");
-                });
-            });
-            setStatus("neutral", "Você cancelou o envio.");
-        });
+        loadSubmitAttemptListeners();
     });
 }
-
 // FIM LISTENERS

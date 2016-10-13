@@ -13,3 +13,14 @@
     font-weight: 800;
     font-size: medium;
 }
+
+.paragraphFinishSurvey {
+    background-color: forestgreen;
+    color: white;
+    height: 40px;
+    width: 100%;
+    cursor: pointer;
+    text-align: center !important;
+    font-weight: bold;
+    line-height: 3;
+}

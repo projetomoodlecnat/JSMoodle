@@ -24,20 +24,26 @@ $(document).ready(function () {
             var finalContentHTML = "";
             $.post({
                 url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": 'select name, intro from mdl_feedback where id=' + feedbackID }
+                data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": 'select * from mdl_feedback where id=' + feedbackID }
             }).done(function (data, textStatus, jqXHR) {
                 $(".titulo").html(data[1][data[0].indexOf("NAME")]);
                 $(".subtitulo").html(data[1][data[0].indexOf("INTRO")]);
                 $.post({
                     url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                    data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": 'select * from mdl_feedback_item where feedback=' + feedbackID }
+                    data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": 'select * from mdl_feedback_item where feedback=' + feedbackID + ' order by position' }
                 }).done(function (data, textStatus, jqXHR) {
                     var i = 1;
                     for (; data[i];) {
-                        usefulContent += "<p>" + data[i][data[0].indexOf("NAME")] + "</p>";
+                        var presentation = data[i][data[0].indexOf("PRESENTATION")].split("|");
+                        usefulContent += "<p>" + data[i][data[0].indexOf("NAME")];
                         switch (data[i][data[0].indexOf("TYP")]) {
                             case 'textfield':
-                                usefulContent += "<input type='text' style='width:100%' id='" + data[i][data[0].indexOf("ID")] + "' />"
+                                usefulContent += "</p><input type='text' style='width:100%' id='" + data[i][data[0].indexOf("ID")] + "' />";
+                                break;
+                            case 'numeric':
+                                usefulContent += " (" + presentation[0] + "-" + presentation[1] + ")</p><input type='number' style='width:100%' id='" + data[i][data[0].indexOf("ID")] + "' />";
+                                break;
+                            case 'info':
                                 break;
                             default:
                                 $("#content").html("Esta enquete contém tipos de alternativas não suportadas pelo Moodle.");
@@ -45,7 +51,7 @@ $(document).ready(function () {
                         }
                         i++;
                     }
-                    usefulContent += "<p class='paragraphResponderEnquete'>RESPONDER ENQUETE</p>";
+                    usefulContent += "<p class='paragraphFinishSurvey'>RESPONDER ENQUETE</p>";
                     initializeFolder();
                 });
             }).error(function () {
@@ -83,12 +89,14 @@ function readFromFile(surveyFile) {
     var readFileOperation = Windows.Storage.FileIO.readTextAsync(surveyFile);
     readFileOperation.done(function () {
         $("#content").html(readFileOperation.operation.getResults());
+        assignListeners();
     }, function () {
     });
 }
 
 function persistToFile(surveyFile, contents) {
     $("#content").html(contents);
+    assignListeners();
     var persistFileOperation = Windows.Storage.FileIO.writeTextAsync(surveyFile, contents);
     persistFileOperation.done(function () { }, function () {
     });
@@ -107,6 +115,16 @@ function initializeFolder() {
         }, function () {
             $("#content").html("[ERRO] Não foi possível carregar ou criar a pasta.");
             return false;
+        });
+    });
+}
+
+function assignListeners() {
+    $("input[type='number']").each(function () {
+        $(this).keypress(function (event) {
+            if (".0123456789".indexOf(event.key) == -1 || isNaN(parseFloat(event.target.value + event.key))) {
+                event.preventDefault();
+            }
         });
     });
 }
