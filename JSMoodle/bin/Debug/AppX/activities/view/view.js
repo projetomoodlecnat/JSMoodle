@@ -312,11 +312,7 @@ function splitHTMLText(questionText) {
 }
 
 function countAnsweredQuestions() {
-    var counter = 0;
-    $(".questioncontainer input[checked='true']").each(function () {
-        counter++;
-    });
-    return counter;
+    return $(".questioncontainer input[checked='true']").length;
 }
 
 function calculateFractionsMultiAnswer(multiAnswerQuestion) {
@@ -371,10 +367,215 @@ function canUserAttempQuizz() {
     return quizzAttemptResults;
 }
 
+function processUnansweredQuestions(questionUsageID, connectionIndex, command, layoutSlots) {
+    setStatus("progressing", "Processando as tentativas sem resposta...");
+    var cumulativeAnswerID;
+
+    try {
+        $(".questioncontainer").each(function () {
+            var selectedContainer = $(this);
+            if (selectedContainer.children("input[checked='true']").length == 0) {
+                    var selectedElement = $(selectedContainer.find("input")[0]);
+                    var rightAnswerAndValue = ["", -9999.0];
+                    var sumFractions;
+                    $.post({
+                        url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                        async: false,
+                        data: { "connectionIndex": connectionIndex, "query": command + " where mdl_quiz_slots.id=" + selectedElement.attr("slot") + " order by mdl_question_answers.id" }
+                    }).done(function (data, textStatus, jqXHR) {
+                        try {
+                            sumFractions = 0.0;
+                            cumulativeAnswerID = "";
+                            for (var i = 1; i < data.length; i++) {
+                                cumulativeAnswerID += data[i][data[0].indexOf("ANSWERID")] + ",";
+                                if (parseFloat(data[i][data[0].indexOf("FRACTION")]) >= rightAnswerAndValue[1]) {
+                                    if (parseFloat(data[i][data[0].indexOf("FRACTION")]) > 0) {
+                                        sumFractions += parseFloat(data[i][data[0].indexOf("FRACTION")]);
+                                    }
+                                    if (parseFloat(data[i][data[0].indexOf("FRACTION")]) == rightAnswerAndValue[1]) {
+                                        rightAnswerAndValue[0] += splitHTMLText(data[i][data[0].indexOf("ANSWER")]);
+                                    } else {
+                                        rightAnswerAndValue[0] = splitHTMLText(data[i][data[0].indexOf("ANSWER")]);
+                                        rightAnswerAndValue[1] = parseFloat(data[i][data[0].indexOf("FRACTION")]);
+                                    }
+                                }
+                            }
+                            // contornando os True/Falses do Moodle
+
+                            if (selectedElement[0].nextSibling.toString() == "[object Text]") {
+                                selectedElement[0].nextSibling.outerHTML = selectedElement[0].nextSibling.wholeText;
+                            }
+
+                            // end contornando os True/Falses do Moodle
+                        } catch (exception) {
+                            setStatus("error", "Os resultados da requisição falharam no primeiro estágio.");
+                            return false;
+                        }
+
+                        for (var i = 1; i < data.length; i++) {
+                            if (data[i][data[0].indexOf("ANSWER")].indexOf(splitHTMLText(selectedElement[0].nextSibling.outerHTML)) > -1) {
+                                answerValue = i - 1;
+                                data[i][data[0].indexOf("FRACTION")] = data[i][data[0].indexOf("FRACTION")].replace(",", ".");
+                                data[i][data[0].indexOf("MAXMARK")] = data[i][data[0].indexOf("MAXMARK")].replace(",", ".");
+                                layoutSlots += data[i][data[0].indexOf("SLOT")] + ",";
+                                var userAnswer = "";
+                                // contornando os True/Falses do Moodle
+
+                                if (rightAnswerAndValue[0] == "Falso") {
+                                    rightAnswerAndValue[0] = "False";
+                                } else if (rightAnswerAndValue[0] == "Verdadeiro") {
+                                    rightAnswerAndValue[0] = "True";
+                                }
+                                if (userAnswer == "Falso") {
+                                    userAnswer = "False";
+                                    answerValue = 0;
+                                } else if (userAnswer == "Verdadeiro") {
+                                    userAnswer = "True";
+                                    answerValue = 1;
+                                }
+
+                                // end contornando os True/Falses do Moodle
+                                $.post({
+                                    url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                    async: false,
+                                    data: { "connectionIndex": connectionIndex, "query": "select id from mdl_question_attempts order by id desc limit 1" }
+                                }).done(function (secondData, textStatus, jqXHR) {
+                                    secondData[1][0] = parseInt(secondData[1][0]) + 1;
+                                    $.post({
+                                        url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                        async: false,
+                                        data: {
+                                            "connectionIndex": connectionIndex, "query": "insert into mdl_question_attempts (id, questionusageid, slot, behaviour, questionid, variant, maxmark, minfraction, maxfraction, flagged, questionsummary, rightanswer, responsesummary, timemodified) values ("
+                                                + secondData[1][0].toString() + "," + questionUsageID.toString() + "," + data[i][data[0].indexOf("SLOT")] + ",'" + data[i][data[0].indexOf("PREFERREDBEHAVIOUR")] + "'," + data[i][data[0].indexOf("QUESTIONID")] + ",1," + data[i][data[0].indexOf("MAXMARK")] +
+                                                ",0," + rightAnswerAndValue[1].toString() + ",0,'" + splitHTMLText(data[i][data[0].indexOf("QUESTIONTEXT")]) + "','" + rightAnswerAndValue[0] + "','" + userAnswer + "'," + getUnixTime().toString() + ") returning id"
+                                        }
+                                    }).done(function (insertSerialData, textStatus, jqXHR) {
+                                        // tentando contornar o problema do ID não ser serializado (auto-incremental)
+                                        // POST on MDL_QUESTION_ATTEMPTS
+
+                                        while (insertSerialData[0].indexOf("duplicate") > -1) {
+                                            secondData[1][0] += 1;
+                                            $.post({
+                                                url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                                async: false,
+                                                data: {
+                                                    "connectionIndex": connectionIndex, "query": "insert into mdl_question_attempts (id, questionusageid, slot, behaviour, questionid, variant, maxmark, minfraction, maxfraction, flagged, questionsummary, rightanswer, responsesummary, timemodified) values ("
+                                                        + secondData[1][0].toString() + "," + questionUsageID.toString() + "," + data[i][data[0].indexOf("SLOT")] + ",'" + data[i][data[0].indexOf("PREFERREDBEHAVIOUR")] + "'," + data[i][data[0].indexOf("QUESTIONID")] + ",1," + data[i][data[0].indexOf("MAXMARK")] +
+                                                        ",0," + rightAnswerAndValue[1].toString() + ",0,'" + splitHTMLText(data[i][data[0].indexOf("QUESTIONTEXT")]) + "','" + rightAnswerAndValue[0] + "','" + userAnswer + "'," + getUnixTime().toString() + ") returning id"
+                                                }
+                                            }).done(function (hasErrors) {
+                                                insertSerialData = hasErrors;
+                                            }).error(function () {
+                                                setStatus("error", "Requisição à API falhou.");
+                                                return false;
+                                            });
+                                        }
+
+                                        // end POST on MDL_QUESTION_ATTEMPTS
+                                        // POST on MDL_QUESTION_ATTEMPT_STEPS with MDL_QUESTION_ATTEMPTS query results
+
+                                        $.post({
+                                            url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                            async: false,
+                                            data: {
+                                                "connectionIndex": connectionIndex, "query": "select id from mdl_question_attempt_steps order by id desc limit 1"
+                                            }
+                                        }).done(function (secondData2, textStatus, jqXHR) {
+                                            secondData2[1][0] = parseInt(secondData2[1][0]) + 1;
+                                            $.post({
+                                                url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                                async: false,
+                                                data: {
+                                                    "connectionIndex": connectionIndex, "query": "insert into mdl_question_attempt_steps(id, questionattemptid, sequencenumber, state, fraction, timecreated, userid) values (" +
+                                                                secondData2[1][0].toString() + "," + secondData[1][0].toString() + ",0, 'todo', null," + getUnixTime().toString() + "," + cookiesDict["userID"] + "),(" +
+                                                                (secondData2[1][0] + 1).toString() + "," + secondData[1][0].toString() + ",1,'gaveup',null," + getUnixTime().toString() + "," + cookiesDict["userID"] + ") returning id"
+                                                }
+                                            }).done(function (insertSerialData, textStatus, jqXHR) {
+                                                while (insertSerialData[0].indexOf("duplicate") > -1) {
+                                                    secondData2[1][0] += 1;
+                                                    $.post({
+                                                        url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                                        async: false,
+                                                        data: {
+                                                            "connectionIndex": connectionIndex, "query": "insert into mdl_question_attempt_steps(id, questionattemptid, sequencenumber, state, fraction, timecreated, userid) values (" +
+                                                                secondData2[1][0].toString() + "," + secondData[1][0].toString() + ",0, 'todo', null," + getUnixTime().toString() + "," + cookiesDict["userID"] + "),(" +
+                                                                (secondData2[1][0] + 1).toString() + "," + secondData[1][0].toString() + ",1,'gaveup',null," + getUnixTime().toString() + "," + cookiesDict["userID"] + ") returning id"
+                                                        }
+                                                    }).done(function (hasErrors) {
+                                                        insertSerialData = hasErrors;
+                                                    })
+                                                    .error(function () {
+                                                        setStatus("error", "Requisição à API falhou.");
+                                                        return false;
+                                                    });
+                                                }
+                                                var savedSerialData = []
+                                                savedSerialData[1] = insertSerialData[1][0];
+                                                savedSerialData[2] = insertSerialData[2][0];
+                                                // POST on MDL_QUESTION_ATTEMPT_STEP_DATA with MDL_QUESTION_ATTEMPT_STEPS query results
+
+                                                $.post({
+                                                    url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                                    async: false,
+                                                    data: {
+                                                        "connectionIndex": connectionIndex, "query": "select id from mdl_question_attempt_step_data order by id desc limit 1"
+                                                    }
+                                                }).done(function (secondData3) {
+                                                    secondData3[1][0] = parseInt(secondData3[1][0]) + 1;
+                                                        $.post({
+                                                            url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                                            async: false,
+                                                            data: {
+                                                                "connectionIndex": connectionIndex, "query": "INSERT INTO mdl_question_attempt_step_data(id, attemptstepid, name, value) VALUES (" +
+                                                                            secondData3[1][0].toString() + "," + savedSerialData[1] + ",'_order','" + cumulativeAnswerID.substring(0, cumulativeAnswerID.lastIndexOf(",")) + "'),(" +
+                                                                            (secondData3[1][0] + 1).toString() + "," + savedSerialData[2] + ",'-finish', '1')"
+                                                            }
+                                                        }).done(function (insertSerialData, textStatus, jqXHR) {
+                                                            while (insertSerialData[0].indexOf("duplicate") > -1) {
+                                                                secondData3[1][0] += 1;
+                                                                $.post({
+                                                                    url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                                                    async: false,
+                                                                    data: {
+                                                                        "connectionIndex": connectionIndex, "query": "INSERT INTO mdl_question_attempt_step_data(id, attemptstepid, name, value) VALUES (" +
+                                                                                    secondData3[1][0].toString() + "," + savedSerialData[1] + ",'_order','" + cumulativeAnswerID.substring(0, cumulativeAnswerID.lastIndexOf(",")) + "'),(" +
+                                                                                    (secondData3[1][0] + 1).toString() + "," + savedSerialData[2] + ",'-finish', '1')"
+                                                                    }
+                                                                }).done(function (hasErrors) {
+                                                                    insertSerialData = hasErrors;
+                                                                });
+                                                            }
+                                                        });
+                                                        styleQuestion(selectedElement, 'not_answered');
+                                                    // end POST on MDL_QUESTION_ATTEMPT_STEP_DATA with MDL_QUESTION_ATTEMPT_STEPS query results
+                                                });
+                                            });
+                                        });
+
+                                        // end POST on MDL_QUESTION_ATTEMPT_STEPS with MDL_QUESTION_ATTEMPTS query results
+                                    });
+                                });
+                                break;
+                            }
+                        }
+                    }).error(function () {
+                        setStatus("error", "Requisição à API falhou no primeiro estágio.");
+                        return false;
+                    });
+            }
+        });
+    } catch (exception) {
+        return false;
+    }
+    return [true, layoutSlots];
+}
+
 function processActivityAttempt(questionUsageID, connectionIndex, command) {
-    var isDone = false;
-    var processedQuestionsLength = 0;
-    var questionsToProcess = countAnsweredQuestions();
+    setStatus("progressing", "Processando a sua tentativa...");
+
+    var isDone;
+    var processedAnswersLength = 0;
+    var answersToProcess = countAnsweredQuestions();
 
     // variáveis de tentativa em quizz
     var quizzAttemptResults = false;
@@ -391,6 +592,8 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
     var layoutSlots = "";
     var cumulativeAnswerID;
 
+    command = command.replace(/[\r\n]/g, "");
+
     switch (activityType) {
         case 'quizz':
             // Verificando se o usuário pode submeter o quizz
@@ -404,15 +607,19 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
             // inserindo na tabela mdl_question_attempts e mdl_question_attempts_step
 
             var matchSelected = $(".questioncontainer input[checked='true']");
+            if (matchSelected.length == 0) {
+                isDone = processUnansweredQuestions(questionUsageID, connectionIndex, command, layoutSlots);
+            } else {
+                setStatus("progressing", "Processando as tentativas com resposta...");
+            }
             matchSelected.each(function (index) {
                 var selectedElement = $(this);
                 var rightAnswerAndValue = ["", -9999.0];
                 var sumFractions;
-                command = command.replace(/[\r\n]/g, "");
                 $.post({
                     url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                     async: false,
-                    data: { "connectionIndex": connectionIndex, "query": command + " where mdl_quiz_slots.id=" + selectedElement.attr("slot") + "order by mdl_question_answers.id" }
+                    data: { "connectionIndex": connectionIndex, "query": command + " where mdl_quiz_slots.id=" + selectedElement.attr("slot") + " order by mdl_question_answers.id" }
                 }).done(function (data, textStatus, jqXHR) {
                     try {
                         sumFractions = 0.0;
@@ -473,7 +680,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                     }).done(function (updateData) {
                                     });
                                     styleQuestion(selectedElement, individualFraction, sumFractions, data[i][data[0].indexOf("FEEDBACK")]);
-                                    isDone = true;
+                                    isDone = processUnansweredQuestions(questionUsageID, connectionIndex, command, layoutSlots);
                                 }
                                 break;
                             } else if (processedMultiSlot != null) {
@@ -493,7 +700,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                 }).done(function (updateData) {
                                 });
                                 styleQuestion(selectedElement, individualFraction, sumFractions, data[i][data[0].indexOf("FEEDBACK")]);
-                                processedQuestionsLength++;
+                                processedAnswersLength++;
                             }
 
                             // end A questão faz parte de um quizz de multi-escolhas e os registros já foram inseridos
@@ -635,9 +842,9 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                                         if (finalFractionGrade + parseFloat(data[i][data[0].indexOf("FRACTION")]) >= 0) {
                                                             finalFractionGrade += parseFloat(data[i][data[0].indexOf("FRACTION")]) * parseFloat(data[i][data[0].indexOf("MAXMARK")]);
                                                         }
-                                                        processedQuestionsLength++;
-                                                        if (processedQuestionsLength == questionsToProcess) {
-                                                            isDone = true;
+                                                        processedAnswersLength++;
+                                                        if (processedAnswersLength == answersToProcess) {
+                                                            isDone = processUnansweredQuestions(questionUsageID, connectionIndex, command, layoutSlots);
                                                         }
                                                     });
                                                     styleQuestion(selectedElement, parseFloat(data[i][data[0].indexOf("FRACTION")]), rightAnswerAndValue[1], data[i][data[0].indexOf("FEEDBACK")]);
@@ -688,7 +895,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                                         }).done(function (updateData) {
                                                         });
                                                         styleQuestion(selectedElement, individualFraction, sumFractions, data[i][data[0].indexOf("FEEDBACK")]);
-                                                        isDone = true;
+                                                        isDone = processUnansweredQuestions(questionUsageID, connectionIndex, command, layoutSlots);
                                                     }
                                                 } else {
                                                     console.log("erro");
@@ -717,12 +924,15 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
             break;
     }
 
-    setStatus("progressing", "Sua tentativa está nos processos finais de cadastro, aguarde...");
-
     var greaterInterval = setInterval(function () {
-        if (isDone && activityType == 'quizz') {
+        if (isDone == false) {
             clearInterval(greaterInterval);
-            layoutSlots += "0";
+            setStatus("error", "Mecanismos de processamento da aplicação falharam.");
+            return;
+        }
+        else if (isDone[0] && activityType == 'quizz') {
+            clearInterval(greaterInterval);
+            layoutSlots += isDone[1] + "0";
             try {
                 $.post({
                     url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
@@ -751,6 +961,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                     return;
                 });
             } catch (exception) {
+                clearInterval(greaterInterval);
                 setStatus("error", "Mecanismos de processamento da aplicação falharam.");
                 return;
             }
@@ -766,7 +977,11 @@ function styleQuestion(selectedElement, fraction, rightFraction, feedback) {
             if (findDivContainer.attr('class') != "questioncontainer") {
                 continue;
             }
-            if (fraction == rightFraction) {
+            if (fraction == 'not_answered') {
+                findDivContainer.attr('class', 'divNotGraded');
+                findDivContainer[0].innerHTML += "<p>Não avaliado.</p>";
+            }
+            else if (fraction == rightFraction) {
                 findDivContainer.attr('class', 'divGradedRight');
                 findDivContainer[0].innerHTML += "<p>Correto. " + feedback + "</p>";
             } else if (fraction > 0) {
