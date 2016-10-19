@@ -28,6 +28,16 @@ function getUnixTime() {
     return Math.round(new Date().getTime() / 1000);
 }
 
+function splitHTMLText(questionText) {
+    if (questionText.indexOf("<p") == -1) {
+        return questionText;
+    }
+    var splittedText = questionText.substring(questionText.indexOf(">") + 1);
+    splittedText = splittedText.substring(splittedText.indexOf(">") + 1);
+    splittedText = splittedText.substring(0, splittedText.indexOf("<"));
+    return splittedText;
+}
+
 function persistCacheImage(url) {
     var request = new Windows.Web.Http.HttpClient().getAsync(new Windows.Foundation.Uri(url));
     var fileBytes;

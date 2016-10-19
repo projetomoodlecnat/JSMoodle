@@ -80,10 +80,10 @@ $(document).ready(function () {
                             for (; data[i];) {
                                 if (getUnixTime() < data[i][data[0].indexOf("DUEDATE")] || data[i][data[0].indexOf("DUEDATE")] === "0") {
                                     // caso onde a tarefa está aberta
-                                    atividades.atividadesnoprazo.push("<li class='liOpen'><img class='liActivityIcon' src='../images/dashboard/icons/assignment_duedate.png' /><b tooltipvalue='EM ABERTO'>Atividade " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
+                                    atividades.atividadesnoprazo.push("<a href='../activities/view/index.html?assignment=" + data[i][data[0].indexOf("ID")] + "'><li class='liOpen'><img class='liActivityIcon' src='../images/dashboard/icons/assignment_duedate.png' /><b tooltipvalue='EM ABERTO'>Atividade " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li></a>");
                                 } else if (getUnixTime() > data[i][data[0].indexOf("DUEDATE")] && (getUnixTime() < data[i][data[0].indexOf("CUTOFFDATE")] || data[i][data[0].indexOf("CUTOFFDATE")] === "0")) {
                                     // caso onde a tarefa extrapolou o prazo, mas ainda está aberta
-                                    atividades.atividadesforadoprazo.push("<li class='liOverdue'><img class='liActivityIcon' src='../images/dashboard/icons/assignment_overdue.png' /><b tooltipvalue='FORA DO PRAZO'>Atividade " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");
+                                    atividades.atividadesforadoprazo.push("<a href='../activities/view/index.html?assignment=" + data[i][data[0].indexOf("ID")] + "'><li class='liOverdue'><img class='liActivityIcon' src='../images/dashboard/icons/assignment_overdue.png' /><b tooltipvalue='FORA DO PRAZO'>Atividade " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li></a>");
                                 } else {
                                     // caso onde a tarefa não está mais aberta
                                     atividades.atividadesfechadas.push("<li class='liClosed'><img class='liActivityIcon' src='../images/dashboard/icons/assignment_closed.png' /><b tooltipvalue='FECHADA'>Atividade " + data[i][data[0].indexOf("NAME")].toUpperCase() + "</b> ID: " + data[i][data[0].indexOf("ID")] + "</li>");

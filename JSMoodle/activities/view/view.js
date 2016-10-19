@@ -52,38 +52,80 @@ function setStatus(type, message) {
 
 function initializeFolders() {
     setStatus("progressing", "Tentando carregar as pastas com as suas atividades...");
-    var quizzFolder = Windows.Storage.ApplicationData.current.localFolder.createFolderAsync("quizzes");
-    quizzFolder.done(function () {
-        quizzesFolder = quizzFolder.operation.getResults();
-        currentOperation = 'obter_arquivo';
-        setStatus("progressing", "Pastas carregadas. Tentando obter o arquivo...");
-    }, function () {
-        try {
-            quizzFolder = Windows.Storage.ApplicationData.current.localFolder.getFolderAsync("quizzes");
+    switch (activityType) {
+        case 'quizz':
+            var quizzFolder = Windows.Storage.ApplicationData.current.localFolder.createFolderAsync("quizzes");
             quizzFolder.done(function () {
                 quizzesFolder = quizzFolder.operation.getResults();
                 currentOperation = 'obter_arquivo';
                 setStatus("progressing", "Pastas carregadas. Tentando obter o arquivo...");
             }, function () {
-                endOperation();
-                return setStatus("error", "Não foi possível criar ou carregar a pasta de quizzes. Algum erro ocorreu!");
+                try {
+                    quizzFolder = Windows.Storage.ApplicationData.current.localFolder.getFolderAsync("quizzes");
+                    quizzFolder.done(function () {
+                        quizzesFolder = quizzFolder.operation.getResults();
+                        currentOperation = 'obter_arquivo';
+                        setStatus("progressing", "Pastas carregadas. Tentando obter o arquivo...");
+                    }, function () {
+                        endOperation();
+                        return setStatus("error", "Não foi possível criar ou carregar a pasta de quizzes. Algum erro ocorreu!");
+                    });
+                } catch (exception) {
+                    endOperation();
+                    return;
+                }
             });
-        } catch (exception) {
+            break;
+        case 'assignment':
+            var assignmentFolder = Windows.Storage.ApplicationData.current.localFolder.createFolderAsync("assignments");
+            assignmentFolder.done(function () {
+                assignmentFolder = assignmentFolder.operation.getResults();
+                currentOperation = 'obter_arquivo';
+                setStatus("progressing", "Pastas carregadas. Tentando obter o arquivo...");
+            }, function () {
+                try {
+                    assignmentFolder = Windows.Storage.ApplicationData.current.localFolder.getFolderAsync("assignments");
+                    assignmentFolder.done(function () {
+                        assignmentsFolder = assignmentFolder.operation.getResults();
+                        currentOperation = 'obter_arquivo';
+                        setStatus("progressing", "Pastas carregadas. Tentando obter o arquivo...");
+                    }, function () {
+                        endOperation();
+                        return setStatus("error", "Não foi possível criar ou carregar a pasta de tarefas. Algum erro ocorreu!");
+                    });
+                } catch (exception) {
+                    endOperation();
+                    return;
+                }
+            });
+            break;
+        default:
+            setStatus("error", "Tipo de atividade inválido ou não suportado.");
             endOperation();
-            return;
-        }
-    });
+            break;
+    }
 }
 
-function initializeActivityFile(pasta, id) {
+function initializeActivityFile(folder, id) {
     setStatus("progressing", "Carregando o arquivo da sua atividade...");
     try {
-        var createFile = pasta.createFileAsync(id);
+        var createFile = folder.createFileAsync(id);
         createFile.done(function () {
             activityFile = createFile.operation.getResults();
-            currentOperation = 'carregar_questoes_banco';
+            switch (activityType) {
+                case 'quizz':
+                    currentOperation = 'carregar_questoes_banco';
+                    break;
+                case 'assignment':
+                    currentOperation = 'carregar_tarefa_banco';
+                    break;
+                default:
+                    setStatus("error", "Você tentou criar o arquivo com tipo de atividade inválido. ");
+                    endOperation();
+                    break;
+            }
         }, function () {
-            var getFile = quizzesFolder.getFileAsync(id);
+            var getFile = folder.getFileAsync(id);
             getFile.done(function () {
                 activityFile = getFile.operation.getResults();
                 currentOperation = 'ler_arquivo';
@@ -108,7 +150,18 @@ function loadFileIntoInterface(file) {
                 if (offline) {
                     setStatus("neutral", "Você não tem a atividade salva no dispositivo.");
                 } else {
-                    currentOperation = 'carregar_questoes_banco';
+                    switch (activityType) {
+                        case 'quizz':
+                            currentOperation = 'carregar_questoes_banco';
+                            break;
+                        case 'assignment':
+                            currentOperation = 'carregar_tarefa_banco';
+                            break;
+                        default:
+                            setStatus("error", "Tipo de atividade não suportada.");
+                            endOperation();
+                            break;
+                    }
                     return;
                 }
             } else {
@@ -268,6 +321,12 @@ function checkCurrentOperation() {
                     // parâmetro da query string para determinar o id da atividade
                     initializeActivityFile(quizzesFolder, activityID);
                     break;
+                case 'assignment':
+                    activityID = window.location.toString().substr(window.location.toString().indexOf('=') + 1);
+                    // verifica a cada segundo se a tarefa de criação já completou
+                    // parâmetro da query string para determinar o id da atividade
+                    initializeActivityFile(assignmentsFolder, activityID);
+                    break;
                 default:
                     endOperation();
                     console.log('tipo inválido');
@@ -279,8 +338,12 @@ function checkCurrentOperation() {
             loadFileIntoInterface(activityFile);
             break;
         case 'carregar_questoes_banco':
-            currentOperation = 'carregar_questoes_banco';
+            currentOperation = 'working_carregar_questoes_banco';
             loadQuestionsFromDatabase();
+            break;
+        case 'carregar_tarefa_banco':
+            currentOperation = 'working_carregar_tarefa_banco';
+            loadAssignmentFromDatabase();
             break;
         case 'salvar_progresso':
             currentOperation = 'working_salvar_progresso';
@@ -299,17 +362,7 @@ function endOperation() {
     clearInterval(operating);
 }
 
-// TENTATIVAS
-
-function splitHTMLText(questionText) {
-    if (questionText.indexOf("<p") == -1) {
-        return questionText;
-    }
-    var splittedText = questionText.substring(questionText.indexOf(">") + 1);
-    splittedText = splittedText.substring(splittedText.indexOf(">") + 1);
-    splittedText = splittedText.substring(0, splittedText.indexOf("<"));
-    return splittedText;
-}
+// TENTATIVAS DE QUIZZ
 
 function countAnsweredQuestions() {
     return $(".questioncontainer input[checked='true']").length;
@@ -573,7 +626,7 @@ function processUnansweredQuestions(questionUsageID, connectionIndex, command, l
 function processActivityAttempt(questionUsageID, connectionIndex, command) {
     setStatus("progressing", "Processando a sua tentativa...");
 
-    var isDone;
+    var isDone = [false];
     var processedAnswersLength = 0;
     var answersToProcess = countAnsweredQuestions();
 
@@ -740,6 +793,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                     // tentando contornar o problema do ID não ser serializado (auto-incremental)
                                     // POST on MDL_QUESTION_ATTEMPTS
 
+                                    
                                     while (insertSerialData[0].indexOf("duplicate") > -1) {
                                         secondData[1][0] += 1;
                                         $.post({
@@ -748,14 +802,18 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                             data: {
                                                 "connectionIndex": connectionIndex, "query": "insert into mdl_question_attempts (id, questionusageid, slot, behaviour, questionid, variant, maxmark, minfraction, maxfraction, flagged, questionsummary, rightanswer, responsesummary, timemodified) values ("
                                                     + secondData[1][0].toString() + "," + questionUsageID.toString() + "," + data[i][data[0].indexOf("SLOT")] + ",'" + data[i][data[0].indexOf("PREFERREDBEHAVIOUR")] + "'," + data[i][data[0].indexOf("QUESTIONID")] + ",1," + data[i][data[0].indexOf("MAXMARK")] +
-                                                    ",0," + rightAnswerAndValue[1].toString() + ",0,'" + splitHTMLText(data[i][data[0].indexOf("QUESTIONTEXT")]) + "','" + rightAnswerAndValue[0] + "','" + userAnswer + "'," + getUnixTime().toString() + ")"
+                                                    ",0," + rightAnswerAndValue[1].toString() + ",0,'" + splitHTMLText(data[i][data[0].indexOf("QUESTIONTEXT")]) + "','" + rightAnswerAndValue[0] + "','" + userAnswer + "'," + getUnixTime().toString() + ") returning id"
                                             }
                                         }).done(function (hasErrors) {
                                             insertSerialData = hasErrors;
                                         }).error(function () {
                                             setStatus("error", "Requisição à API falhou.");
-                                            return;
+                                            return false;
                                         });
+                                    }
+                                    if (insertSerialData[0].indexOf("error")) {
+                                        setStatus("error", "Erro na transação SQL.");
+                                        return false;
                                     }
 
                                     // end POST on MDL_QUESTION_ATTEMPTS
@@ -797,8 +855,12 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                                 })
                                                 .error(function () {
                                                     setStatus("error", "Requisição à API falhou.");
-                                                    return;
+                                                    return false;
                                                 });
+                                            }
+                                            if (insertSerialData[0].indexOf("error")) {
+                                                setStatus("error", "Erro na transação SQL.");
+                                                return false;
                                             }
                                             var savedSerialData = []
                                             savedSerialData[1] = insertSerialData[2][0];
@@ -838,6 +900,10 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                                             }).done(function (hasErrors) {
                                                                 insertSerialData = hasErrors;
                                                             });
+                                                        }
+                                                        if (insertSerialData[0].indexOf("error")) {
+                                                            setStatus("error", "Erro na transação SQL.");
+                                                            return false;
                                                         }
                                                         if (finalFractionGrade + parseFloat(data[i][data[0].indexOf("FRACTION")]) >= 0) {
                                                             finalFractionGrade += parseFloat(data[i][data[0].indexOf("FRACTION")]) * parseFloat(data[i][data[0].indexOf("MAXMARK")]);
@@ -898,7 +964,8 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                                         isDone = processUnansweredQuestions(questionUsageID, connectionIndex, command, layoutSlots);
                                                     }
                                                 } else {
-                                                    console.log("erro");
+                                                    setStatus("error", "Erro no tipo de seletor de resposta.");
+                                                    return false;
                                                 }
 
                                                 // end POST on MDL_QUESTION_ATTEMPT_STEP_DATA with MDL_QUESTION_ATTEMPT_STEPS query results
@@ -955,6 +1022,10 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                             insertSerialData = hasErrors;
                         });
                     }
+                    if (insertSerialData[0].indexOf("error")) {
+                        setStatus("error", "Erro na transação SQL.");
+                        return false;
+                    }
                     setStatus("succeeded", "Consegui executar todas as tarefas e cadastrar a sua tentativa no Moodle. Veja os resultados abaixo!")
                 }).error(function () {
                     setStatus("error", "Requisição à API falhou.");
@@ -993,14 +1064,46 @@ function styleQuestion(selectedElement, fraction, rightFraction, feedback) {
             }
         }
     } catch (exception) {
-        // erro na marcação
         console.log("error");
     }
 }
 
-// FIM TENTATIVAS
+// FIM TENTATIVAS DE QUIZZ
 
-// LISTENERS DE ELEMENTOS
+// TAREFAS (ASSIGNMENT)
+
+function loadAssignmentFromDatabase() {
+    $.ajax(cookiesDict["api_Path"] + "dbproperties?index=" + cookiesDict["databaseIndex"], {
+        contentType: "application/json",
+        method: "GET",
+        async: true,
+        success: function (firstStep) {
+            try {
+                firstStep = JSON.parse(firstStep);
+                document.cookie = "databaseType=" + firstStep[0]["databaseType"];
+                document.cookie = "databaseIndex=" + firstStep[1]["idconexao"];
+            } catch (Exception) {
+                setStatus("error", "Parsing dos dados da API falhou no primeiro estágio.");
+                return;
+            }
+            $.post({
+                url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                async: true,
+                data: { "connectionIndex": cookiesDict["databaseIndex"], "query": "select * from mdl_assign where id=" + activityID }
+            }).done(function (data, textStatus, jqXHR) {
+            });
+        }
+    }).error(function () {
+        // Requisição à API falhou
+        // Tentará carregar o arquivo do dispositivo
+        offline = true;
+        setStatus("neutral", "A requisição de acesso à API do Moodle falhou no primeiro estágio. Você está conectado à internet? Se não, aguarde enquanto procuro o arquivo da atividade... ");
+        currentOperation = 'ler_arquivo';
+    });
+}
+// FIM TAREFAS (ASSIGNMENT)
+
+// LISTENERS DE ELEMENTOS DE QUIZZ
 
 function loadOrReloadListeners() {
     $('input[type="radio"]').each(function () {
@@ -1115,4 +1218,8 @@ function loadFinishAttemptListener() {
         loadSubmitAttemptListeners();
     });
 }
-// FIM LISTENERS
+// FIM LISTENERS DE ELEMENTOS DE QUIZZ
+
+// LISTENERS DE ELEMENTOS DE ASSIGNMENT
+
+// FIM LISTENERS DE ELEMENTOS DE ASSIGNMENT
