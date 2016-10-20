@@ -28,7 +28,7 @@
     <AppXManifest Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bin\Debug\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2016-10-19T15:47:26.752</Modified>
+      <Modified>2016-10-20T20:53:02.162</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
@@ -38,7 +38,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\activities\view\view.css">
       <PackagePath>activities\view\view.css</PackagePath>
-      <Modified>2016-10-18T19:37:47.867</Modified>
+      <Modified>2016-10-20T21:55:22.545</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\css\materialize.css">
       <PackagePath>css\materialize.css</PackagePath>
@@ -66,11 +66,11 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\activities\activities.js">
       <PackagePath>activities\activities.js</PackagePath>
-      <Modified>2016-10-05T14:22:48.823</Modified>
+      <Modified>2016-10-20T20:18:59.149</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\activities\view\view.js">
       <PackagePath>activities\view\view.js</PackagePath>
-      <Modified>2016-10-19T17:16:02.029</Modified>
+      <Modified>2016-10-20T22:14:36.819</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\dashboard\courses\courses.js">
       <PackagePath>dashboard\courses\courses.js</PackagePath>
@@ -90,7 +90,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\js\applib.js">
       <PackagePath>js\applib.js</PackagePath>
-      <Modified>2016-10-19T15:15:33.472</Modified>
+      <Modified>2016-10-20T20:17:00.366</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\js\jquery-2.2.4.js">
       <PackagePath>js\jquery-2.2.4.js</PackagePath>
@@ -400,7 +400,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bin\Debug\ReverseMap\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-      <Modified>2016-10-19T15:47:26.109</Modified>
+      <Modified>2016-10-20T20:53:01.208</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

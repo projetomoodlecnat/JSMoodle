@@ -427,7 +427,7 @@ function processUnansweredQuestions(questionUsageID, connectionIndex, command, l
     try {
         $(".questioncontainer").each(function () {
             var selectedContainer = $(this);
-            if (selectedContainer.children("input[checked='true']").length == 0) {
+            if (selectedContainer.find("input[checked]").length == 0) {
                     var selectedElement = $(selectedContainer.find("input")[0]);
                     var rightAnswerAndValue = ["", -9999.0];
                     var sumFractions;
@@ -811,7 +811,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                             return false;
                                         });
                                     }
-                                    if (insertSerialData[0].indexOf("error")) {
+                                    if (insertSerialData[0].indexOf("error") > -1) {
                                         setStatus("error", "Erro na transação SQL.");
                                         return false;
                                     }
@@ -858,7 +858,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                                     return false;
                                                 });
                                             }
-                                            if (insertSerialData[0].indexOf("error")) {
+                                            if (insertSerialData[0].indexOf("error") > -1) {
                                                 setStatus("error", "Erro na transação SQL.");
                                                 return false;
                                             }
@@ -901,7 +901,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                                                 insertSerialData = hasErrors;
                                                             });
                                                         }
-                                                        if (insertSerialData[0].indexOf("error")) {
+                                                        if (insertSerialData[0].indexOf("error") > -1) {
                                                             setStatus("error", "Erro na transação SQL.");
                                                             return false;
                                                         }
@@ -999,7 +999,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
         }
         else if (isDone[0] && activityType == 'quizz') {
             clearInterval(greaterInterval);
-            layoutSlots += isDone[1] + "0";
+            layoutSlots = isDone[1] + "0";
             try {
                 $.post({
                     url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
@@ -1022,7 +1022,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                             insertSerialData = hasErrors;
                         });
                     }
-                    if (insertSerialData[0].indexOf("error")) {
+                    if (insertSerialData[0].indexOf("error") > -1) {
                         setStatus("error", "Erro na transação SQL.");
                         return false;
                     }
@@ -1073,6 +1073,8 @@ function styleQuestion(selectedElement, fraction, rightFraction, feedback) {
 // TAREFAS (ASSIGNMENT)
 
 function loadAssignmentFromDatabase() {
+    setStatus("progressing", "Recuperando as informações de tarefas do banco de dados... ");
+    var finalHTMLBuilder = "";
     $.ajax(cookiesDict["api_Path"] + "dbproperties?index=" + cookiesDict["databaseIndex"], {
         contentType: "application/json",
         method: "GET",
@@ -1091,6 +1093,70 @@ function loadAssignmentFromDatabase() {
                 async: true,
                 data: { "connectionIndex": cookiesDict["databaseIndex"], "query": "select * from mdl_assign where id=" + activityID }
             }).done(function (data, textStatus, jqXHR) {
+                if (!canUserSubmitAssignment(data)) {
+                    return;
+                }
+                try {
+                    finalHTMLBuilder += "<p class='center paragraphAssignmentHeader'>" + data[1][data[0].indexOf("NAME")] + "</p>";
+                    finalHTMLBuilder += data[1][data[0].indexOf("INTRO")];
+                    $.post({
+                        url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                        async: true,
+                        data: { "connectionIndex": cookiesDict["databaseIndex"], "query": "select * from mdl_assign_plugin_config where assignment=" + activityID + " order by id" }
+                    }, function (data2, textStatus2, jqXHR2) {
+                        var i = 1;
+                        var textAreaHTML = "";
+                        var inputFileHTML = "";
+                        for (i; i < data2.length; i++) {
+                            if (data2[i][data2[0].indexOf("SUBTYPE")] == "assignsubmission" && data2[i][data2[0].indexOf("SUBTYPE")] != "comments") {
+                                switch (data2[i][data2[0].indexOf("NAME")]) {
+                                    case 'enabled':
+                                        if (data2[i][data2[0].indexOf("VALUE")] == 1) {
+                                            if (data2[i][data2[0].indexOf("PLUGIN")] == "file") {
+                                                inputFileHTML += "<p><input type='file' name='file'";
+                                            } else if (data2[i][data2[0].indexOf("PLUGIN")] == "onlinetext") {
+                                                textAreaHTML += "<p><textarea id='onlinetextarea'";
+                                            } else {
+                                                setStatus("error", "Configuração de tarefa não suportada pela aplicação.");
+                                                endOperation();
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    case 'maxsubmissionsizebytes':
+                                        inputFileHTML += " maxbytes='" + data2[i][data2[0].indexOf("VALUE")] + "'";
+                                        break;
+                                    case "maxfilesubmissions":
+                                        inputFileHTML += " maxfiles='" + data2[i][data2[0].indexOf("VALUE")] + "'";
+                                        break;
+                                    case "wordlimit":
+                                        textAreaHTML += " maxlength='" + data2[i][data2[0].indexOf("VALUE")] + "'";
+                                        break;
+                                    default:
+                                        setStatus("error", "Configuração de tarefa não suportada pela aplicação.");
+                                        endOperation();
+                                        break;
+                                }
+                            }
+                        }
+                        textAreaHTML += "></textarea><span id='spanupdate'></p></p>";
+                        inputFileHTML += "/></p>";
+                        finalHTMLBuilder += textAreaHTML + inputFileHTML;
+                        finalHTMLBuilder += "<p><input type='button' value='Enviar resposta' /></p>";
+                        $('#content').html(finalHTMLBuilder);
+                        setStatus("succeeded", "A tarefa foi carregada com sucesso.");
+                        if ($('#onlinetextarea')[0].maxLength != undefined) {
+                            $('#onlinetextarea').on('input', function (e) {
+                                $('#spanupdate').html((parseInt(e.target.maxLength) - e.target.value.length).toString());
+                            });
+                        }
+                    });
+                } catch (exception) {
+                    setStatus("error", "Erro de processamento nas informações de tarefa.");
+                    console.log(exception);
+                    endOperation();
+                    return;
+                }
             });
         }
     }).error(function () {
@@ -1100,6 +1166,34 @@ function loadAssignmentFromDatabase() {
         setStatus("neutral", "A requisição de acesso à API do Moodle falhou no primeiro estágio. Você está conectado à internet? Se não, aguarde enquanto procuro o arquivo da atividade... ");
         currentOperation = 'ler_arquivo';
     });
+}
+
+function canUserSubmitAssignment(data) {
+    if (data[1][data[0].indexOf("ALLOWSUBMISSIONSFROMDATE")] != "0") {
+        if (getUnixTime() < parseInt(data[1][data[0].indexOf("ALLOWSUBMISSIONSFROMDATE")])) {
+            setStatus("neutral", "Essa tarefa ainda não está aceitando submissões. Tente responder novamente mais tarde!");
+            return false;
+        }
+    }
+    if (data[1][data[0].indexOf("NOSUBMISSIONS")] != "0") {
+        setStatus("neutral", "Essa tarefa não está aceitando submissões.");
+        return false;
+    }
+    if (getUnixTime() > parseFloat(data[1][data[0].indexOf("CUTOFF")]) && data[1][data[0].indexOf("DUEDATE")] != "0") {
+        setStatus("neutral", "Essa tarefa não está aceitando mais submissões.");
+        return false;
+    }
+    if (data[1][data[0].indexOf("MAXATTEMPTS")] != "-1") {
+        if (checkUserAttempts(cookiesDict["userID"]) > parseInt(data[1][data[0].indexOf("MAXATTEMPTS")])) {
+            setStatus("neutral", "Você já fez todas as tentativas possíveis para essa tarefa.");
+            return false;
+        }
+    }
+    return true;
+}
+
+function checkUserAttempts(userID) {
+    return 0;
 }
 // FIM TAREFAS (ASSIGNMENT)
 

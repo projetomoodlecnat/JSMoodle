@@ -63,5 +63,5 @@ function persistCacheImage(url) {
 
 function getFoldersAmount() {
     // define a quantidade de pastas a serem pesquisadas na pesquisa de atividades
-    return 1;
+    return 3;
 }
