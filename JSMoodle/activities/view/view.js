@@ -1,10 +1,8 @@
 ﻿// variáveis de ambiente globais
 var cookiesDict = cookiesToDict();
 
-// variáveis que armazenam os locais de pasta e arquivo
-var quizzesFolder;
-var assignmentsFolder;
-var activityFile;
+// variável que armazena a referência ao local de pasta
+var activityFolder;
 
 // variáveis de atributo da atividade
 var activityType;
@@ -13,7 +11,7 @@ var offline = false;
 
 // variáveis que controlam a sequência de operações
 var currentOperation;
-var operating;
+var operating = null;
 
 $(document).ready(function () {
     $('.paragraphGoBack').click(function () {
@@ -21,49 +19,31 @@ $(document).ready(function () {
         history.back();
     });
     $('.paragraphSave').click(function () {
-        currentOperation = "salvar_progresso";
-        operating = setInterval(checkCurrentOperation, 1000);
+        restartOperation("salvar_progresso");
     });
     $('.paragraphClear').click(function () {
-        currentOperation = "excluir_progresso";
-        operating = setInterval(checkCurrentOperation, 1000);
+        restartOperation("excluir_progresso");
     });
     activityType = window.location.toString().substring((window.location.toString().indexOf('?') + 1), window.location.toString().indexOf('='));
-    operating = setInterval(checkCurrentOperation, 1000);
     currentOperation = "working_inicializar_pasta";
-    initializeFolders();
+    operating = setInterval(checkCurrentOperation, 1000);
+    initializeFolders(activityType);
 });
 
-function setStatus(type, message) {
-    if (type == "progressing") {
-        document.getElementById("status").setAttribute("class", "center light-green-text");
-        document.getElementById("status").innerHTML = message;
-    } else if (type == "error") {
-        document.getElementById("status").setAttribute("class", "center red-text");
-        document.getElementById("status").innerHTML = message;
-    } else if (type == "neutral") {
-        document.getElementById("status").setAttribute("class", "center");
-        document.getElementById("status").innerHTML = message;
-    } else {
-        document.getElementById("status").setAttribute("class", "center blue-text");
-        document.getElementById("status").innerHTML = message;
-    }
-}
-
-function initializeFolders() {
+function initializeFolders(activityType) {
     setStatus("progressing", "Tentando carregar as pastas com as suas atividades...");
     switch (activityType) {
         case 'quizz':
             var quizzFolder = Windows.Storage.ApplicationData.current.localFolder.createFolderAsync("quizzes");
             quizzFolder.done(function () {
-                quizzesFolder = quizzFolder.operation.getResults();
+                activityFolder = quizzFolder.operation.getResults();
                 currentOperation = 'obter_arquivo';
                 setStatus("progressing", "Pastas carregadas. Tentando obter o arquivo...");
             }, function () {
                 try {
                     quizzFolder = Windows.Storage.ApplicationData.current.localFolder.getFolderAsync("quizzes");
                     quizzFolder.done(function () {
-                        quizzesFolder = quizzFolder.operation.getResults();
+                        activityFolder = quizzFolder.operation.getResults();
                         currentOperation = 'obter_arquivo';
                         setStatus("progressing", "Pastas carregadas. Tentando obter o arquivo...");
                     }, function () {
@@ -79,14 +59,14 @@ function initializeFolders() {
         case 'assignment':
             var assignmentFolder = Windows.Storage.ApplicationData.current.localFolder.createFolderAsync("assignments");
             assignmentFolder.done(function () {
-                assignmentFolder = assignmentFolder.operation.getResults();
+                activityFolder = assignmentFolder.operation.getResults();
                 currentOperation = 'obter_arquivo';
                 setStatus("progressing", "Pastas carregadas. Tentando obter o arquivo...");
             }, function () {
                 try {
                     assignmentFolder = Windows.Storage.ApplicationData.current.localFolder.getFolderAsync("assignments");
                     assignmentFolder.done(function () {
-                        assignmentsFolder = assignmentFolder.operation.getResults();
+                        activityFolder = assignmentFolder.operation.getResults();
                         currentOperation = 'obter_arquivo';
                         setStatus("progressing", "Pastas carregadas. Tentando obter o arquivo...");
                     }, function () {
@@ -106,10 +86,10 @@ function initializeFolders() {
     }
 }
 
-function initializeActivityFile(folder, id) {
+function initializeActivityFile(activityType, activityFolder, id) {
     setStatus("progressing", "Carregando o arquivo da sua atividade...");
     try {
-        var createFile = folder.createFileAsync(id);
+        var createFile = activityFolder.createFileAsync(id);
         createFile.done(function () {
             activityFile = createFile.operation.getResults();
             switch (activityType) {
@@ -125,10 +105,11 @@ function initializeActivityFile(folder, id) {
                     break;
             }
         }, function () {
-            var getFile = folder.getFileAsync(id);
+            var getFile = activityFolder.getFileAsync(id);
             getFile.done(function () {
                 activityFile = getFile.operation.getResults();
                 currentOperation = 'ler_arquivo';
+                console.log("ASSIGNMENT?");
                 return setStatus("progressing", "Consegui carregar o arquivo. Transformando em atividade na interface...");
             }, function () {
                 endOperation();
@@ -272,20 +253,33 @@ function loadQuestionsFromDatabase() {
 }
 
 function saveActivityProgress(activityFile) {
-    setStatus("progressing", "Salvando o seu processo num arquivo, aguarde... ");
-    $('.paragraphSave').html("<img src='../../images/universal/loading.gif' alt='animacao_carregando'>");
-    var savingOperation = Windows.Storage.FileIO.writeTextAsync(activityFile, $('#content').html());
-    savingOperation.done(function () {
-        setStatus("success", "Seu progresso foi salvo em um arquivo e será carregado na próxima vez que você entrar na tarefa.");
-        $('.paragraphSave').html('SALVAR O SEU PROGRESSO');
-        endOperation();
-        return;
-    }, function () {
-        setStatus("error", "Não foi possível salvar o seu progresso.");
-        $('.paragraphSave').html('SALVAR O SEU PROGRESSO');
-        endOperation();
-        return;
-    });
+    setStatus("progressing", "Processando o conteúdo para um arquivo, aguarde... ");
+    if (activityType == "quizz") {
+        $('.paragraphSave').html("<img src='../../images/universal/loading.gif' alt='animacao_carregando'>");
+        var savingOperation = Windows.Storage.FileIO.writeTextAsync(activityFile, $('#content').html());
+        savingOperation.done(function () {
+            setStatus("success", "Seu progresso foi salvo em um arquivo e será carregado na próxima vez que você entrar na tarefa.");
+            $('.paragraphSave').html('SALVAR O SEU PROGRESSO');
+            endOperation();
+            return;
+        }, function () {
+            setStatus("error", "Não foi possível salvar o seu progresso.");
+            $('.paragraphSave').html('SALVAR O SEU PROGRESSO');
+            endOperation();
+            return;
+        });
+    } else if (activityType == "assignment") {
+        var savingOperation = Windows.Storage.FileIO.writeTextAsync(activityFile, $('#content').html());
+        savingOperation.done(function () {
+            setStatus("success", "A atividade foi salva no dispositivo e tentarei carregá-la na próxima vez que você tentar iniciá-la.");
+            endOperation();
+            return;
+        }, function () {
+            setStatus("neutral", "Não foi possível salvar a atividade no dispositivo.");
+            endOperation();
+            return;
+        });
+    }
 }
 
 function excludeActivityProgress(activityFile) {
@@ -319,13 +313,13 @@ function checkCurrentOperation() {
                     activityID = window.location.toString().substr(window.location.toString().indexOf('=') + 1);
                     // verifica a cada segundo se a tarefa de criação já completou
                     // parâmetro da query string para determinar o id da atividade
-                    initializeActivityFile(quizzesFolder, activityID);
+                    initializeActivityFile(activityType, activityFolder, activityID);
                     break;
                 case 'assignment':
                     activityID = window.location.toString().substr(window.location.toString().indexOf('=') + 1);
                     // verifica a cada segundo se a tarefa de criação já completou
                     // parâmetro da query string para determinar o id da atividade
-                    initializeActivityFile(assignmentsFolder, activityID);
+                    initializeActivityFile(activityType, activityFolder, activityID);
                     break;
                 default:
                     endOperation();
@@ -360,6 +354,16 @@ function checkCurrentOperation() {
 
 function endOperation() {
     clearInterval(operating);
+    operating = null;
+}
+
+function restartOperation(fromStep) {
+    if (operating == null) {
+        currentOperation = fromStep;
+        operating = setInterval(checkCurrentOperation, 1000);
+    } else {
+        console.log("[ERRO] Operação em andamento.");
+    }
 }
 
 // TENTATIVAS DE QUIZZ
@@ -1106,7 +1110,9 @@ function loadAssignmentFromDatabase() {
                     }, function (data2, textStatus2, jqXHR2) {
                         var i = 1;
                         var textAreaHTML = "";
+                        var textAreaHTML_enabled = false;
                         var inputFileHTML = "";
+                        var inputFileHTML_enabled = false;
                         for (i; i < data2.length; i++) {
                             if (data2[i][data2[0].indexOf("SUBTYPE")] == "assignsubmission" && data2[i][data2[0].indexOf("SUBTYPE")] != "comments") {
                                 switch (data2[i][data2[0].indexOf("NAME")]) {
@@ -1114,8 +1120,10 @@ function loadAssignmentFromDatabase() {
                                         if (data2[i][data2[0].indexOf("VALUE")] == 1) {
                                             if (data2[i][data2[0].indexOf("PLUGIN")] == "file") {
                                                 inputFileHTML += "<p><input type='file' name='file'";
+                                                inputFileHTML_enabled = true;
                                             } else if (data2[i][data2[0].indexOf("PLUGIN")] == "onlinetext") {
                                                 textAreaHTML += "<p><textarea id='onlinetextarea'";
+                                                textAreaHTML_enabled = true;
                                             } else {
                                                 setStatus("error", "Configuração de tarefa não suportada pela aplicação.");
                                                 endOperation();
@@ -1139,17 +1147,17 @@ function loadAssignmentFromDatabase() {
                                 }
                             }
                         }
-                        textAreaHTML += "></textarea><span id='spanupdate'></p></p>";
-                        inputFileHTML += "/></p>";
-                        finalHTMLBuilder += textAreaHTML + inputFileHTML;
-                        finalHTMLBuilder += "<p><input type='button' value='Enviar resposta' /></p>";
+                        if (textAreaHTML_enabled) {
+                            finalHTMLBuilder += textAreaHTML + "></textarea><span id='spanupdate'></p></p>";
+                        }
+                        if (inputFileHTML_enabled) {
+                            finalHTMLBuilder += inputFileHTML + "/></p>";
+                        }
+                        finalHTMLBuilder += "<p><input id='submit' type='button' class='btn btn-shadowed' value='Enviar resposta' /></p>";
                         $('#content').html(finalHTMLBuilder);
                         setStatus("succeeded", "A tarefa foi carregada com sucesso.");
-                        if ($('#onlinetextarea')[0].maxLength != undefined) {
-                            $('#onlinetextarea').on('input', function (e) {
-                                $('#spanupdate').html((parseInt(e.target.maxLength) - e.target.value.length).toString());
-                            });
-                        }
+                        loadAssignmentListeners();
+                        restartOperation("salvar_progresso");
                     });
                 } catch (exception) {
                     setStatus("error", "Erro de processamento nas informações de tarefa.");
@@ -1170,7 +1178,7 @@ function loadAssignmentFromDatabase() {
 
 function canUserSubmitAssignment(data) {
     if (data[1][data[0].indexOf("ALLOWSUBMISSIONSFROMDATE")] != "0") {
-        if (getUnixTime() < parseInt(data[1][data[0].indexOf("ALLOWSUBMISSIONSFROMDATE")])) {
+        if (getUnixTime() > parseInt(data[1][data[0].indexOf("ALLOWSUBMISSIONSFROMDATE")])) {
             setStatus("neutral", "Essa tarefa ainda não está aceitando submissões. Tente responder novamente mais tarde!");
             return false;
         }
@@ -1315,5 +1323,15 @@ function loadFinishAttemptListener() {
 // FIM LISTENERS DE ELEMENTOS DE QUIZZ
 
 // LISTENERS DE ELEMENTOS DE ASSIGNMENT
+
+function loadAssignmentListeners() {
+    if ($('#onlinetextarea').length != 0 && $('#onlinetextarea')[0].maxLength != undefined) {
+        $('#onlinetextarea').on('input', function (e) {
+            $('#spanupdate').html((parseInt(e.target.maxLength) - e.target.value.length).toString());
+        });
+    }
+    $('#submit').click(function (event) {
+    });
+}
 
 // FIM LISTENERS DE ELEMENTOS DE ASSIGNMENT

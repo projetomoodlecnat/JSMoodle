@@ -28,6 +28,22 @@ function getUnixTime() {
     return Math.round(new Date().getTime() / 1000);
 }
 
+function setStatus(type, message) {
+    if (type == "progressing") {
+        document.getElementById("status").setAttribute("class", "center light-green-text");
+        document.getElementById("status").innerHTML = message;
+    } else if (type == "error") {
+        document.getElementById("status").setAttribute("class", "center red-text");
+        document.getElementById("status").innerHTML = message;
+    } else if (type == "neutral") {
+        document.getElementById("status").setAttribute("class", "center");
+        document.getElementById("status").innerHTML = message;
+    } else {
+        document.getElementById("status").setAttribute("class", "center blue-text");
+        document.getElementById("status").innerHTML = message;
+    }
+}
+
 function splitHTMLText(questionText) {
     if (questionText.indexOf("<p") == -1) {
         return questionText;
@@ -38,14 +54,14 @@ function splitHTMLText(questionText) {
     return splittedText;
 }
 
-function persistCacheImage(url) {
+function persistCacheImage(url, filename) {
     var request = new Windows.Web.Http.HttpClient().getAsync(new Windows.Foundation.Uri(url));
     var fileBytes;
     var fileCreated;
     request.done(function () {
         request = request.operation.getResults().content.readAsBufferAsync();
         request.done(function () {
-            fileCreated = Windows.Storage.ApplicationData.current.localCacheFolder.createFileAsync("image.jpg");
+            fileCreated = Windows.Storage.ApplicationData.current.localCacheFolder.createFileAsync(filename);
             fileCreated.done(function () {
                 Windows.Storage.FileIO.writeBufferAsync(fileCreated.operation.getResults(), request.operation.getResults()).done(function () {
 

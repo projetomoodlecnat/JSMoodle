@@ -83,6 +83,7 @@ index.html
 index.js
 js\applib.js
 js\jquery-2.2.4.js
+js\jquery-2.2.4.min.js
 js\materialize.js
 js\materialize.min.js
 surveys\index.html

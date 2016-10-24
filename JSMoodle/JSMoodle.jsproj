@@ -144,6 +144,7 @@
     <Content Include="js\applib.js" />
     <Content Include="js\jquery-2.2.4.js" />
     <Content Include="css\main.css" />
+    <Content Include="js\jquery-2.2.4.min.js" />
     <Content Include="js\materialize.js" />
     <Content Include="js\materialize.min.js" />
     <Content Include="surveys\index.html" />

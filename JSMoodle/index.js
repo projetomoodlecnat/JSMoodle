@@ -14,7 +14,7 @@
     // Definindo os listeners padrão de elementos da interface
 
     $('#username').focus(function () {
-        document.getElementById("tooltipLabel").setAttribute("class", "red-text");
+        document.getElementById("tooltipLabel").setAttribute("class", "materialize-red-text");
         document.getElementById("loginSpan").setAttribute("class", "bold blue-text");
     }).blur(function () {
         document.getElementById("tooltipLabel").setAttribute("class", "invisible");
@@ -112,19 +112,6 @@
     //======================================A SER IMPLEMENTADO================================================
 
     // Métodos que populam a interface com informações
-
-    function setStatus(type, message) {
-        if (type == "progressing") {
-            document.getElementById("status").setAttribute("class", "center light-green-text");
-            document.getElementById("status").innerHTML = message;
-        } else if (type == "error") {
-            document.getElementById("status").setAttribute("class", "center red-text");
-            document.getElementById("status").innerHTML = message;
-        } else {
-            document.getElementById("status").setAttribute("class", "center blue-text");
-            document.getElementById("status").innerHTML = message;
-        }
-    }
 
     function saveUserSettings(connectionIndex, api_Path) {
         document.cookie = "api_Path" + api_Path;
