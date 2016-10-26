@@ -187,6 +187,7 @@ function loadQuestionsFromDatabase() {
                 data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": firstStep[10]["comando"] + " WHERE quizid=" + activityID + " ORDER BY slot" }
             }).done(function (data, textStatus, jqXHR) {
                 var questionNames = []
+                var oneLiners = []
                 try {
                     console.log(data[1]);
                 } catch (exception) {
@@ -195,44 +196,94 @@ function loadQuestionsFromDatabase() {
                     return;
                 }
                 for (var i = 1; i < data.length; i++) {
-                    var optionType = "";
-                    switch (data[i][data[0].indexOf("QTYPE")]) {
-                        case 'multichoice':
-                            $.post({
-                                url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                                async: false,
-                                data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": "select single from mdl_qtype_multichoice_options where questionid=" + data[i][data[0].indexOf("QUESTIONID")] }
-                            }).done(function (data, textStatus, jqXHR) {
-                                if (data[1][0] == "0") {
-                                    optionType = "checkbox";
-                                } else {
-                                    optionType = "radio";
-                                }
-                            }).error(function () {
-                                setStatus("error", "Erro na requisição que define o tipo das questões.");
-                                $('#content').html("");
-                                endOperation();
-                            });
-                            break;
-                        case 'truefalse':
-                            optionType = "radio";
-                            break;
-                        case 'description':
-                            break;
-                        default:
-                            $('#content').html("Essa tarefa contém tipos de questões não suportadas pela aplicação e não poderá ser mostrada.");
-                            endOperation();
-                            return;
-                    }
-                    if (questionNames.indexOf(data[i][data[0].indexOf("QUESTIONID")]) == -1) {
-                        questionNames.push(data[i][data[0].indexOf("QUESTIONID")]);
-                        if (data[i][data[0].indexOf("QTYPE")] == 'description') {
-                            stringHTMLBuilder += "<div class='paragraphDescription'><ul>" + data[i][data[0].indexOf("QUESTIONTEXT")];
-                            continue;
+                    var optionType = data[i][data[0].indexOf("QTYPE")];
+                    var inputType = "";
+                    var questionToHtml = "";
+                    try {
+                        switch (optionType) {
+                            case 'multichoice':
+                                $.post({
+                                    url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                    async: false,
+                                    data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": "select single from mdl_qtype_multichoice_options where questionid=" + data[i][data[0].indexOf("QUESTIONID")] }
+                                }).done(function (data, textStatus, jqXHR) {
+                                    if (data[1][0] == "0") {
+                                        inputType = "checkbox";
+                                    } else {
+                                        inputType = "radio";
+                                    }
+                                }).error(function () {
+                                    setStatus("error", "Erro na requisição que define o tipo das questões.");
+                                    throw new (Error("REQUEST_EXCEPTION"));
+                                });
+                                break;
+                            case 'truefalse':
+                                inputType = "radio";
+                                break;
+                            case 'essay':
+                                $.post({
+                                    url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                    async: false,
+                                    data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": "select * from mdl_qtype_essay_options where questionid=" + data[i][data[0].indexOf("QUESTIONID")] }
+                                }).done(function (innerData, textStatus, jqXHR) {
+                                    if (innerData[1][innerData[0].indexOf("ATTACHMENTSREQUIRED")] != "0" || innerData[1][innerData[0].indexOf("RESPONSETEMPLATE")] != "") {
+                                        setStatus("error", "A questão contém configurações que não são suportadas pelo aplicativo.");
+                                        throw new (Error("DATA_EXCEPTION"));
+                                    } else {
+                                        questionToHtml = "<li><textarea style='height:" + (parseInt(innerData[1][innerData[0].indexOf("RESPONSEFIELDLINES")]) * 22) + "px' required='" + (innerData[1][innerData[0].indexOf("RESPONSEREQUIRED")] == "1").toString() + "'";
+                                    }
+                                }).error(function () {
+                                    setStatus("error", "Erro na requisição que define o tipo das questões.");
+                                    throw new (Error("REQUEST_EXCEPTION"));
+                                });
+                                break;
+                            case 'shortanswer':
+                                inputType = 'text';
+                                break;
+                            case 'numerical':
+                                inputType = 'number';
+                                $.post({
+                                    url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                    async: false,
+                                    data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": "select * from mdl_question_numerical_options where question=" + data[i][data[0].indexOf("QUESTIONID")] }
+                                }).done(function (innerData, textStatus, jqXHR) {
+                                    if (innerData[1][innerData[0].indexOf("UNITGRADINGTYPE")] == "1") {
+                                        setStatus("error", "A questão contém configurações que não são suportadas pelo aplicativo.");
+                                        throw new (Error("DATA_EXCEPTION"));
+                                    }
+                                }).error(function () {
+                                    setStatus("error", "Erro na requisição que define o tipo das questões.");
+                                    throw new (Error("REQUEST_EXCEPTION"));
+                                });
+                                break;
+                            case 'description':
+                                break;
+                            default:
+                                setStatus("error", "A questão contém configurações que não são suportadas pelo aplicativo.");
+                                throw new (Error("DATA_EXCEPTION"));
+                                break;
                         }
-                        stringHTMLBuilder += "</ul></div><div class='questioncontainer'><b>Questão: </b>" + data[i][data[0].indexOf("QUESTIONTEXT")] + "<ul>";
+                        if (questionNames.indexOf(data[i][data[0].indexOf("QUESTIONID")]) == -1) {
+                            questionNames.push(data[i][data[0].indexOf("QUESTIONID")]);
+                            if (data[i][data[0].indexOf("QTYPE")] == 'description') {
+                                stringHTMLBuilder += "<div class='paragraphDescription'><ul>" + data[i][data[0].indexOf("QUESTIONTEXT")];
+                                continue;
+                            }
+                            stringHTMLBuilder += "</ul></div><div class='questioncontainer'><b>Questão: </b>" + data[i][data[0].indexOf("QUESTIONTEXT")] + "<ul>";
+                        }
+                        if (optionType == "multichoice" || optionType == "truefalse") {
+                            stringHTMLBuilder += "<li><input class='with-gap' slot='" + data[i][data[0].indexOf("SLOTID")] + "' name='" + data[i][data[0].indexOf("QUESTIONID")] + "' type='" + inputType + "' style='margin-right: 5px; float:left; position:static; opacity: 1'/>" + data[i][data[0].indexOf("ANSWER")] + "</li>";
+                        } else if ((optionType == "shortanswer" || optionType == "numerical") && oneLiners.indexOf(data[i][data[0].indexOf("QUESTIONID")]) == -1) {
+                            oneLiners.push(data[i][data[0].indexOf("QUESTIONID")]);
+                            stringHTMLBuilder += "<li><input slot='" + data[i][data[0].indexOf("SLOTID")] + "' name='" + data[i][data[0].indexOf("QUESTIONID")] + "' type='" + inputType + "'/></li>";
+                        } else if (optionType == "essay") {
+                            stringHTMLBuilder += questionToHtml + " slot='" + data[i][data[0].indexOf("SLOTID")] + "' name='" + data[i][data[0].indexOf("QUESTIONID")] + "'></textarea></li>";
+                        }
+                    } catch (exception) {
+                        $('#content').html("");
+                        endOperation();
+                        return false;
                     }
-                    stringHTMLBuilder += "<li><input class='with-gap' slot='" + data[i][data[0].indexOf("SLOTID")] + "' name='" + data[i][data[0].indexOf("QUESTIONID")] + "' type='" + optionType + "' style='margin-right: 5px; float:left; position:static; opacity: 1'>" + data[i][data[0].indexOf("ANSWER")] + "</li>";
                 }
                 $("#content").html(stringHTMLBuilder + "<br><p class='paragraphFinishAttempt'>FINALIZAR A SUA TENTATIVA</p>");
                 setStatus("succeeded", "As questões foram carregadas com sucesso e renderizadas na interface. ");
@@ -393,6 +444,19 @@ function stateQuizzAttempt(answer_fraction, max_fraction) {
     }
 }
 
+function checkRequiredFields() {
+    var allContainers = $(".questioncontainer");
+    var requiredContainers = $("[required='true']", allContainers);
+    requiredContainers.each(function (index) {
+        var selectedElement = $(this);
+        if (selectedElement.prop('nodeName') == "TEXTAREA" && selectedElement.length == 0) {
+            setStatus("neutral", "Você precisa responder algumas questões requeridas!");
+            return false;
+        }
+    });
+    return allContainers;
+}
+
 function canUserAttempQuizz() {
     var quizzAttemptResults;
     $.post({
@@ -424,12 +488,11 @@ function canUserAttempQuizz() {
     return quizzAttemptResults;
 }
 
-function processUnansweredQuestions(questionUsageID, connectionIndex, command, layoutSlots) {
+function processUnansweredQuestions(questionUsageID, connectionIndex, command, layoutSlots, allContainers) {
     setStatus("progressing", "Processando as tentativas sem resposta...");
     var cumulativeAnswerID;
-
     try {
-        $(".questioncontainer").each(function () {
+        allContainers.each(function () {
             var selectedContainer = $(this);
             if (selectedContainer.find("input[checked]").length == 0) {
                     var selectedElement = $(selectedContainer.find("input")[0]);
@@ -604,6 +667,7 @@ function processUnansweredQuestions(questionUsageID, connectionIndex, command, l
                                                             }
                                                         });
                                                         styleQuestion(selectedElement, 'not_answered');
+
                                                     // end POST on MDL_QUESTION_ATTEMPT_STEP_DATA with MDL_QUESTION_ATTEMPT_STEPS query results
                                                 });
                                             });
@@ -659,13 +723,24 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
             if (quizzAttemptResults == false) {
                 return quizzAttemptResults;
             }
+            var requiredFieldCheck = checkRequiredFields();
+            if (requiredFieldCheck == false) {
+                return requiredFieldCheck;
+            }
 
             // end Verificando se o usuário pode submeter o quizz
             // inserindo na tabela mdl_question_attempts e mdl_question_attempts_step
 
-            var matchSelected = $(".questioncontainer input[checked='true']");
+            var matchSelected = $("input[checked='true']", requiredFieldCheck);
+            requiredFieldCheck.each(function () {
+                var field = $(this);
+                if (field.val() != "") {
+                    matchSelected.add(field);
+                }
+            });
+
             if (matchSelected.length == 0) {
-                isDone = processUnansweredQuestions(questionUsageID, connectionIndex, command, layoutSlots);
+                isDone = processUnansweredQuestions(questionUsageID, connectionIndex, command, layoutSlots, requiredFieldCheck);
             } else {
                 setStatus("progressing", "Processando as tentativas com resposta...");
             }
@@ -678,6 +753,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                     async: false,
                     data: { "connectionIndex": connectionIndex, "query": command + " where mdl_quiz_slots.id=" + selectedElement.attr("slot") + " order by mdl_question_answers.id" }
                 }).done(function (data, textStatus, jqXHR) {
+                    var fieldAnswer = "";
                     try {
                         sumFractions = 0.0;
                         cumulativeAnswerID = "";
@@ -697,9 +773,15 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                         }
                         // contornando os True/Falses do Moodle
 
-                        if (selectedElement[0].nextSibling.toString() == "[object Text]") {
-                            selectedElement[0].nextSibling.outerHTML = selectedElement[0].nextSibling.wholeText;
+                        if (selectedElement.prop('type') == "text") {
+                            fieldAnswer = selectedElement.val();
+                        } else if (selectedElement[0].nextSibling.toString() == "[object Text]") {
+                            fieldAnswer = selectedElement[0].nextSibling.wholeText;
+                        } else {
+                            fieldAnswer = selectedElement[0].nextSibling.outerHTML;
                         }
+
+                        fieldAnswer = splitHTMLText(fieldAnswer);
 
                         // end contornando os True/Falses do Moodle
                     } catch (exception) {
@@ -708,8 +790,8 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                     }
 
                     for (var i = 1; i < data.length; i++) {
-                        if (data[i][data[0].indexOf("ANSWER")].indexOf(splitHTMLText(selectedElement[0].nextSibling.outerHTML)) > -1) {
-                            // A questão faz parte de um quizz de multi-escolhas e os registros já foram inseridos
+                        if (splitHTMLText(data[i][data[0].indexOf("ANSWER")]) == fieldAnswer) {
+                            // A questão faz parte de um quizz de multi-escolhas e os registros já foram inseridos?
 
                             answerValue = i - 1;
                             data[i][data[0].indexOf("FRACTION")] = data[i][data[0].indexOf("FRACTION")].replace(",", ".");
@@ -737,7 +819,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                     }).done(function (updateData) {
                                     });
                                     styleQuestion(selectedElement, individualFraction, sumFractions, data[i][data[0].indexOf("FEEDBACK")]);
-                                    isDone = processUnansweredQuestions(questionUsageID, connectionIndex, command, layoutSlots);
+                                    isDone = processUnansweredQuestions(questionUsageID, connectionIndex, command, layoutSlots, requiredFieldCheck);
                                 }
                                 break;
                             } else if (processedMultiSlot != null) {
@@ -760,7 +842,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                 processedAnswersLength++;
                             }
 
-                            // end A questão faz parte de um quizz de multi-escolhas e os registros já foram inseridos
+                            // end A questão faz parte de um quizz de multi-escolhas e os registros já foram inseridos?
                             layoutSlots += data[i][data[0].indexOf("SLOT")] + ",";
                             var userAnswer = splitHTMLText(selectedElement[0].nextSibling.outerHTML);
                             // contornando os True/Falses do Moodle
@@ -914,7 +996,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                                         }
                                                         processedAnswersLength++;
                                                         if (processedAnswersLength == answersToProcess) {
-                                                            isDone = processUnansweredQuestions(questionUsageID, connectionIndex, command, layoutSlots);
+                                                            isDone = processUnansweredQuestions(questionUsageID, connectionIndex, command, layoutSlots, requiredFieldCheck);
                                                         }
                                                     });
                                                     styleQuestion(selectedElement, parseFloat(data[i][data[0].indexOf("FRACTION")]), rightAnswerAndValue[1], data[i][data[0].indexOf("FEEDBACK")]);
@@ -965,7 +1047,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, command) {
                                                         }).done(function (updateData) {
                                                         });
                                                         styleQuestion(selectedElement, individualFraction, sumFractions, data[i][data[0].indexOf("FEEDBACK")]);
-                                                        isDone = processUnansweredQuestions(questionUsageID, connectionIndex, command, layoutSlots);
+                                                        isDone = processUnansweredQuestions(questionUsageID, connectionIndex, command, layoutSlots, requiredFieldCheck);
                                                     }
                                                 } else {
                                                     setStatus("error", "Erro no tipo de seletor de resposta.");
