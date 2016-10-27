@@ -44,8 +44,9 @@
                     firstStep = JSON.parse(firstStep);
                     document.cookie = "databaseType=" + firstStep[0]["databaseType"];
                     document.cookie = "databaseIndex=" + (firstStep[1]["idconexao"] -1);
-                } catch (Exception) {
+                } catch (exception) {
                     setStatus("error", "Parsing dos dados da API falhou no primeiro estágio.");
+                    enableTextFields(true);
                     return;
                 }
                 $.post({
