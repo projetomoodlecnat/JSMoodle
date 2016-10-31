@@ -62,8 +62,16 @@
     padding-right: 15px;
 }
 
-.tooltipLabel {
-    margin-top: -60px;
+.labelSaveUser {
+    margin-top: -80px !important;
+}
+
+#checkboxSaveUser {
+    display: inline-block;
+    position: initial !important;
+    margin-right: 5px;
+    opacity: 1 !important;
+    left: initial !important;
 }
 
 .btn-shadowed {

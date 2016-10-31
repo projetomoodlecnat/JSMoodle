@@ -1,9 +1,8 @@
 ﻿$(document).ready(function () {
-
     // Carregando as configurações iniciais de usuário
     readUserSettings();
 
-    // definindo a animação do botão de Modo Offline
+    // Definindo a animação do botão de Modo Offline
 
     $('.imgOfflineNavigation').hover(function () {
         $(this).addClass('pulse');
@@ -14,11 +13,14 @@
     // Definindo os listeners padrão de elementos da interface
 
     $('#username').focus(function () {
-        document.getElementById("tooltipLabel").setAttribute("class", "materialize-red-text");
+        document.getElementById("tooltipLabel").setAttribute("class", "labelSaveUser");
         document.getElementById("loginSpan").setAttribute("class", "bold blue-text");
     }).blur(function () {
-        document.getElementById("tooltipLabel").setAttribute("class", "invisible");
         document.getElementById("loginSpan").setAttribute("class", "");
+    });
+
+    $('#password').focus(function () {
+        document.getElementById("tooltipLabel").setAttribute("class", "invisible");
     });
 
     $('#api_PathHolder').click(function () {
@@ -27,6 +29,18 @@
 
     $('#api_Path').blur(function () {
         $('#api_Path').attr('disabled', true);
+    });
+
+    $('#api_Path').change(function () {
+        saveUserSettings();
+    });
+
+    $('#moodleSelector').change(function () {
+        saveUserSettings();
+    });
+
+    $('#checkboxSaveUser').change(function () {
+        saveUserSettings();
     });
 
     // Método que tenta a autenticação por seleção na tabela MDL_USER através da API
@@ -99,29 +113,22 @@
         });
     });
 
-    $('#moodleSelector').change(function () {
-        saveUserSettings(document.getElementById('moodleSelector').selectedIndex, document.getElementById('api_Path').value);
-    });
-
-    $('#api_Path').change(function () {
-        saveUserSettings(document.getElementById('moodleSelector').selectedIndex, document.getElementById('api_Path').value);
-    });
-
-
-    // Método que realiza a autenticação através de seleção na tabela de usuários e um código hash codificador
-
-    //======================================A SER IMPLEMENTADO================================================
-
     // Métodos que populam a interface com informações
 
-    function saveUserSettings(connectionIndex, api_Path) {
+    function saveUserSettings() {
+        var args = [$('#moodleSelector').val(), $('#api_Path').val(),$('#username').val(), $('#checkboxSaveUser')[0].checked];
         document.cookie = "api_Path" + api_Path;
         var operation = Windows.Storage.ApplicationData.current.localFolder.getFileAsync("config.ini");
         file = null;
         try {
             operation.done(function () {
                 file = operation;
-                var writer = Windows.Storage.FileIO.writeTextAsync(file.operation.getResults(), "connectionIndex=" + connectionIndex + "\napi_Path=" + api_Path + "\n");
+                var writer;
+                if (args[3]) {
+                    writer = Windows.Storage.FileIO.writeTextAsync(file.operation.getResults(), "connectionIndex=" + args[0] + "\napi_Path=" + args[1] + "\nusername=" + args[2]+"\n");
+                } else {
+                    writer = Windows.Storage.FileIO.writeTextAsync(file.operation.getResults(), "connectionIndex=" + args[0] + "\napi_Path=" + args[1] + "\n");
+                }
                 writer.done(function () {
                     setStatus("succeeded", "Suas configurações foram salvas num arquivo e serão carregadas sempre que o aplicativo for iniciado.");
                 }, function () {
@@ -131,7 +138,12 @@
                 var file = Windows.Storage.ApplicationData.current.localFolder.createFileAsync("config.ini");
                 file.done(function () {
                     file = file.operation.getResults();
-                    var writer = Windows.Storage.FileIO.writeTextAsync(file, "connectionIndex=" + connectionIndex + "\napi_Path=" + api_Path + "\n");
+                    var writer;
+                    if (args[3]) {
+                        writer = Windows.Storage.FileIO.writeTextAsync(file.operation.getResults(), "connectionIndex=" + args[0] + "\napi_Path=" + args[1] + "\nusername=" + args[2] + "\n");
+                    } else {
+                        writer = Windows.Storage.FileIO.writeTextAsync(file.operation.getResults(), "connectionIndex=" + args[0] + "\napi_Path=" + args[1] + "\n");
+                    }
                     writer.done(function () {
                         setStatus("succeeded", "Suas configurações foram salvas num arquivo e serão carregadas sempre que o aplicativo for iniciado.");
                     }, function () {
@@ -152,6 +164,11 @@
             fileReader = Windows.Storage.FileIO.readTextAsync(operation.operation.getResults());
             fileReader.done(function () {
                 var parseString = fileReader.operation.getResults();
+                var isUserSet = parseFromConfigIni(parseString, 'username');
+                if (isUserSet!=null) {
+                    $('#username').val(isUserSet);
+                    $('#checkboxSaveUser')[0].checked = true;
+                }
                 document.getElementById('moodleSelector').selectedIndex = parseFromConfigIni(parseString, 'connectionIndex');
                 document.getElementById('api_Path').value = parseFromConfigIni(parseString, 'api_Path');
                 document.cookie = "api_Path" + parseFromConfigIni(parseString, 'api_Path');
@@ -160,12 +177,14 @@
                 setStatus("error", "Erro ao ler o arquivo. Verifique se você tem permissão de leitura ou se o arquivo permite leitura!");
             });
         }, function () {
-            saveUserSettings(document.getElementById('moodleSelector').selectedIndex, document.getElementById('api_Path').value);
+            saveUserSettings();
         });
     }
 
     function parseFromConfigIni(parseString, key) {
-        parseString = parseString.substring(parseString.indexOf(key)+key.length+1);
+        var keyIndex = parseString.indexOf(key);
+        if (keyIndex == -1) { return null; }
+        parseString = parseString.substring(keyIndex+key.length+1);
         return parseString.substring(0, parseString.indexOf("\n"));
     }
 
