@@ -7,6 +7,7 @@ var activityFolder;
 // variáveis de atributo da atividade
 var activityType;
 var activityID;
+var activityFile;
 var offline = false;
 
 // variáveis que controlam a sequência de operações
@@ -19,10 +20,10 @@ $(document).ready(function () {
         history.back();
     });
     $('.paragraphSave').click(function () {
-        restartOperation("salvar_progresso");
+        saveActivityProgress(activityFile);
     });
     $('.paragraphClear').click(function () {
-        restartOperation("excluir_progresso");
+        excludeActivityProgress(activityFile);
     });
     activityType = window.location.toString().substring((window.location.toString().indexOf('?') + 1), window.location.toString().indexOf('='));
     currentOperation = "working_inicializar_pasta";
@@ -109,7 +110,6 @@ function initializeActivityFile(activityType, activityFolder, id) {
             getFile.done(function () {
                 activityFile = getFile.operation.getResults();
                 currentOperation = 'ler_arquivo';
-                console.log("ASSIGNMENT?");
                 return setStatus("progressing", "Consegui carregar o arquivo. Transformando em atividade na interface...");
             }, function () {
                 endOperation();
@@ -148,7 +148,12 @@ function loadFileIntoInterface(file) {
             } else {
                 setStatus("success", "Arquivo carregado com sucesso. ");
                 $('#content').html(readFromFile.operation.getResults());
-                loadOrReloadListeners();
+                if (activityType == 'quizz') {
+                    loadQuizzListeners();
+                } else if (activityType == 'assignment') {
+                    loadAssignmentListeners();
+                }
+                loadGeneralListeners();
             }
             endOperation();
             return;
@@ -197,8 +202,9 @@ function loadQuestionsFromDatabase() {
                 }
                 for (var i = 1; i < data.length; i++) {
                     var optionType = data[i][data[0].indexOf("QTYPE")];
+                    var complementHTML = "";
                     var inputType = "";
-                    var questionToHtml = "";
+                    var questionToHTML = "";
                     try {
                         switch (optionType) {
                             case 'multichoice':
@@ -220,6 +226,22 @@ function loadQuestionsFromDatabase() {
                             case 'truefalse':
                                 inputType = "radio";
                                 break;
+                            case 'match':
+                                questionToHTML = [];
+                                complementHTML = [];
+                                $.post({
+                                    url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                                    async: false,
+                                    data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": "select * from mdl_qtype_match_subquestions where questionid=" + data[i][data[0].indexOf("QUESTIONID")] }
+                                }).done(function (innerData, textStatus, jqXHR) {
+                                    for (var j = 1; j < innerData.length; j++) {
+                                        if (innerData[j][innerData[0].indexOf("QUESTIONTEXT")] != "") {
+                                            questionToHTML.push(innerData[j][innerData[0].indexOf("QUESTIONTEXT")]);
+                                        }
+                                        complementHTML.push(innerData[j][innerData[0].indexOf("ANSWERTEXT")]);
+                                    }
+                                });
+                                break;
                             case 'essay':
                                 $.post({
                                     url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
@@ -230,7 +252,10 @@ function loadQuestionsFromDatabase() {
                                         setStatus("error", "A questão contém configurações que não são suportadas pelo aplicativo.");
                                         throw new (Error("DATA_EXCEPTION"));
                                     } else {
-                                        questionToHtml = "<li><textarea style='height:" + (parseInt(innerData[1][innerData[0].indexOf("RESPONSEFIELDLINES")]) * 22) + "px' slot='" + data[i][data[0].indexOf("SLOTID")] + "' required='" + (innerData[1][innerData[0].indexOf("RESPONSEREQUIRED")] == "1").toString() + "'";
+                                        if (innerData[1][innerData[0].indexOf("ATTACHMENTS")] != "0") {
+                                            complementHTML = "<input type='file' id='input-" + data[i][data[0].indexOf("SLOTID")] + "' maxfiles='" + innerData[1][innerData[0].indexOf("ATTACHMENTS")] + "' /><div id='d-input-" + data[i][data[0].indexOf("SLOTID")] + "'></div>";
+                                        }
+                                        questionToHTML = "<li><textarea style='height:" + (parseInt(innerData[1][innerData[0].indexOf("RESPONSEFIELDLINES")]) * 22) + "px' slot='" + data[i][data[0].indexOf("SLOTID")] + "' required='" + (innerData[1][innerData[0].indexOf("RESPONSEREQUIRED")] == "1").toString() + "'";
                                     }
                                 }).error(function () {
                                     setStatus("error", "Erro na requisição que define o tipo das questões.");
@@ -269,7 +294,7 @@ function loadQuestionsFromDatabase() {
                                 stringHTMLBuilder += "<div class='paragraphDescription'><ul>" + data[i][data[0].indexOf("QUESTIONTEXT")];
                                 continue;
                             }
-                            stringHTMLBuilder += "</ul></div><div class='questioncontainer'><b>Questão: </b>" + data[i][data[0].indexOf("QUESTIONTEXT")] + "<ul>";
+                            stringHTMLBuilder += "</ul></div><div type='" + optionType + "' class='questioncontainer'><b>Questão: </b>" + data[i][data[0].indexOf("QUESTIONTEXT")] + "<ul>";
                         }
                         if (optionType == "multichoice" || optionType == "truefalse") {
                             stringHTMLBuilder += "<li><input class='with-gap' slot='" + data[i][data[0].indexOf("SLOTID")] + "' name='" + data[i][data[0].indexOf("QUESTIONID")] + "' type='" + inputType + "' style='margin-right: 5px; float:left; position:static; opacity: 1'/>" + data[i][data[0].indexOf("ANSWER")] + "</li>";
@@ -277,7 +302,16 @@ function loadQuestionsFromDatabase() {
                             oneLiners.push(data[i][data[0].indexOf("QUESTIONID")]);
                             stringHTMLBuilder += "<li><input slot='" + data[i][data[0].indexOf("SLOTID")] + "' name='" + data[i][data[0].indexOf("QUESTIONID")] + "' type='" + inputType + "'/></li>";
                         } else if (optionType == "essay") {
-                            stringHTMLBuilder += questionToHtml + " slot='" + data[i][data[0].indexOf("SLOTID")] + "' name='" + data[i][data[0].indexOf("QUESTIONID")] + "'></textarea></li>";
+                            stringHTMLBuilder += questionToHTML + " slot='" + data[i][data[0].indexOf("SLOTID")] + "' name='" + data[i][data[0].indexOf("QUESTIONID")] + "'></textarea>" +
+                                complementHTML + "</li>";
+                        } else if (optionType == "match") {
+                            while (questionToHTML.length > 0) {
+                                stringHTMLBuilder += questionToHTML.pop() + "<select><option value=''></option>";
+                                for (var j = 0; j < complementHTML.length; j++) {
+                                    stringHTMLBuilder += "<option value='" + complementHTML[j] + "'>" + complementHTML[j] + "</option>";
+                                }
+                                stringHTMLBuilder += "</select>";
+                            }
                         }
                     } catch (exception) {
                         $('#content').html("");
@@ -287,7 +321,8 @@ function loadQuestionsFromDatabase() {
                 }
                 $("#content").html(stringHTMLBuilder + "<br><p class='paragraphFinishAttempt'>FINALIZAR A SUA TENTATIVA</p>");
                 setStatus("succeeded", "As questões foram carregadas com sucesso e renderizadas na interface. ");
-                loadOrReloadListeners();
+                loadQuizzListeners();
+                loadGeneralListeners();
                 currentOperation = "salvar_progresso";
             }).error(function () {
                 setStatus("error", "A requisição à API do Moodle falhou na obtenção das questões. ");
@@ -306,10 +341,10 @@ function loadQuestionsFromDatabase() {
 function saveActivityProgress(activityFile) {
     setStatus("progressing", "Processando o conteúdo para um arquivo, aguarde... ");
     if (activityType == "quizz") {
-        $('.paragraphSave').html("<img src='../../images/universal/loading.gif' alt='animacao_carregando'>");
         var savingOperation = Windows.Storage.FileIO.writeTextAsync(activityFile, $('#content').html());
         savingOperation.done(function () {
             setStatus("success", "Seu progresso foi salvo em um arquivo e será carregado na próxima vez que você entrar na tarefa.");
+            Materialize.toast('Arquivo salvo!', 3000);
             $('.paragraphSave').html('SALVAR O SEU PROGRESSO');
             endOperation();
             return;
@@ -443,11 +478,13 @@ function stateQuizzAttempt(answer_fraction, max_fraction) {
 function checkRequiredFields() {
     var allContainers = $(".questioncontainer input");
     allContainers = allContainers.add($(".questioncontainer textarea"));
+    allContainers = allContainers.add($(".questioncontainer select"));
     var requiredContainers = $("[required='true']", allContainers);
     requiredContainers.each(function (index) {
         var selectedElement = $(this);
         if (selectedElement.prop('nodeName') == "TEXTAREA" && selectedElement.length == 0) {
             setStatus("neutral", "Você precisa responder algumas questões requeridas!");
+            selectedElement.focus();
             allContainers = false;
             return false;
         }
@@ -486,6 +523,30 @@ function canUserAttempQuizz() {
     return quizzAttemptResults;
 }
 
+function checkIfContainerHasNoAnswer(container) {
+    if (container.prop('type') == 'multichoice') {
+        if (selectedContainer.find("input[checked]").length == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    } else if (container.prop('type') == 'shortanswer' || container.prop('type') == 'numerical') {
+        if (selectedContainer.find("input[value='']").length > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    } else if (container.prop('type') == 'match') {
+        if (selectedContainer.find("select[value='']").length > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return "error";
+    }
+}
+
 function processUnansweredQuestions(questionUsageID, connectionIndex, command, layoutSlots) {
     setStatus("progressing", "Processando as tentativas sem resposta...");
     var cumulativeAnswerID;
@@ -494,7 +555,8 @@ function processUnansweredQuestions(questionUsageID, connectionIndex, command, l
         var allContainers = $('.questioncontainer');
         allContainers.each(function (index) {
             var selectedContainer = $(this);
-            if (selectedContainer.find("input[checked]").length == 0 || selectedContainer.find("input[value='']").length > 0) {
+            var isContainerUnanswered = checkIfContainerHasNoAnswer(selectedContainer);
+            if (isContainerUnanswered) {
                 var selectedElement = $(selectedContainer.find("input")[0]);
                 if (selectedElement.length == 0) {
                     setStatus("error", "Falha no processamento das questões em branco.");
@@ -693,6 +755,10 @@ function processUnansweredQuestions(questionUsageID, connectionIndex, command, l
                     setStatus("error", "Requisição à API falhou no primeiro estágio.");
                     return false;
                 });
+            } else if (isContainerUnanswered == "error") {
+                setStatus("error", "Erro no processamento das questões sem resposta.");
+                returnValue = false;
+                return false;
             }
         }).promise().done(function () {
             returnValue = [true, layoutSlots];
@@ -1432,9 +1498,9 @@ function checkUserAttempts(userID) {
 
 // LISTENERS DE ELEMENTOS DE QUIZZ
 
-function loadOrReloadListeners() {
+function loadQuizzListeners() {
     $('input[type="radio"]').each(function () {
-        rdbutton = $(this);
+        var rdbutton = $(this);
         rdbutton.click(function () {
             $('input[name="' + event.target.name + '"]').each(function () {
                 $(this).removeAttr("checked");
@@ -1446,7 +1512,7 @@ function loadOrReloadListeners() {
     });
 
     $('input[type="checkbox"]').each(function () {
-        chkbox = $(this);
+        var chkbox = $(this);
         chkbox.click(function () {
             if ($(event.target).prop("checked")) {
                 event.target.checked = true;
@@ -1454,6 +1520,27 @@ function loadOrReloadListeners() {
             } else {
                 event.target.removeAttribute('checked');
             };
+        })
+    });
+    $('input[type="number"]').each(function () {
+        var numberfield = $(this);
+        numberfield.keydown(function (event) {
+            if (isNaN(parseFloat(event.target.value + String.fromCharCode(event.which))) && event.keyCode != 8) {
+                event.preventDefault();
+                Materialize.toast("Entrada somente numérica!", 400);
+            }
+        })
+    });
+    $('select').each(function () {
+        var select = $(this);
+        select.change(function (event) {
+            for (var i = 0; i < event.target.children.length; i++) {
+                if (event.target.children[i].index == event.target.selectedIndex) {
+                    event.target.children[i].setAttribute('selected', true);
+                } else {
+                    event.target.children[i].removeAttribute('selected');
+                }
+            }
         })
     });
     loadFinishAttemptListener();
@@ -1560,3 +1647,20 @@ function loadAssignmentListeners() {
 }
 
 // FIM LISTENERS DE ELEMENTOS DE ASSIGNMENT
+
+function loadGeneralListeners() {
+    $("input[type='file']").each(function () {
+        var inputFile = $(this);
+        inputFile.change(function (ev) {
+            if (inputFile.attr('maxfiles') == "-1" || (inputFile.attr('maxfiles') != "-1" && inputFile[0].files.length <= parseInt(inputFile.attr('maxfiles')))) {
+                $('#d-' + inputFile.prop('id'))[0].innerHTML += "<label class='displayBlock'>" + event.currentTarget.files[0].name + "</label>";
+            } else {
+                ev.preventDefault();
+                if (inputFile[0].files.length == 1) {
+                    inputFile.val("");
+                }
+                Materialize.toast('Você estourou o número máximo de arquivos permitidos.', 4000);
+            }
+        });
+    });
+}
