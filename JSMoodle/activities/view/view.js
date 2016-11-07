@@ -524,20 +524,20 @@ function canUserAttempQuizz() {
 }
 
 function checkIfContainerHasNoAnswer(container) {
-    if (container.prop('type') == 'multichoice') {
-        if (selectedContainer.find("input[checked]").length == 0) {
+    if (container.attr('type') == 'multichoice' || container.attr('type') == 'truefalse') {
+        if (container.find("input[checked='true']").length == 0) {
             return true;
         } else {
             return false;
         }
-    } else if (container.prop('type') == 'shortanswer' || container.prop('type') == 'numerical') {
-        if (selectedContainer.find("input[value='']").length > 0) {
+    } else if (container.attr('type') == 'shortanswer' || container.attr('type') == 'numerical') {
+        if (container.find("input[value='']").length > 0) {
             return true;
         } else {
             return false;
         }
-    } else if (container.prop('type') == 'match') {
-        if (selectedContainer.find("select[value='']").length > 0) {
+    } else if (container.attr('type') == 'match') {
+        if (container.find("select[value='']").length > 0) {
             return true;
         } else {
             return false;
@@ -564,7 +564,6 @@ function processUnansweredQuestions(questionUsageID, connectionIndex, command, l
                 }
                 var rightAnswerAndValue = ["", -9999.0];
                 var sumFractions;
-                var isEssay = (selectedElement.prop('nodeName') == "TEXTAREA");
                 $.post({
                     url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                     async: false,
@@ -637,7 +636,8 @@ function processUnansweredQuestions(questionUsageID, connectionIndex, command, l
                                     // tentando contornar o problema do ID não ser serializado (auto-incremental)
                                     // POST on MDL_QUESTION_ATTEMPTS
 
-                                    while (insertSerialData[0].indexOf("duplicate") > -1) {
+                                    var tries = 0;
+                                    while (insertSerialData[0].indexOf("duplicate") > -1 && tries != 3) {
                                         secondData[1][0] += 1;
                                         $.post({
                                             url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
@@ -653,6 +653,7 @@ function processUnansweredQuestions(questionUsageID, connectionIndex, command, l
                                             setStatus("error", "Requisição à API falhou.");
                                             return false;
                                         });
+                                        tries++;
                                     }
 
                                     // end POST on MDL_QUESTION_ATTEMPTS
@@ -675,7 +676,8 @@ function processUnansweredQuestions(questionUsageID, connectionIndex, command, l
                                                             (secondData2[1][0] + 1).toString() + "," + secondData[1][0].toString() + ",1,'gaveup',null," + getUnixTime().toString() + "," + cookiesDict["userID"] + ") returning id"
                                             }
                                         }).done(function (insertSerialData, textStatus, jqXHR) {
-                                            while (insertSerialData[0].indexOf("duplicate") > -1) {
+                                            var tries = 0;
+                                            while (insertSerialData[0].indexOf("duplicate") > -1 && tries != 3) {
                                                 secondData2[1][0] += 1;
                                                 $.post({
                                                     url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
@@ -692,6 +694,7 @@ function processUnansweredQuestions(questionUsageID, connectionIndex, command, l
                                                     setStatus("error", "Requisição à API falhou.");
                                                     return false;
                                                 });
+                                                tries++;
                                             }
                                             var savedSerialData = []
                                             savedSerialData[1] = insertSerialData[1][0];
@@ -715,7 +718,8 @@ function processUnansweredQuestions(questionUsageID, connectionIndex, command, l
                                                                     (secondData3[1][0] + 1).toString() + "," + savedSerialData[2] + ",'-finish', '1')"
                                                     }
                                                 }).done(function (insertSerialData, textStatus, jqXHR) {
-                                                    while (insertSerialData[0].indexOf("duplicate") > -1) {
+                                                    var tries = 0;
+                                                    while (insertSerialData[0].indexOf("duplicate") > -1 && tries != 3) {
                                                         secondData3[1][0] += 1;
                                                         $.post({
                                                             url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
@@ -728,6 +732,7 @@ function processUnansweredQuestions(questionUsageID, connectionIndex, command, l
                                                         }).done(function (hasErrors) {
                                                             insertSerialData = hasErrors;
                                                         });
+                                                        tries++;
                                                     }
                                                     if (insertSerialData[0].indexOf("error") > -1) {
                                                         setStatus("error", "Erro na transação SQL.");
@@ -848,7 +853,8 @@ function processActivityAttempt(questionUsageID, connectionIndex, queriesBatch) 
                                                 ",0," + data[i][data[0].indexOf("MAXMARK")] + ",0,'" + splitHTMLText(data[i][data[0].indexOf("QUESTIONTEXT")]) + "','" + rightAnswerAndValue[0] + "','" + fieldAnswer + "'," + getUnixTime().toString() + ") returning id"
                                         }
                                     }).done(function (insertSerialData, textStatus, jqXHR) {
-                                        while (insertSerialData[0].indexOf("duplicate") > -1) {
+                                        var tries = 0;
+                                        while (insertSerialData[0].indexOf("duplicate") > -1 && tries != 3) {
                                             secondData[1][0] += 1;
                                             $.post({
                                                 url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
@@ -864,6 +870,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, queriesBatch) 
                                                 setStatus("error", "Requisição à API falhou.");
                                                 return false;
                                             });
+                                            tries++;
                                         }
                                         if (insertSerialData[0].indexOf("error") > -1) {
                                             setStatus("error", "Erro na transação SQL.");
@@ -889,7 +896,8 @@ function processActivityAttempt(questionUsageID, connectionIndex, queriesBatch) 
                                                                 ") returning id"
                                                 }
                                             }).done(function (insertSerialData, textStatus, jqXHR) {
-                                                while (insertSerialData[0].indexOf("duplicate") > -1) {
+                                                var tries = 0;
+                                                while (insertSerialData[0].indexOf("duplicate") > -1 && tries != 3) {
                                                     secondData2[1][0] += 1;
                                                     $.post({
                                                         url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
@@ -909,6 +917,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, queriesBatch) 
                                                         isDone = false;
                                                         return false;
                                                     });
+                                                    tries++;
                                                 }
                                                 if (insertSerialData[0].indexOf("error") > -1) {
                                                     setStatus("error", "Erro na transação SQL.");
@@ -935,7 +944,8 @@ function processActivityAttempt(questionUsageID, connectionIndex, queriesBatch) 
                                                                         (secondData3[1][0] + 1).toString() + "," + savedSerialData[2] + ",'answerformat', '1'),(" + (secondData3[1][0] + 2).toString() + "," + savedSerialData[3] + ",'-finish','1')"
                                                         }
                                                     }).done(function (insertSerialData, textStatus, jqXHR) {
-                                                        while (insertSerialData[0].indexOf("duplicate") > -1) {
+                                                        var tries = 0;
+                                                        while (insertSerialData[0].indexOf("duplicate") > -1 && tries != 3) {
                                                             secondData3[1][0] += 1;
                                                             $.post({
                                                                 url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
@@ -948,6 +958,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, queriesBatch) 
                                                             }).done(function (hasErrors) {
                                                                 insertSerialData = hasErrors;
                                                             });
+                                                            tries++;
                                                         }
                                                         if (insertSerialData[0].indexOf("error") > -1) {
                                                             setStatus("error", "Erro na transação SQL.");
@@ -1087,8 +1098,8 @@ function processActivityAttempt(questionUsageID, connectionIndex, queriesBatch) 
                                         // tentando contornar o problema do ID não ser serializado (auto-incremental)
                                         // POST on MDL_QUESTION_ATTEMPTS
 
-
-                                        while (insertSerialData[0].indexOf("duplicate") > -1) {
+                                        var tries = 0;
+                                        while (insertSerialData[0].indexOf("duplicate") > -1 && tries!=3) {
                                             secondData[1][0] += 1;
                                             $.post({
                                                 url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
@@ -1104,7 +1115,9 @@ function processActivityAttempt(questionUsageID, connectionIndex, queriesBatch) 
                                                 setStatus("error", "Requisição à API falhou.");
                                                 return false;
                                             });
+                                            tries++;
                                         }
+
                                         if (insertSerialData[0].indexOf("error") > -1) {
                                             setStatus("error", "Erro na transação SQL.");
                                             return false;
@@ -1132,7 +1145,8 @@ function processActivityAttempt(questionUsageID, connectionIndex, queriesBatch) 
                                                                 ",1,'complete',NULL," + getUnixTime().toString() + "," + cookiesDict["userID"] + ") returning id"
                                                 }
                                             }).done(function (insertSerialData, textStatus, jqXHR) {
-                                                while (insertSerialData[0].indexOf("duplicate") > -1) {
+                                                var tries = 0;
+                                                while (insertSerialData[0].indexOf("duplicate") > -1 && tries != 3) {
                                                     secondData2[1][0] += 1;
                                                     $.post({
                                                         url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
@@ -1151,6 +1165,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, queriesBatch) 
                                                         setStatus("error", "Requisição à API falhou.");
                                                         return false;
                                                     });
+                                                    tries++;
                                                 }
                                                 if (insertSerialData[0].indexOf("error") > -1) {
                                                     setStatus("error", "Erro na transação SQL.");
@@ -1181,7 +1196,8 @@ function processActivityAttempt(questionUsageID, connectionIndex, queriesBatch) 
                                                                             (secondData3[1][0] + 1).toString() + "," + savedSerialData[1] + ",'-finish', '1'),(" + (secondData3[1][0] + 2).toString() + "," + savedSerialData[2] + ",'answer','" + answerValue + "')"
                                                             }
                                                         }).done(function (insertSerialData, textStatus, jqXHR) {
-                                                            while (insertSerialData[0].indexOf("duplicate") > -1) {
+                                                            var tries = 0;
+                                                            while (insertSerialData[0].indexOf("duplicate") > -1 && tries != 3) {
                                                                 secondData3[1][0] += 1;
                                                                 $.post({
                                                                     url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
@@ -1194,6 +1210,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, queriesBatch) 
                                                                 }).done(function (hasErrors) {
                                                                     insertSerialData = hasErrors;
                                                                 });
+                                                                tries++;
                                                             }
                                                             if (insertSerialData[0].indexOf("error") > -1) {
                                                                 setStatus("error", "Erro na transação SQL.");
@@ -1210,7 +1227,8 @@ function processActivityAttempt(questionUsageID, connectionIndex, queriesBatch) 
                                                     } else if (selectedElement.attr('type') == 'checkbox') {
                                                         var insertSerialData = "duplicate";
                                                         secondData3[1][0] -= 1;
-                                                        while (insertSerialData.indexOf("duplicate") > -1) {
+                                                        var tries = 0;
+                                                        while (insertSerialData[0].indexOf("duplicate") > -1 && tries != 3) {
                                                             secondData3[1][0] += 1;
                                                             var choiceI = 0;
                                                             var finalQuery = "INSERT INTO mdl_question_attempt_step_data(id, attemptstepid, name, value) VALUES ";
@@ -1235,6 +1253,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, queriesBatch) 
                                                             }).done(function (hasErrors) {
                                                                 insertSerialData = hasErrors;
                                                             });
+                                                            tries++;
                                                         }
                                                         processedMultiSlot = selectedElement.attr('slot');
                                                         lastProcessedSlotAttemptID = secondData[1][0].toString();
@@ -1304,7 +1323,8 @@ function processActivityAttempt(questionUsageID, connectionIndex, queriesBatch) 
                             quizzAttemptResults[1][0].toString() + "," + activityID + "," + cookiesDict["userID"] + "," + quizzAttemptResults[1][1].toString() + "," + questionUsageID + ",'" + layoutSlots + "',0,1,'finished'," + getUnixTime().toString() + "," + getUnixTime().toString() + "," + getUnixTime().toString() + ",NULL," + finalFractionGrade + ")"
                     }
                 }).done(function (insertSerialData, textStatus, jqXHR) {
-                    while (insertSerialData[0].indexOf("duplicate") > -1) {
+                    var tries = 0;
+                    while (insertSerialData[0].indexOf("duplicate") > -1 && tries != 3) {
                         quizzAttemptResults[1][0] += 1;
                         $.post({
                             url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
@@ -1316,6 +1336,7 @@ function processActivityAttempt(questionUsageID, connectionIndex, queriesBatch) 
                         }).done(function (hasErrors, textStatus, jqXHR) {
                             insertSerialData = hasErrors;
                         });
+                        tries++;
                     }
                     if (insertSerialData[0].indexOf("error") > -1) {
                         setStatus("error", "Erro na transação SQL.");

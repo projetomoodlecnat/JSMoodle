@@ -28,6 +28,14 @@ function getUnixTime() {
     return Math.round(new Date().getTime() / 1000);
 }
 
+function replacePluginFile(content) {
+    if (indexOf('@@PLUGINFILE@@') == -1) {
+        return content;
+    } else {
+        return content.replace(/@@PLUGINFILE@@/g, '');
+    }
+}
+
 function setStatus(type, message) {
     if (type == "progressing") {
         document.getElementById("status").setAttribute("class", "center light-green-text");
