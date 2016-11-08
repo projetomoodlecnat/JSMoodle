@@ -8,6 +8,20 @@
     font-weight: bold;
 }
 
+.paragraphSave {
+    background-color: green;
+    color: white;
+    height: 20px;
+    width: 100%;
+    cursor: pointer;
+    margin-top: -10px;
+}
+
+.loadingHolder img {
+    height: 20px;
+    width: 20px;
+}
+
 .titulo {
     text-align: center;
     font-weight: 800;

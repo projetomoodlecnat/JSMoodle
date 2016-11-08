@@ -200,7 +200,13 @@ function loadQuestionsFromDatabase() {
                     endOperation();
                     return;
                 }
+                if (data.length == 1) {
+                    $('#content').html("O quizz não tem questões cadastradas.");
+                    endOperation();
+                    return false;
+                }
                 for (var i = 1; i < data.length; i++) {
+                    //data[i][data[0].indexOf("QUESTIONTEXT")] = replacePluginFile(data[i][data[0].indexOf("QUESTIONTEXT")], questionUsageID);
                     var optionType = data[i][data[0].indexOf("QTYPE")];
                     var complementHTML = "";
                     var inputType = "";
@@ -1520,6 +1526,11 @@ function checkUserAttempts(userID) {
 // LISTENERS DE ELEMENTOS DE QUIZZ
 
 function loadQuizzListeners() {
+    $("input").each(function () {
+        $(this).change(function () {
+            event.target.setAttribute('value', event.target.value);
+        });
+    });
     $('input[type="radio"]').each(function () {
         var rdbutton = $(this);
         rdbutton.click(function () {
@@ -1543,14 +1554,12 @@ function loadQuizzListeners() {
             };
         })
     });
-    $('input[type="number"]').each(function () {
-        var numberfield = $(this);
-        numberfield.keydown(function (event) {
-            if (isNaN(parseFloat(event.target.value + String.fromCharCode(event.which))) && event.keyCode != 8) {
+    $("input[type='number']").each(function () {
+        $(this).keypress(function (event) {
+            if (".0123456789".indexOf(event.key) == -1 || isNaN(parseFloat(event.target.value + event.key))) {
                 event.preventDefault();
-                Materialize.toast("Entrada somente numérica!", 400);
             }
-        })
+        });
     });
     $('select').each(function () {
         var select = $(this);
@@ -1684,4 +1693,24 @@ function loadGeneralListeners() {
             }
         });
     });
+}
+
+function replacePluginFile(content, questionUsageID) {
+    if (content.indexOf("/@@PLUGINFILE@@/") == -1) {
+        return content;
+    } else {
+        while (content.indexOf('@@PLUGINFILE@@') > -1) {
+            var pluginFileIndex = content.indexOf('@@PLUGINFILE@@');
+            var fileName = content.substr(pluginFileIndex+14);
+            fileName = fileName.subtr(fileName.indexOf('""'));
+            $.post({
+                url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                async: false,
+                data: { "connectionIndex": cookiesDict["databaseIndex"], "query": "select * from mdl_files where filename='" + fileName + "' and filearea='draft'" }
+            }).done(function (data, textStatus, jqXHR) {
+                content = content.substring(0, pluginFileIndex) + getPluginFileUrl() + "/" + data[1][data[0].indexOf("CONTEXTID")] + "/" + data[1][data[0].indexOf("COMPONENT")] + "/" +
+                    data[1][data[0].indexOf("FILEAREA")] + "/" + questionUsageID + "/1/" + data[1][data[0].indexOf("ITEMID")] + "/" + fileName;
+            });
+        }
+    }
 }

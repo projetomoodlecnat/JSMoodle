@@ -1,14 +1,155 @@
-﻿usefulContent = "";
-feedbackID = null;
+﻿var feedbackID = null;
+var cookiesDict;
+var canUserAttemptSurvey_;
+var surveyFile;
 
 $(document).ready(function () {
-    var cookiesDict = cookiesToDict();
+    cookiesDict = cookiesToDict();
+    $(".paragraphGoBack").click(function () {
+        history.back();
+    });
+
     try {
         feedbackID = window.location.toString().substring(window.location.toString().indexOf("=") + 1);
     } catch (exception) {
         $("#content").html("[ERRO] Parâmetros inválidos.");
         return;
     }
+
+    canUserAttemptSurvey_ = canUserAttemptSurvey();
+
+    if (canUserAttemptSurvey_) {
+        initializeFolder();
+    } else {
+        if (canUserAttemptSurvey_ == "error") {
+            $("#content").html("Erro na requisição de checagem! Estarei tentando carregar os arquivos do dispositivo...");
+            initializeFolder();
+            return;
+        } else {
+            $("#content").html("Você já completou essa enquete.");
+            return;
+        }
+    }
+});
+
+function canUserAttemptSurvey() {
+    var result;
+    $.post({
+        url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+        async: false,
+        data: { "connectionIndex": cookiesDict["databaseIndex"], "query": "select * from mdl_feedback_completed where userid=" + cookiesDict["userID"] + "and feedback=" + feedbackID }
+    }).done(function (data, textStatus, jqXHR) {
+        if (data.length > 1) {
+            result = false;
+        } else {
+            result = true;
+        }
+    }).error(function () {
+        result = "error";
+    });
+    return result;
+}
+
+function initializeFolder() {
+    var folderOperation = Windows.Storage.ApplicationData.current.localFolder.getFolderAsync("surveys");
+    folderOperation.done(function () {
+        folderOperation = folderOperation.operation.getResults();
+        createFile(folderOperation);
+    }, function () {
+        folderOperation = Windows.Storage.ApplicationData.current.localFolder.createFolderAsync("surveys");
+        folderOperation.done(function () {
+            folderOperation = folderOperation.operation.getResults();
+            createFile(folderOperation);
+        }, function () {
+            $("#content").html("[ERRO] Não foi possível carregar ou criar a pasta.");
+            return false;
+        });
+    });
+}
+
+function createFile(surveysFolder) {
+    var createFileOperation = surveysFolder.createFileAsync(feedbackID);
+    createFileOperation.done(function () {
+        buildSurvey(createFileOperation.operation.getResults());
+    }, function () {
+        getFile(surveysFolder);
+    });
+}
+
+function getFile(surveysFolder) {
+    var getFileOperation = surveysFolder.getFileAsync(feedbackID);
+    getFileOperation.done(function () {
+        surveyFile = getFileOperation.operation.getResults();
+        readFromFile(getFileOperation.operation.getResults());
+    }, function () {
+        $("#content").html("[ERRO] Não foi possível carregar ou criar o arquivo.");
+        return false;
+    });
+}
+
+function readFromFile(surveyFile) {
+    var readFileOperation = Windows.Storage.FileIO.readTextAsync(surveyFile);
+    readFileOperation.done(function () {
+        document.body.outerHTML = readFileOperation.operation.getResults();
+        $(".paragraphSave").html("SALVAR O SEU PROGRESSO");
+        loadListeners();
+        if (canUserAttemptSurvey_) {
+            loadFinishListener();
+        }
+    }, function () {
+        $("#content").html("[ERRO] Não foi possível carregar o arquivo.");
+    });
+}
+
+function persistToFile(surveyFile, content) {
+    $("#content").html(content);
+    loadListeners();
+    loadFinishListener();
+    saveToFile(surveyFile);
+}
+
+function saveToFile(surveyFile) {
+    var persistFileOperation = Windows.Storage.FileIO.writeTextAsync(surveyFile, document.body.outerHTML);
+    persistFileOperation.done(function () {
+        Materialize.toast("Arquivo salvo!", 500);
+        $(".paragraphSave").html("SALVAR O SEU PROGRESSO");
+    }, function () {
+        Materialize.toast("[ERRO] Erro no processo de salvamento do arquivo!", 500);
+        $(".paragraphSave").html("SALVAR O SEU PROGRESSO");
+    });
+}
+
+function loadListeners() {
+    $("input[type='number']").each(function () {
+        $(this).keypress(function (event) {
+            if (".0123456789".indexOf(event.key) == -1 || isNaN(parseFloat(event.target.value + event.key))) {
+                event.preventDefault();
+            }
+        });
+    });
+    $("input").each(function () {
+        $(this).change(function () {
+            event.target.setAttribute('value', event.target.value);
+        });
+    });
+    $(".paragraphGoBack").click(function () {
+        history.back();
+    });
+    $(".paragraphSave").click(function () {
+        event.target.innerHTML = "<img src='../images/universal/loading.gif' />";
+        saveToFile(surveyFile, document.body.outerHTML);
+    });
+}
+
+function loadFinishListener() {
+    $('.paragraphFinishSurvey').click(function () {
+
+    });
+}
+
+function buildSurvey(surveyFile_) {
+    surveyFile = surveyFile_;
+    var usefulContent = "";
     $.ajax(cookiesDict["api_Path"] + "dbproperties?index=" + cookiesDict["databaseIndex"], {
         method: "GET",
         async: true,
@@ -52,79 +193,11 @@ $(document).ready(function () {
                         i++;
                     }
                     usefulContent += "<p class='paragraphFinishSurvey'>RESPONDER ENQUETE</p>";
-                    initializeFolder();
+                    persistToFile(surveyFile_, usefulContent);
                 });
             }).error(function () {
-                initializeFolder();
+                $("#content").html("[ERRO] Requisição de criação da enquete falhou.");
             });
         }
-    }).error(function () {
-        initializeFolder();
-    });
-    $(".paragraphGoBack").click(function () {
-        history.back();
-    });
-});
-
-function createFile(surveysFolder) {
-    var createFileOperation = surveysFolder.createFileAsync(feedbackID);
-    createFileOperation.done(function () {
-        persistToFile(createFileOperation.operation.getResults(), usefulContent);
-    }, function () {
-        getFile(surveysFolder);
-    });
-}
-
-function getFile(surveysFolder) {
-    var getFileOperation = surveysFolder.getFileAsync(feedbackID);
-    getFileOperation.done(function () {
-        readFromFile(getFileOperation.operation.getResults());
-    }, function () {
-        $("#content").html("[ERRO] Não foi possível carregar ou criar o arquivo.");
-        return false;
-    });
-}
-
-function readFromFile(surveyFile) {
-    var readFileOperation = Windows.Storage.FileIO.readTextAsync(surveyFile);
-    readFileOperation.done(function () {
-        $("#content").html(readFileOperation.operation.getResults());
-        assignListeners();
-    }, function () {
-    });
-}
-
-function persistToFile(surveyFile, contents) {
-    $("#content").html(contents);
-    assignListeners();
-    var persistFileOperation = Windows.Storage.FileIO.writeTextAsync(surveyFile, contents);
-    persistFileOperation.done(function () { }, function () {
-    });
-}
-
-function initializeFolder() {
-    var folderOperation = Windows.Storage.ApplicationData.current.localFolder.getFolderAsync("surveys");
-    folderOperation.done(function () {
-        folderOperation = folderOperation.operation.getResults();
-        createFile(folderOperation);
-    }, function () {
-        folderOperation = Windows.Storage.ApplicationData.current.localFolder.createFolderAsync("surveys");
-        folderOperation.done(function () {
-            folderOperation = folderOperation.operation.getResults();
-            createFile(folderOperation);
-        }, function () {
-            $("#content").html("[ERRO] Não foi possível carregar ou criar a pasta.");
-            return false;
-        });
-    });
-}
-
-function assignListeners() {
-    $("input[type='number']").each(function () {
-        $(this).keypress(function (event) {
-            if (".0123456789".indexOf(event.key) == -1 || isNaN(parseFloat(event.target.value + event.key))) {
-                event.preventDefault();
-            }
-        });
     });
 }
