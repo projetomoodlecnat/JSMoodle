@@ -543,7 +543,7 @@ function checkIfContainerHasNoAnswer(container) {
             return false;
         }
     } else if (container.attr('type') == 'match') {
-        if (container.find("select[value='']").length > 0) {
+        if (container.find('select[value!=""]').length == 0) {
             return true;
         } else {
             return false;

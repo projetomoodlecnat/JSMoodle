@@ -62,7 +62,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\surveys\surveys.css">
       <PackagePath>surveys\surveys.css</PackagePath>
-      <Modified>2016-11-08T18:41:34.142</Modified>
+      <Modified>2016-11-09T14:46:43.573</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\activities\activities.js">
       <PackagePath>activities\activities.js</PackagePath>
@@ -70,7 +70,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\activities\view\view.js">
       <PackagePath>activities\view\view.js</PackagePath>
-      <Modified>2016-11-08T19:08:30.753</Modified>
+      <Modified>2016-11-09T14:45:14.432</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\dashboard\courses\courses.js">
       <PackagePath>dashboard\courses\courses.js</PackagePath>
@@ -78,7 +78,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\dashboard\dashboard.js">
       <PackagePath>dashboard\dashboard.js</PackagePath>
-      <Modified>2016-10-19T16:49:44.834</Modified>
+      <Modified>2016-11-09T14:06:40.326</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\dashboard\offline\offline.js">
       <PackagePath>dashboard\offline\offline.js</PackagePath>
@@ -110,7 +110,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\surveys\surveys.js">
       <PackagePath>surveys\surveys.js</PackagePath>
-      <Modified>2016-11-08T19:03:28.283</Modified>
+      <Modified>2016-11-09T15:04:02.454</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\activities\index.html">
       <PackagePath>activities\index.html</PackagePath>

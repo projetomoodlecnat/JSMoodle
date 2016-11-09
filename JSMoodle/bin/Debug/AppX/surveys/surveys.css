@@ -17,6 +17,13 @@
     margin-top: -10px;
 }
 
+input[type="radio"] {
+    margin-right: 5px !important;
+    float:left !important;
+    position:static !important;
+    opacity: 1 !important;
+}
+
 .loadingHolder img {
     height: 20px;
     width: 20px;

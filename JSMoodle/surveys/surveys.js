@@ -5,10 +5,6 @@ var surveyFile;
 
 $(document).ready(function () {
     cookiesDict = cookiesToDict();
-    $(".paragraphGoBack").click(function () {
-        history.back();
-    });
-
     try {
         feedbackID = window.location.toString().substring(window.location.toString().indexOf("=") + 1);
     } catch (exception) {
@@ -127,6 +123,16 @@ function loadListeners() {
             }
         });
     });
+    $('input[type="radio"]').each(function () {
+        var rdbutton = $(this);
+        rdbutton.click(function () {
+            $('input[name="' + event.target.name + '"]').each(function () {
+                $(this).removeAttr("checked");
+            });
+            event.target.checked = true;
+            event.target.setAttribute("checked", true);
+        });
+    });
     $("input").each(function () {
         $(this).change(function () {
             event.target.setAttribute('value', event.target.value);
@@ -183,6 +189,18 @@ function buildSurvey(surveyFile_) {
                                 break;
                             case 'numeric':
                                 usefulContent += " (" + presentation[0] + "-" + presentation[1] + ")</p><input type='number' style='width:100%' id='" + data[i][data[0].indexOf("ID")] + "' />";
+                                break;
+                            case 'multichoice':
+                                var j = 0;
+                                usefulContent += "</p>";
+                                for (j; j < presentation.length; j++) {
+                                    if (presentation[j].indexOf("r>") == 0) {
+                                        presentation[j] = presentation[j].substr(presentation[j].lastIndexOf(">") + 1);
+                                    } else if (presentation[j].indexOf("<") > -1) {
+                                        presentation[j] = presentation[j].substr(0, presentation[j].indexOf("<"));
+                                    }
+                                    usefulContent += "<p><input type='radio' name='" + data[i][data[0].indexOf("ID")] + "' />" + presentation[j] + "</p>";
+                                }
                                 break;
                             case 'info':
                                 break;
