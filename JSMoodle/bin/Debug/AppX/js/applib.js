@@ -82,6 +82,6 @@ function getFoldersAmount() {
     return 3;
 }
 
-function getPluginFileUrl() {
-    return "http://127.0.0.1/moodle-3.0.4/moodle/pluginfile.php/";
+function getFileserveURL() {
+    return "http://127.0.0.1/moodle-3.0.4/moodle/mo_fileserve.php";
 }

@@ -206,7 +206,7 @@ function loadQuestionsFromDatabase() {
                     return false;
                 }
                 for (var i = 1; i < data.length; i++) {
-                    //data[i][data[0].indexOf("QUESTIONTEXT")] = replacePluginFile(data[i][data[0].indexOf("QUESTIONTEXT")], questionUsageID);
+                    data[i][data[0].indexOf("QUESTIONTEXT")] = replacePluginFile(data[i][data[0].indexOf("QUESTIONTEXT")]);
                     var optionType = data[i][data[0].indexOf("QTYPE")];
                     var complementHTML = "";
                     var inputType = "";
@@ -1695,22 +1695,24 @@ function loadGeneralListeners() {
     });
 }
 
-function replacePluginFile(content, questionUsageID) {
-    if (content.indexOf("/@@PLUGINFILE@@/") == -1) {
+function replacePluginFile(content) {
+    if (content.indexOf("@@PLUGINFILE@@") == -1) {
         return content;
     } else {
         while (content.indexOf('@@PLUGINFILE@@') > -1) {
             var pluginFileIndex = content.indexOf('@@PLUGINFILE@@');
-            var fileName = content.substr(pluginFileIndex+14);
-            fileName = fileName.subtr(fileName.indexOf('""'));
+            var fileName = content.substr(pluginFileIndex+15);
+            fileName = fileName.substr(0, fileName.indexOf('"'));
             $.post({
                 url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
                 async: false,
-                data: { "connectionIndex": cookiesDict["databaseIndex"], "query": "select * from mdl_files where filename='" + fileName + "' and filearea='draft'" }
+                data: { "connectionIndex": cookiesDict["databaseIndex"], "query": "select * from mdl_files where filename='" + fileName + "' and filearea!='draft' and filesize!=0" }
             }).done(function (data, textStatus, jqXHR) {
-                content = content.substring(0, pluginFileIndex) + getPluginFileUrl() + "/" + data[1][data[0].indexOf("CONTEXTID")] + "/" + data[1][data[0].indexOf("COMPONENT")] + "/" +
-                    data[1][data[0].indexOf("FILEAREA")] + "/" + questionUsageID + "/1/" + data[1][data[0].indexOf("ITEMID")] + "/" + fileName;
+                var filehash = data[1][data[0].indexOf('CONTENTHASH')];
+                var fileserveurl = getFileserveURL() + "?FILEHASH=" + filehash;
+                content = content.substr(0, content.indexOf('@@PLUGINFILE@@')) + fileserveurl + content.substr(content.indexOf(fileName) + fileName.length);
             });
         }
+        return content;
     }
 }
