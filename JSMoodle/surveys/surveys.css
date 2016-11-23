@@ -17,6 +17,10 @@
     margin-top: -10px;
 }
 
+[required="true"] {
+    border: 2px solid red;
+}
+
 input[type="radio"] {
     margin-right: 5px !important;
     float:left !important;
