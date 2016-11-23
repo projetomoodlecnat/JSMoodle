@@ -49,3 +49,12 @@ input[type="radio"] {
     font-weight: bold;
     line-height: 3;
 }
+
+.imgCenteredMiddle {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin: auto;
+}

@@ -11,6 +11,7 @@ $(document).ready(function () {
         $("#content").html("[ERRO] Parâmetros inválidos.");
         return;
     }
+    loadApplicationListeners();
 
     canUserAttemptSurvey_ = canUserAttemptSurvey();
 
@@ -21,7 +22,7 @@ $(document).ready(function () {
             $("#content").html("Erro na requisição de checagem! Estarei tentando carregar os arquivos do dispositivo...");
             initializeFolder();
             return;
-        } else if (canUserAttemptSurvey_ = "exception_error") {
+        } else if (canUserAttemptSurvey_ == "exception_error") {
             $("#content").html("Erro de processamento na aplicação.");
             return;
         } else {
@@ -39,7 +40,7 @@ function canUserAttemptSurvey() {
             async: false,
             data: { "connectionIndex": cookiesDict["databaseIndex"], "query": "select multiple_submit from mdl_feedback_completed inner join mdl_feedback on feedback = mdl_feedback.id where userid=" + cookiesDict["userID"] + " and feedback=" + feedbackID + " limit 1" }
         }).done(function (data, textStatus, jqXHR) {
-            if (data.length == 1 || data[1][data[0].indexOf("multiple_submit")] == "0") {
+            if (data.length == 1 || data[1][data[0].indexOf("MULTIPLE_SUBMIT")] == "1") {
                 result = true;
             } else {
                 result = false;
@@ -96,6 +97,7 @@ function readFromFile(surveyFile) {
         document.body.outerHTML = readFileOperation.operation.getResults();
         $(".paragraphSave").html("SALVAR O SEU PROGRESSO");
         loadListeners();
+        loadApplicationListeners();
         if (canUserAttemptSurvey_) {
             loadFinishListener();
         }
@@ -145,6 +147,9 @@ function loadListeners() {
             event.target.setAttribute('value', event.target.value);
         });
     });
+}
+
+function loadApplicationListeners() {
     $(".paragraphGoBack").click(function () {
         history.back();
     });
@@ -152,14 +157,13 @@ function loadListeners() {
         event.target.innerHTML = "<img src='../images/universal/loading.gif' />";
         saveToFile(surveyFile, document.body.outerHTML);
     });
-    loadFinishListener();
 }
 
 function requiredFieldCheck() {
     var booleanToReturn = true;
     $("[required=true]").each(function () {
         var field = $(this);
-        if ((field.attr('type') == 'INPUT' && field.val() == "") || (field.attr('type') == 'DIV' && field.find('input[checked=true]').length == 0)) {
+        if ((field.attr('type') == 'text' && field.val() == "") || (field.attr('type') == 'DIV' && field.find('input[checked=true]').length == 0)) {
             booleanToReturn = false;
             Materialize.toast("Você precisa preencher alguns campos obrigatórios!", 1000);
             return false;
@@ -193,56 +197,161 @@ function loadFinishListener() {
 }
 
 function processSurveyAttempt() {
+    var fieldSelection = $("[item]");
+    var howManyCompleted;
+    var anonymous;
+    var counter;
+
     $.post({
+        async: false,
         url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-        data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": 'select completed, anonymous from mdl_feedback_tracking where userid=' + cookiesDict["userID"] +
-        ' order by completed desc limit 1'}
+        data: {
+            "connectionIndex": cookiesDict["databaseIndex"], "query": 'select id from mdl_feedback_item order by id desc limit 1'
+        }
     }).done(function (data, textStatus, jqXHR) {
-        var howManyCompleted;
-        var anonymous;
         if (data.length == 1) {
-            howManyCompleted = 0;
+            counter = 1;
         } else {
-            howManyCompleted = parseInt(data[1][data[0].indexOf("COMPLETED")]);
-            anonymous = data[1][data[0].indexOf("ANONYMOUS")];
+            counter = parseInt(data[1][0]) + 1;
         }
         $.post({
             url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+            async: false,
             data: {
-                "connectionIndex": firstStep[1]["idconexao"] - 1, "query": 'select id from mdl_feedback_tracking order by id desc limit 1' 
+                "connectionIndex": cookiesDict["databaseIndex"], "query": 'select completed from mdl_feedback_tracking where userid=' + cookiesDict["userID"] +
+                ' order by completed desc limit 1'
+            }
+        }).done(function (secondData, textStatus, jqXHR) {
+            if (secondData.length == 1) {
+                howManyCompleted = 1;
+            } else {
+                howManyCompleted = parseInt(secondData[1][secondData[0].indexOf("COMPLETED")]) + 1;
+                anonymous = "2";
+            }
+        });
+    }).error(function () {
+        return false;
+    });
+
+    for (var i = 0; i < fieldSelection.length; i++) {
+        var currentField = fieldSelection.get(i);
+        var fieldAnswer = "";
+        if (currentField.nodeName == "DIV") {
+            for (var j = 0; j < currentField.children.length; j++) {
+                if ($(currentField.children[j]).find("[checked]").length != 0) {
+                    break;
+                }
+            }
+            fieldAnswer = j+1;
+        } else {
+            fieldAnswer = currentField.value;
+            if (currentField.type == "number" && currentField.value == "") {
+                fieldAnswer = "0";
+            }
+        }
+        $.post({
+            url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+            async: false,
+            data: {
+                "connectionIndex": cookiesDict["databaseIndex"], "query": 'insert into mdl_feedback_value (id, course_id, item, completed, tmp_completed, value) VALUES (' + counter.toString() +
+                    ",0," + currentField.getAttribute("item") + "," + howManyCompleted.toString() + ",0,'" + fieldAnswer + "')"
             }
         }).done(function (firstData, textStatus, jqXHR) {
-            var counter;
-            if (firstData.length == 1) {
-                var counter = 1;
-            } else {
-                var counter = parseInt(firstData[1][1])+1;
+            var tries = 1;
+            while (firstData.indexOf("error") > -1 && tries != 3) {
+                counter++;
+                $.post({
+                    url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                    async: false,
+                    data: {
+                        "connectionIndex": cookiesDict["databaseIndex"], "query": 'insert into mdl_feedback_value (id, course_id, item, completed, tmp_completed, value) VALUES (' + counter.toString() +
+                            ",0," + currentField.getAttribute("item") + "," + howManyCompleted.toString() + ",0,'" + fieldAnswer + "')"
+                    }
+                }).done(function (errorData, textStatus, jqXHR) {
+                    firstData = errorData;
+                });
+                tries++;
+            }
+            if (firstData.indexOf("error") > -1) {
+                Materialize.toast("Erro SQL! Tente novamente mais tarde.", 3000);
+                return false;
+            }
+        });
+        counter++;
+    }
+
+    $.post({
+        url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+        async: false,
+        data: {
+            "connectionIndex": cookiesDict["databaseIndex"], "query": 'select id from mdl_feedback_completed order by id desc limit 1'
+        }
+    }).done(function (data, textStatus, jqXHR) {
+        counter = parseInt(data[1][0]) + 1;
+        $.post({
+            url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+            async: false,
+            data: {
+                "connectionIndex": cookiesDict["databaseIndex"], "query": "INSERT INTO mdl_feedback_completed (id, feedback, userid, timemodified, random_response, anonymous_response) VALUES (" +
+                    counter.toString() + "," + feedbackID + "," + cookiesDict["userID"] + "," + getUnixTime().toString() + ",0," + anonymous + ")"
+            }
+        }).done(function (firstData, textStatus, jqXHR) {
+            var tries = 1;
+            while (firstData.indexOf("error") > -1 && tries != 3) {
+                counter++;
+                $.post({
+                    url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                    async: false,
+                    data: {
+                        "connectionIndex": cookiesDict["databaseIndex"], "query": "INSERT INTO mdl_feedback_completed (id, feedback, userid, timemodified, random_response, anonymous_response) VALUES (" +
+                            counter.toString() + "," + feedbackID + "," + cookiesDict["userID"] + "," + getUnixTime().toString() + ",0," + anonymous + ")"
+                    }
+                }).done(function (errorData, textStatus, jqXHR) {
+                    firstData = errorData;
+                });
+                tries++;
+            }
+            if (firstData.indexOf("error") > -1) {
+                Materialize.toast("Erro SQL! Tente novamente mais tarde.", 3000);
+                return false;
             }
             $.post({
                 url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                async: false,
                 data: {
-                    "connectionIndex": firstStep[1]["idconexao"] - 1, "query": 'insert into mdl_feedback_completed(id,feedback,userid,timemodified,random_response,anonymous_response) values (' +
-                        counter.toString() + "," + feedbackID + "," + cookiesDict["userID"] + "," + getUnixTime() + ",0," + anonymous + ")"
+                    "connectionIndex": cookiesDict["databaseIndex"], "query": 'select id from mdl_feedback_tracking order by id desc limit 1'
                 }
-            }).done(function (secondData, textStatus, jqXHR) {
-                var tries = 1;
-                while (secondData.indexOf("error") > -1 && tries != 3) {
-                    counter++;
-                    $.post({
-                        url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                        async: false,
-                        data: {
-                            "connectionIndex": firstStep[1]["idconexao"] - 1, "query": 'insert into mdl_feedback_completed(id,feedback,userid,timemodified,random_response,anonymous_response) values (' +
-                                counter.toString() + "," + feedbackID + "," + cookiesDict["userID"] + "," + getUnixTime() + ",0," + anonymous + ")"
-                        }
-                    }).done(function (errorData, textStatus, jqXHR) {
-                        secondData = errorData;
-                    });
-                    tries++;
-                }
-                if (secondData.indexOf("error") > -1) {
-                    Materialize.toast("Erro SQL! Tente novamente mais tarde.", 3000);
-                }
+            }).done(function (data, textStatus, jqXHR) {
+                counter = parseInt(data[1][0]) + 1;
+                $.post({
+                    url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                    async: false,
+                    data: {
+                        "connectionIndex": cookiesDict["databaseIndex"], "query": 'INSERT INTO mdl_feedback_tracking(id, userid, feedback, completed, tmp_completed) VALUES (' +
+                            counter.toString() + "," + cookiesDict["userID"] + "," + feedbackID + "," + howManyCompleted + ",0)"
+                    }
+                }).done(function (secondData, textStatus, jqXHR) {
+                    var tries = 1;
+                    while (secondData.indexOf("error") > -1 && tries != 3) {
+                        counter++;
+                        $.post({
+                            url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
+                            async: false,
+                            data: {
+                                "connectionIndex": cookiesDict["databaseIndex"], "query": 'INSERT INTO mdl_feedback_tracking(id, userid, feedback, completed, tmp_completed) VALUES (' +
+                                    counter.toString() + "," + cookiesDict["userID"] + "," + feedbackID + "," + howManyCompleted + ",0)"
+                            }
+                        }).done(function (errorData, textStatus, jqXHR) {
+                            secondData = errorData;
+                        });
+                        tries++;
+                    }
+                    if (secondData.indexOf("error") > -1) {
+                        Materialize.toast("Erro SQL! Tente novamente mais tarde.", 3000);
+                        return false;
+                    }
+                    $('#content').html("<p class='center'>Seu quizz foi salvo!</p><img class='.imgCenteredMiddle' style='width: 100%' src='../images/universal/ok-icon.png' alt='centered' />");
+                });
             });
         });
     });
@@ -258,7 +367,7 @@ function buildSurvey(surveyFile_) {
         success: function (firstStep) {
             try {
                 firstStep = JSON.parse(firstStep);
-                databaseIndex = firstStep[1]["idconexao"];
+                databaseIndex = cookiesDict["databaseIndex"];
             } catch (Exception) {
                 console.log("ERROR: Parsing dos dados da API falhou no primeiro estágio.");
                 return;
@@ -266,13 +375,13 @@ function buildSurvey(surveyFile_) {
             var finalContentHTML = "";
             $.post({
                 url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": 'select * from mdl_feedback where id=' + feedbackID }
+                data: { "connectionIndex": cookiesDict["databaseIndex"], "query": 'select * from mdl_feedback where id=' + feedbackID }
             }).done(function (data, textStatus, jqXHR) {
                 $(".titulo").html(data[1][data[0].indexOf("NAME")]);
                 $(".subtitulo").html(data[1][data[0].indexOf("INTRO")]);
                 $.post({
                     url: cookiesDict["api_Path"] + "selector" + cookiesDict["databaseType"],
-                    data: { "connectionIndex": firstStep[1]["idconexao"] - 1, "query": 'select * from mdl_feedback_item where feedback=' + feedbackID + ' order by position' }
+                    data: { "connectionIndex": cookiesDict["databaseIndex"], "query": 'select * from mdl_feedback_item where feedback=' + feedbackID + ' order by position' }
                 }).done(function (data, textStatus, jqXHR) {
                     var i = 1;
                     for (; data[i];) {
@@ -291,14 +400,18 @@ function buildSurvey(surveyFile_) {
                                 break;
                             case 'multichoice':
                                 var j = 0;
-                                usefulContent += "</p><div" + requiredField + ">";
+                                if (data[i][data[0].indexOf("OPTIONS")] != "" && data[i][data[0].indexOf("OPTIONS")] != "h") {
+                                    $("#content").html("Esta enquete contém parâmetros de alternativas não suportados pela aplicação.");
+                                    return;
+                                }
+                                usefulContent += "</p><div item='" + data[i][data[0].indexOf("ID")] + "' " + requiredField + ">";
                                 for (j; j < presentation.length; j++) {
                                     if (presentation[j].indexOf("r>") == 0) {
                                         presentation[j] = presentation[j].substr(presentation[j].lastIndexOf(">") + 1);
                                     } else if (presentation[j].indexOf("<") > -1) {
                                         presentation[j] = presentation[j].substr(0, presentation[j].indexOf("<"));
                                     }
-                                    usefulContent += "<p><input type='radio' name='" + data[i][data[0].indexOf("ID")] + "' />" + presentation[j] + "</p>";
+                                    usefulContent += "<p><input type='radio' name='" + data[i][data[0].indexOf("ID")] + "' /><span>" + presentation[j] + "</span></p>";
                                 }
                                 usefulContent += "</div>";
                                 break;

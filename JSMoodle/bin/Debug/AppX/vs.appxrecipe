@@ -28,7 +28,7 @@
     <AppXManifest Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bin\Debug\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2016-10-24T16:48:34.183</Modified>
+      <Modified>2016-11-23T18:40:46.392</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
@@ -62,7 +62,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\surveys\surveys.css">
       <PackagePath>surveys\surveys.css</PackagePath>
-      <Modified>2016-11-09T14:46:43.573</Modified>
+      <Modified>2016-11-23T18:37:21.655</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\activities\activities.js">
       <PackagePath>activities\activities.js</PackagePath>
@@ -110,7 +110,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\surveys\surveys.js">
       <PackagePath>surveys\surveys.js</PackagePath>
-      <Modified>2016-11-09T15:04:02.454</Modified>
+      <Modified>2016-11-23T20:34:12.540</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\activities\index.html">
       <PackagePath>activities\index.html</PackagePath>
@@ -389,6 +389,10 @@
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
       <Modified>2015-07-20T22:06:24.000</Modified>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\images\universal\ok-icon.png">
+      <PackagePath>images\universal\ok-icon.png</PackagePath>
+      <Modified>2016-11-23T18:32:29.934</Modified>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\images\Wide310x150Logo.scale-200.png">
       <PackagePath>images\Wide310x150Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
@@ -404,7 +408,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\joaos\Desktop\JSMoodle\JSMoodle\bin\Debug\ReverseMap\resources.pri">
       <PackagePath>resources.pri</PackagePath>
-      <Modified>2016-10-24T16:48:33.953</Modified>
+      <Modified>2016-11-23T18:40:45.896</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

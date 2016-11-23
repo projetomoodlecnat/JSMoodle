@@ -17,6 +17,10 @@
     margin-top: -10px;
 }
 
+[required="true"] {
+    border: 2px solid red;
+}
+
 input[type="radio"] {
     margin-right: 5px !important;
     float:left !important;
@@ -44,4 +48,13 @@ input[type="radio"] {
     text-align: center !important;
     font-weight: bold;
     line-height: 3;
+}
+
+.imgCenteredMiddle {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin: auto;
 }
